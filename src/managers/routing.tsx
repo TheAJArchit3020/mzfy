@@ -4,11 +4,12 @@ import React, { FC } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import DashboardScreen from '@screens/dashboard';
 import DebtAdd from '@screens/DebtAdd';
-
+import Test from '@screens/Test';
 
 export type RootStackParams = {
     dashboardscreen: undefined;
     debtadd: undefined; 
+    test: undefined;// added to test reusable components
 }
 
 
@@ -19,12 +20,13 @@ const Routing: FC = () => {
         <NavigationContainer>
 
             <Stack.Navigator
-                initialRouteName="dashboardscreen"
+                initialRouteName="test"
                 screenOptions={{
                     headerShown: false,
                 }}>
                 <Stack.Screen name="dashboardscreen" component={DashboardScreen} />
                 <Stack.Screen name="debtadd" component={DebtAdd} />
+                <Stack.Screen name="test" component={Test} />
             </Stack.Navigator>
         </NavigationContainer>
     );

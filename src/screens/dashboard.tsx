@@ -49,7 +49,7 @@ const DashboardScreen: FC = () => {
                 </View>
 
                 <View style={styles.section3}>
-                    <Debtprogress />
+                      {/* <Debtprogress />*/}
                 </View>
 
                 {/* <View style={styles.section4}>
