@@ -8,6 +8,7 @@ import Debtprogress from '@components/dashboard/debtprogress';
 import Debtbalance from '@components/dashboard/debtbalance';
 import Debtpaid from '@components/dashboard/debtpaid';
 import Upcommingdebts from '@components/dashboard/upcommingdebts';
+import Nextduedate from '@components/dashboard/nextduedate';
 
 
 const DashboardScreen: FC = () => {
@@ -27,11 +28,17 @@ const DashboardScreen: FC = () => {
     };
 
     const upcommingdebtsList = [
-        { name: 'car loan', amount: 20000, date: '20/02/2025' },
-        { name: 'car loan', amount: 20000, date: '20/02/2025' },
-        { name: 'car loan', amount: 20000, date: '20/02/2025' },
-        { name: 'car loan', amount: 20000, date: '20/02/2025' },
-        { name: 'car loan', amount: 20000, date: '20/02/2025' },
+        { name: 'Car loan', amount: 20000, date: '20/02/2025' },
+        { name: 'Car loan', amount: 20000, date: '20/02/2025' },
+        { name: 'Car loan', amount: 20000, date: '20/02/2025' },
+        { name: 'Car loan', amount: 20000, date: '20/02/2025' },
+        { name: 'Car loan', amount: 20000, date: '20/02/2025' },
+    ]
+
+    const nextDueList = [
+        { name: 'Car loan', amount: 20000, date: '20/08/2025' },
+        { name: 'Bike loan', amount: 20000, date: '03/08/2025' },
+        { name: 'Home loan', amount: 20000, date: '20/09/2025' },
     ]
     return (
         <View style={styles.container}>
@@ -59,6 +66,9 @@ const DashboardScreen: FC = () => {
                 <View style={styles.section4}>
                     <Debtbalance />
                     <Debtpaid />
+                </View>
+                <View style={styles.section7}>
+                    <Nextduedate data={nextDueList} />
                 </View>
                 <View style={styles.section5}>
                     <Text style={styles.section5_text}>Upcoming Transactions</Text>
@@ -162,6 +172,10 @@ const styles = StyleSheet.create({
     },
     scrollview: {
         marginBottom: 10
+    },
+    section7: {
+        marginHorizontal: 20,
+        marginBottom: 20
     }
 
 });

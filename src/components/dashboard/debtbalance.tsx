@@ -8,7 +8,7 @@ const Debtbalance = () => {
         <Card style={styles.section_card} cardStyle={styles.section_card_inner}>
             <View style={styles.section_card_inner_content}>
                 <View style={styles.section_card_inner_content_item}>
-                    <Circularprogressbar progress={75} size={120} strokeWidth={12} />
+                    <Circularprogressbar progress={100} size={120} strokeWidth={12} />
                     <View style={styles.section_card_inner_content_item3} >
                         <Text style={styles.section_card_text}>Balance</Text>
                         <Image style={styles.image} source={require('@images/dashboard/balanceicon.png')} />
