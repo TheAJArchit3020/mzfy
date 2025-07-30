@@ -3,11 +3,12 @@ import React, { FC } from 'react';
 
 import { NavigationContainer } from '@react-navigation/native';
 import DashboardScreen from '@screens/dashboard';
+import Layout from '@screens/layout';
 
 
 
 export type RootStackParams = {
-    dashboardscreen: undefined;
+    layoutscreen: undefined;
 }
 
 
@@ -18,11 +19,11 @@ const Routing: FC = () => {
         <NavigationContainer>
 
             <Stack.Navigator
-                initialRouteName="dashboardscreen"
+                initialRouteName="layoutscreen"
                 screenOptions={{
                     headerShown: false,
                 }}>
-                <Stack.Screen name="dashboardscreen" component={DashboardScreen} />
+                <Stack.Screen name="layoutscreen" component={Layout} />
             </Stack.Navigator>
         </NavigationContainer>
     );

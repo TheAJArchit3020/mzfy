@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { FC } from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -7,6 +7,7 @@ import Debtcountdown from '@components/dashboard/debtcountdown';
 import Debtprogress from '@components/dashboard/debtprogress';
 import Debtbalance from '@components/dashboard/debtbalance';
 import Debtpaid from '@components/dashboard/debtpaid';
+import Upcommingdebts from '@components/dashboard/upcommingdebts';
 
 
 const DashboardScreen: FC = () => {
@@ -24,15 +25,18 @@ const DashboardScreen: FC = () => {
             return 'Good Evening';
         }
     };
+
+    const upcommingdebtsList = [
+        { name: 'car loan', amount: 20000, date: '20/02/2025' },
+        { name: 'car loan', amount: 20000, date: '20/02/2025' },
+        { name: 'car loan', amount: 20000, date: '20/02/2025' },
+        { name: 'car loan', amount: 20000, date: '20/02/2025' },
+        { name: 'car loan', amount: 20000, date: '20/02/2025' },
+    ]
     return (
         <View style={styles.container}>
-            <LinearGradient
-                colors={['#5145BC', '#2F2C4A', '#2B293E', '#272631', '#232323']}
-                locations={[0, 0.64, 0.76, 0.87, 1]}
-                start={{ x: 1, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.gradient}>
 
+            <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollview} >
 
                 <View style={styles.section1}>
                     <View style={styles.section1_1}>
@@ -52,13 +56,22 @@ const DashboardScreen: FC = () => {
                     <Debtprogress />
                 </View>
 
-                {/* <View style={styles.section4}>
+                <View style={styles.section4}>
                     <Debtbalance />
                     <Debtpaid />
-                </View> */}
+                </View>
+                <View style={styles.section5}>
+                    <Text style={styles.section5_text}>Upcomming debt</Text>
+                    <Upcommingdebts data={upcommingdebtsList} />
+                </View>
+
+            </ScrollView>
+
+            <TouchableOpacity style={styles.section6}>
+                <Text style={styles.section6_text} >+</Text>
+            </TouchableOpacity>
 
 
-            </LinearGradient>
         </View>
     );
 };
@@ -69,9 +82,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    gradient: {
-        flex: 1
-    },
+
     text: {
         fontSize: 33,
         fontFamily: "PlusJakartaSans-Bold",
@@ -121,5 +132,36 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between"
     },
+    section5: {
+        marginHorizontal: 20,
+        marginBottom: 20
+    },
+    section5_text: {
+        color: "#fff",
+        fontFamily: "PlusJakartaSans-Bold",
+        fontSize: 16,
+        marginBottom: 10
+    },
+    section6: {
+        backgroundColor: "#006FFF",
+        borderRadius: 25,
+        width: 50,
+        height: 50,
+        position: "absolute",
+        bottom: '6%',
+        right: '5%',
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    section6_text: {
+        color: "#F7F7F7",
+        fontFamily: "PlusJakartaSans-Regular",
+        fontSize: 34,
+        textAlign: "center",
+        marginTop: -14
+    },
+    scrollview: {
+        marginBottom: 10
+    }
 
 });
