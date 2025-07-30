@@ -1,92 +1,156 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+// components/UpcomingDebtsWithScrollbar.tsx
+import React, { useState, useRef } from 'react'
+import {
+    StyleSheet,
+    Text,
+    View,
+    ScrollView,
+    NativeSyntheticEvent,
+    NativeScrollEvent,
+    LayoutChangeEvent,
+    TouchableOpacity,
+    Image,
+} from 'react-native'
 import Card from '@components/reusable/card'
 
-
-interface UpcomingDebtsProps {
-    data: any
+export interface DebtItem {
+    name: string
+    amount: number
+    date: string
 }
 
-const Upcommingdebts: React.FC<UpcomingDebtsProps> = ({ data }) => {
-    return (
-        <Card style={styles.section_card} cardStyle={styles.section_card_inner}>
-            <View style={styles.section_card_inner_content}>
-                {data?.map((item: any, idx: any) => {
-                    const isLast = idx === data.length - 1
-                    return (
-                        <View style={[styles.section_card_inner_content_item, isLast && styles.noBorder]} key={idx}>
-                            <Text style={styles.section_card_text}>{item.name}</Text>
-                            <Text style={styles.section_card_text}>{'\u20B9'}&nbsp;
-                                {item.amount}
-                            </Text>
-                            <Text style={styles.section_card_text}>
-                                {item.date}
-                            </Text>
-                        </View>
-                    )
-                })}
+interface UpcomingDebtsWithScrollbarProps {
+    data: DebtItem[]
+}
 
+const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
+    data,
+}) => {
+    const [containerHeight, setContainerHeight] = useState(0)
+    const [contentHeight, setContentHeight] = useState(1)
+    const [scrollY, setScrollY] = useState(0)
+
+    const thumbHeight = Math.max(
+        (containerHeight / contentHeight) * 100,  // base thumb on 100px track
+        20
+    )
+    const maxThumbPos = 100 - thumbHeight
+    const scrollableRange = Math.max(contentHeight - containerHeight, 1)
+    const thumbTop = (scrollY / scrollableRange) * maxThumbPos
+
+    const onContainerLayout = (e: LayoutChangeEvent) =>
+        setContainerHeight(e.nativeEvent.layout.height)
+
+    const onContentSizeChange = (_: number, h: number) =>
+        setContentHeight(h)
+
+    const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) =>
+        setScrollY(e.nativeEvent.contentOffset.y)
+
+    return (
+        <Card style={styles.card} cardStyle={styles.innerCard}>
+            <View style={styles.scrollArea} onLayout={onContainerLayout}>
+                <ScrollView
+                    onScroll={onScroll}
+                    scrollEventThrottle={16}
+                    onContentSizeChange={onContentSizeChange}
+                    showsVerticalScrollIndicator={false}
+                >
+                    {data.map((item, idx) => {
+                        const isLast = idx === data.length - 1
+                        return (
+                            <View
+                                key={idx}
+                                style={[
+                                    styles.row,
+                                    isLast && styles.noBorder,
+                                ]}
+                            >
+                                <Text style={styles.text}>{item.name}</Text>
+                                <Text style={styles.text}>
+                                    {'\u20B9'} {item.amount}
+                                </Text>
+                                <Text style={styles.text}>{item.date}</Text>
+                                <TouchableOpacity>
+                                    <Image source={require('@images/dashboard/rightarrow.png')} style={styles.image} />
+                                </TouchableOpacity>
+                            </View>
+                        )
+                    })}
+                </ScrollView>
+
+                {/* fixed‐height (100px) scrollbar track, vertically centered */}
+                <View
+                    style={[
+                        styles.scrollbarTrack,
+                        {
+                            height: 120,
+                            top: (containerHeight - 120) / 2,
+                        },
+                    ]}
+                >
+                    <View
+                        style={[
+                            styles.scrollbarThumb,
+                            { height: thumbHeight, top: thumbTop },
+                        ]}
+                    />
+                </View>
             </View>
         </Card>
     )
 }
 
-export default Upcommingdebts
+export default UpcomingDebtsWithScrollbar
 
 const styles = StyleSheet.create({
-    section_card: {
+    card: {
         width: '100%',
         padding: 0,
-        justifyContent: "center"
     },
-    section_card_text: {
-        color: '#fff',
-        fontFamily: "PlusJakartaSans-Regular",
-        fontSize: 14,
+    innerCard: {
+        padding: 0,
+        justifyContent: 'flex-start',
+        overflow: 'visible',
     },
-    section_card_inner_content: {
-
+    scrollArea: {
+        height: 170,
+        position: 'relative',
     },
-    section_card_inner_content_item: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        borderBottomColor: "#C0C0C0",
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        borderBottomColor: '#C0C0C0',
         borderBottomWidth: 0.2,
-        paddingVertical: 10
+        paddingTop: 25,
+        paddingBottom: 12,
+        marginHorizontal: 30
     },
-    section_card_inner_content_item_text: {
-        color: '#fff',
-        fontFamily: "PlusJakartaSans-Bold",
-        fontSize: 30,
+    noBorder: {
+        borderBottomWidth: 0,
     },
-    section_card_inner_content_item_text2: {
+    text: {
         color: '#fff',
-        fontFamily: "PlusJakartaSans-Bold",
-        fontSize: 20,
-    },
-    section_card_text2: {
-        color: '#fff',
-        fontFamily: "PlusJakartaSans-Regular",
+        fontFamily: 'PlusJakartaSans-Regular',
         fontSize: 14,
     },
-    section_card_span: {
-        color: '#00D600',
-        fontFamily: "PlusJakartaSans-Bold",
-        fontSize: 16,
+    scrollbarTrack: {
+        position: 'absolute',
+        right: 14,
+        width: 2,
+        backgroundColor: '#D9D9D9',
+        borderRadius: 4,
     },
-    section_card_inner: {
-        height: 'auto',
-        justifyContent: "center"
+    scrollbarThumb: {
+        position: 'absolute',
+        left: 0,
+        width: 2,
+        backgroundColor: '#006FFF',
+        borderRadius: 4,
     },
     image: {
         width: 20,
         height: 20,
         resizeMode: "contain"
     },
-    section_card_inner_content_item2: {
-
-    },
-    noBorder: {
-        borderBottomWidth: 0
-    }
 })

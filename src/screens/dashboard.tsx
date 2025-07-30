@@ -61,7 +61,7 @@ const DashboardScreen: FC = () => {
                     <Debtpaid />
                 </View>
                 <View style={styles.section5}>
-                    <Text style={styles.section5_text}>Upcomming debt</Text>
+                    <Text style={styles.section5_text}>Upcoming Transactions</Text>
                     <Upcommingdebts data={upcommingdebtsList} />
                 </View>
 
