@@ -4,10 +4,11 @@ import Card from '@components/reusable/card'
 import LinearGradient from 'react-native-linear-gradient'
 
 interface NextduedateProps {
-    data: any
+    data: any,
+    logpopupHandler: any
 }
 
-const Nextduedate: FC<NextduedateProps> = ({ data }) => {
+const Nextduedate: FC<NextduedateProps> = ({ data, logpopupHandler }) => {
 
     const cardcolor1 = ['#F44336', '#B71C1C']
     const cardcolor2 = ['#00E5FF', '#2979FF']
@@ -107,7 +108,7 @@ const Nextduedate: FC<NextduedateProps> = ({ data }) => {
                             start={{ x: 1, y: 0 }}
                             end={{ x: 0, y: 1 }}
                         >
-                            <TouchableOpacity style={styles.logbutton}>
+                            <TouchableOpacity style={styles.logbutton} onPress={logpopupHandler} >
                                 <Text style={[styles.logbutton_text, { color: buttonTextColors }]}>Log Payment</Text>
                             </TouchableOpacity>
                         </LinearGradient>

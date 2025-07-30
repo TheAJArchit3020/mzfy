@@ -1,5 +1,5 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { FC } from 'react';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { FC, useState } from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Card from '@components/reusable/card';
@@ -9,9 +9,17 @@ import Debtbalance from '@components/dashboard/debtbalance';
 import Debtpaid from '@components/dashboard/debtpaid';
 import Upcommingdebts from '@components/dashboard/upcommingdebts';
 import Nextduedate from '@components/dashboard/nextduedate';
+import Popup from '@components/reusable/popup';
 
 
 const DashboardScreen: FC = () => {
+
+    const [show, setShow] = useState(false)
+
+
+    const logpopupHandler = () => {
+        setShow(true)
+    }
 
     // ⏰ Get current hour
     const hour = new Date().getHours();
@@ -68,7 +76,7 @@ const DashboardScreen: FC = () => {
                     <Debtpaid />
                 </View>
                 <View style={styles.section7}>
-                    <Nextduedate data={nextDueList} />
+                    <Nextduedate data={nextDueList} logpopupHandler={logpopupHandler} />
                 </View>
                 <View style={styles.section5}>
                     <Text style={styles.section5_text}>Upcoming Transactions</Text>
@@ -80,6 +88,23 @@ const DashboardScreen: FC = () => {
             <TouchableOpacity style={styles.section6}>
                 <Text style={styles.section6_text} >+</Text>
             </TouchableOpacity>
+
+
+            {/* log payment popup */}
+            <Popup
+                visible={show}
+                title="Paid amount"
+                onClose={() => setShow(false)}
+                titleStyle={styles.popuptitle}
+                containerStyle={styles.popupContainerStyle}
+            >
+                <View style={styles.inputgroup}>
+                    <Text style={styles.inputgroup_text}>{'\u20B9'}</Text>
+                    <TextInput style={styles.input} />
+                    <Text style={styles.inputgroup_text}>/-</Text>
+                </View>
+            </Popup>
+
 
 
         </View>
@@ -176,6 +201,37 @@ const styles = StyleSheet.create({
     section7: {
         marginHorizontal: 20,
         marginBottom: 20
+    },
+    inputgroup: {
+        borderWidth: 1,
+        borderColor: '#2A2A2A',
+        borderRadius: 12,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        padding: 10,
+        gap: 10,
+        paddingHorizontal: 20
+    },
+    input: {
+        backgroundColor: "red",
+        flex: 1,
+        padding: 10
+    },
+    inputgroup_text: {
+        color: '#fff',
+        fontFamily: "PlusJakartaSans-Bold",
+        fontSize: 14
+    },
+    popuptitle:{
+        color: '#fff',
+        fontFamily: "PlusJakartaSans-Bold",
+        fontSize: 14,
+        paddingTop: 20,
+        paddingHorizontal: 20
+    },
+    popupContainerStyle:{
+        backgroundColor:"#2A2A2A"
     }
 
 });
