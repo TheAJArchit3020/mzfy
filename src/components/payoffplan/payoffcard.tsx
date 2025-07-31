@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     },
     section_card_inner: {
         flexDirection: "column",
-        gap: 40
+        // gap: 40
     },
     image: {
         width: 20,
@@ -66,13 +66,15 @@ const styles = StyleSheet.create({
     groupsection: {
         flexDirection: "row",
         justifyContent: "space-between",
-        alignItems: "center"
+        alignItems: "center",
+        marginBottom: 18
     },
     groupsection2: {
         flexDirection: "row",
         justifyContent: "flex-start",
         alignItems: "center",
-        gap: 20
+        gap: 20,
+        marginBottom: 40
     },
     groupsection_text1: {
         color: "#fff",

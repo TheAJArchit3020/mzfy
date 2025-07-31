@@ -10,7 +10,7 @@ import LearnScreen from './learn'
 const Layout: React.FC = () => {
 
     const [tab, setTab] = useState(0)
-    const tabs = ['Dashboard', 'Debts', 'Pay off Plan', 'Learn']
+    const tabs = ['Dashboard', 'Debts', 'Pay off Plan', 'Expenses']
 
 
     return (

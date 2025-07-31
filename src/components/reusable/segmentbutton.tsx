@@ -80,8 +80,8 @@ const styles = StyleSheet.create({
     },
     segment: {
         paddingVertical: 8,
-        paddingHorizontal: 16,
-        borderRadius: 20,     // full rounding for each pill
+        paddingHorizontal: 10,
+        borderRadius: 20,     
         alignItems: 'center',
         justifyContent: 'center',
     },
