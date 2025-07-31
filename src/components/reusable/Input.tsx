@@ -18,23 +18,30 @@ interface InputProps extends Omit<TextInputProps, "onChangeText" | "value"> {
   textHeader?: string;
   type?: "text" | "number";
   style?: any;
+  inputWrapperStyle?: any;
   children?: React.ReactNode;
+  iconAbove?: React.ReactNode;
 }
 
 const Input: React.FC<InputProps> = ({
   value,
   onChangeContent,
-  textHeader,
   label,
+  textHeader,
   type = "text",
+  inputWrapperStyle,
   style,
   children,
+  iconAbove,
   ...rest
 }) => {
   return (
     <View style={{ marginBottom: hp(2) }}>
       {label && <Text style={styles.label}>{label}</Text>}
-      <View style={styles.inputWrapper}>
+      <View style={[styles.inputWrapper, inputWrapperStyle]}>
+        {iconAbove && (
+          <View style={styles.iconAboveContainer}>{iconAbove}</View>
+        )}
         {textHeader && (
           <Text style={[styles.label, { marginBottom: 0 }]}>{textHeader}</Text>
         )}
@@ -55,22 +62,24 @@ const styles = StyleSheet.create({
   inputWrapper: {
     backgroundColor: "transparent",
     borderWidth: 1,
+    flexDirection: "row",
     borderColor: "#BCBCBC",
     borderRadius: wp(4),
-    flexDirection: "row",
-    paddingHorizontal: wp(2),
+    paddingHorizontal: wp(4),
     paddingVertical: hp(1.5),
-    justifyContent: "space-between",
+    justifyContent: "center",
     marginTop: 0,
   },
+  iconAboveContainer: {
+    alignItems: "center",
+    marginBottom: hp(1),
+  },
   input: {
-    flex: 1,
-    paddingHorizontal: wp(2),
     color: "#e5e5f7",
-    fontSize: wp(4),
+    fontSize: wp(4.5),
+    flex: 1,
     padding: 0,
     backgroundColor: "transparent",
-    fontFamily: "PlusJakartaSans-Medium",
   },
   label: {
     marginBottom: hp(2),
