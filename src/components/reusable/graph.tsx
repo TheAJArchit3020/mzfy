@@ -1,64 +1,140 @@
 import React, { FC } from "react";
-import { View, Text, StyleSheet,Dimensions } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import { LineChart } from "react-native-chart-kit";
-import {heightToDP as hp,widthToDP as wp} from 'react-native-responsive-screens'
+import {
+  heightToDP as hp,
+  widthToDP as wp,
+} from "react-native-responsive-screens";
+import { ChevronRightIcon, ChevronUpIcon } from "react-native-heroicons/solid";
 interface graphComponentProps {}
 
 const GraphComponent: FC<graphComponentProps> = ({}) => {
   return (
     <View style={styles.container}>
-      <LineChart
-        data={{
-          labels: ["January", "February", "March", "April", "May", "June"],
-          datasets: [
-            {
-              data: [
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-                Math.random() * 100,
-              ],
+      <View style={styles.chartContainer}>
+        <LineChart
+          data={{
+            labels: ["Jan", "Feb", "Mar", "Ap", "May", "Jun", "Jul"],
+            datasets: [
+              {
+                data: [
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                  Math.random() * 100,
+                ],
+              },
+            ],
+          }}
+          width={wp(90)}
+          height={hp(25)}
+          yAxisLabel="$"
+          yAxisSuffix="k"
+          yAxisInterval={1}
+          chartConfig={{
+            backgroundColor: "#2a2a2a",
+            backgroundGradientFrom: "#2a2a2a",
+            backgroundGradientTo: "#2a2a2a",
+            decimalPlaces: 2,
+            color: (opacity = 1) => `rgba(59, 130, 246, ${opacity})`,
+            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+            style: {
+              borderRadius: 16,
             },
-          ],
-        }}
-        width={wp(90)}
-        height={hp(25)}
-        yAxisLabel="$"
-        yAxisSuffix="k"
-        yAxisInterval={1}
-        chartConfig={{
-          backgroundColor: "transparent",
-          backgroundGradientFrom: "#transparents",
-          backgroundGradientTo: "transparent",
-          decimalPlaces: 2,
-          color: (opacity = 1) => `rgba(76, 150, 247, ${opacity})`,
-          labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-          style: {
-            borderRadius: 0,
-          },
-          propsForDots: {
-            r: "6",
-            strokeWidth: "2",
-            stroke: "#fff",
-          },
-        }}
-        bezier
-        style={{
-          marginVertical: 8,
-          borderRadius: 16,
-        }}
-      />
+            propsForDots: {
+              r: "0",
+              strokeWidth: "0",
+            },
+            fillShadowGradient: "#4C96F7",
+            fillShadowGradientOpacity: 1,
+          }}
+          renderDotContent={({ x, y, index, indexData }) => (
+            <Image
+              key={`dot-${index}`}
+              source={require("../../assets/images/graphcCompoennt/graphDot.png")}
+              style={{
+                position: "absolute",
+                top: y - 10,
+                left: x - 10,
+                width: wp(5),
+                height: wp(5),
+              }}
+            />
+          )}
+          bezier
+          withHorizontalLines={false}
+          withVerticalLines={false}
+          style={{
+            marginVertical: 8,
+            borderRadius: 16,
+            backgroundColor: "#2a2a2a",
+          }}
+        />
+        <View style={styles.horizontalLine} />
+        <ChevronRightIcon
+          size={wp(5)}
+          color={"#fff"}
+          style={styles.verticalArrowIcon}
+        />
+        <View style={styles.verticalLine} />
+        <ChevronUpIcon
+          size={wp(5)}
+          color={"#fff"}
+          style={styles.horizontalArrowIcon}
+        />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    height: hp(100),
     justifyContent: "center",
     alignItems: "center",
+    height: hp(100),
+  },
+  chartContainer: {
+    backgroundColor: "#2a2a2a",
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  horizontalLine: {
+    borderWidth: 1,
+    borderColor: "#fff",
+    position: "absolute",
+    width: "80%",
+    right: wp(5),
+    backgroundColor: "#fff",
+    bottom: hp(7),
+  },
+  verticalLine: {
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#fff",
+    position: "absolute",
+    height: "80%",
+    left: wp(18.6),
+    bottom: hp(7),
+  },
+  verticalArrowIcon: {
+    position: "absolute",
+    bottom: hp(6),
+    right: wp(1.5),
+  },
+  horizontalArrowIcon: {
+    position: "absolute",
+    top: hp(0.5),
+    left: wp(16.5),
   },
 });
 
