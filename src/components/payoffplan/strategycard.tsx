@@ -6,10 +6,11 @@ import LinearGradient from 'react-native-linear-gradient'
 
 interface strategyProps {
     title: any,
-    subtitle: any
+    subtitle: any,
+    onPress?: any
 }
 
-const Strategycard: FC<strategyProps> = ({ title, subtitle }) => {
+const Strategycard: FC<strategyProps> = ({ title, subtitle ,onPress}) => {
 
 
 
@@ -39,7 +40,7 @@ const Strategycard: FC<strategyProps> = ({ title, subtitle }) => {
                 start={{ x: 1, y: 0 }}
                 end={{ x: 0, y: 1 }}
             >
-                <TouchableOpacity style={styles.logbutton}>
+                <TouchableOpacity style={styles.logbutton} onPress={onPress}>
                     <Text style={[styles.logbutton_text]}>Change Strategy</Text>
                     <Image style={styles.image} source={require('@images/payoffplan/shuffle.png')} />
                 </TouchableOpacity>

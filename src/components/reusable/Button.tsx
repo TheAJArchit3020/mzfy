@@ -8,7 +8,7 @@ import {
 } from "react-native";
 
 interface ButtonProps {
-  onPress: () => void;
+  onPress?: () => void;
   style?: StyleProp<ViewStyle>;
   disabled?: boolean;
   children?: React.ReactNode;

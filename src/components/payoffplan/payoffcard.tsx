@@ -7,38 +7,41 @@ import Card from '@components/reusable/card'
 interface payoffProps {
     data: any,
     source?: any,
-    cardstyle?: any
+    cardstyle?: any,
+    cardcontainerstyle?: any
 }
 
 
-const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle }) => {
+const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainerstyle }) => {
     return (
         <>
-            {data?.map((item: any, idx: any) => {
-                return (
-                    <Card style={[styles.section_card, cardstyle]} cardStyle={styles.section_card_inner} key={idx}>
-                        <View style={styles.groupsection}>
-                            <Text style={styles.groupsection_text1}>{item.name}</Text>
-                            <Text style={styles.groupsection_text2}>{item.time}</Text>
-                            <TouchableOpacity style={styles.button}>
-                                <Image source={source} style={styles.image} />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.groupsection2}>
-                            <Text style={styles.groupsection_text1}>Minimun: {item.minamt} {'\u20B9'}</Text>
-                            <Text style={styles.groupsection_text1}>APR: {item.apr}</Text>
+            <View style={styles.cardcontainer}>
+                {data?.map((item: any, idx: any) => {
+                    return (
+                        <Card style={[styles.section_card, cardstyle]} cardStyle={styles.section_card_inner} key={idx}>
+                            <View style={styles.groupsection}>
+                                <Text style={styles.groupsection_text1}>{item.name}</Text>
+                                <Text style={styles.groupsection_text2}>{item.time}</Text>
+                                <TouchableOpacity style={styles.button}>
+                                    <Image source={source} style={styles.image} />
+                                </TouchableOpacity>
+                            </View>
+                            <View style={styles.groupsection2}>
+                                <Text style={styles.groupsection_text1}>Minimun: {item.minamt} {'\u20B9'}</Text>
+                                <Text style={styles.groupsection_text1}>APR: {item.apr}</Text>
 
-                        </View>
-                        <View style={styles.groupsection3}>
-                            <Text style={styles.groupsection_text1}>Payoff Progress</Text>
-                            <ProgressBar progress={item?.payoffprogress} tooltipLabel={`Sumit 20,000 ${'\u20B9'}`} showTooltip={true} style={styles.progressbar} />
-                            <Text style={styles.groupsection_text1}>{item.payoffprogress} %</Text>
+                            </View>
+                            <View style={styles.groupsection3}>
+                                <Text style={styles.groupsection_text1}>Payoff Progress</Text>
+                                <ProgressBar progress={item?.payoffprogress} tooltipLabel={`Sumit 20,000 ${'\u20B9'}`} showTooltip={true} style={styles.progressbar} />
+                                <Text style={styles.groupsection_text1}>{item.payoffprogress} %</Text>
 
-                        </View>
+                            </View>
 
-                    </Card>
-                )
-            })}
+                        </Card>
+                    )
+                })}
+            </View>
         </>
 
     )
@@ -46,13 +49,16 @@ const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle }) => {
 export default Payoffcard
 
 const styles = StyleSheet.create({
+    cardcontainer: {
+        flexDirection: "column",
+        gap: 20
+    },
     section_card: {
         backgroundColor: "rgba(51, 255, 0, 0.38)",
         borderWidth: 0,
         width: '90%',
         alignSelf: "center",
         paddingHorizontal: 10,
-        marginBottom: 20,
     },
     section_card_inner: {
         flexDirection: "column",

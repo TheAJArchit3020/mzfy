@@ -19,6 +19,10 @@ export interface PopupProps {
     children: ReactNode
     containerStyle?: ViewStyle
     titleStyle?: TextStyle
+    buttonText?: string
+    color1?: string
+    color2?: string
+    buttonTextStyle?:any
 }
 
 const Popup: React.FC<PopupProps> = ({
@@ -28,6 +32,10 @@ const Popup: React.FC<PopupProps> = ({
     children,
     containerStyle,
     titleStyle,
+    buttonText = 'OK',
+    color1 = '#B2FF59',
+    color2 = '#00C853',
+    buttonTextStyle
 }) => {
     return (
         <Modal
@@ -47,13 +55,13 @@ const Popup: React.FC<PopupProps> = ({
                     {title && <Text style={[styles.modalTitle, titleStyle]}>{title}</Text>}
                     <View style={styles.modalContent}>{children}</View>
                     <LinearGradient
-                        colors={['#B2FF59', '#00C853']}
+                        colors={[color1, color2]}
                         locations={[0, 1]}
                         start={{ x: 1, y: 0 }}
                         end={{ x: 0, y: 1 }}
                     >
                         <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-                            <Text style={styles.closeButtonText}>OK</Text>
+                            <Text style={[styles.closeButtonText , buttonTextStyle]}>{buttonText}</Text>
                         </TouchableOpacity>
                     </LinearGradient>
                 </View>
