@@ -1,22 +1,32 @@
 import React, { FC } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, Image } from "react-native";
 import Button from "./Button";
 import {
   widthToDP as wp,
   heightToDP as hp,
 } from "react-native-responsive-screens";
 import { ArrowLeftIcon } from "react-native-heroicons/outline";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParams } from "@managers/routing";
+import { useNavigation } from "@react-navigation/native";
 interface headerProps {
   title: string;
 }
+type navProp = NativeStackNavigationProp<RootStackParams>;
 
-const backHandler = (): void => {};
 const Header: FC<headerProps> = ({ title }) => {
+  const navigation = useNavigation();
+  const backHandler = (): void => {
+    navigation.goBack();
+  };
   return (
     <View style={styles.container}>
       <Button onPress={backHandler}>
         <View style={styles.backButton}>
-          <ArrowLeftIcon size={wp(5)} color={"#5145BC"} />
+          <Image
+            style={{ width: "100%", height: "100%" }}
+            source={require("../../assets/images/backButton/arrow.png")}
+          />
         </View>
       </Button>
       <Text style={styles.title}>{title}</Text>
@@ -36,9 +46,8 @@ const styles = StyleSheet.create({
     paddingBottom: wp(2),
   },
   backButton: {
-    width: wp(9),
-    height: hp(4),
-    backgroundColor: "#fff",
+    width: wp(10),
+    height: hp(5),
     borderRadius: wp(6.5),
     alignItems: "center",
     justifyContent: "center",
