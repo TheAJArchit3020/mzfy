@@ -63,7 +63,6 @@ const GraphComponent: FC<graphComponentProps> = ({}) => {
               }}
             />
           )}
-          bezier
           withHorizontalLines={false}
           withVerticalLines={false}
           style={{
@@ -109,7 +108,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   horizontalLine: {
-    borderWidth: 1,
+    borderWidth: .8,
     borderColor: "#fff",
     position: "absolute",
     width: "80%",
@@ -119,7 +118,7 @@ const styles = StyleSheet.create({
   },
   verticalLine: {
     backgroundColor: "#fff",
-    borderWidth: 1,
+    borderWidth: .8,
     borderColor: "#fff",
     position: "absolute",
     height: "80%",
