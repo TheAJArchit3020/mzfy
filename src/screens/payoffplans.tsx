@@ -15,7 +15,7 @@ const PayoffplansScreen: FC = () => {
     <View style={styles.container}>
       <Strategycard title={'Debt Snowball'} subtitle={'Debt Snowball'} />
       <View style={{ marginTop: 22 }}>
-        <Payoffcard data={data} />
+        <Payoffcard data={data} source={require('@images/payoffplan/rightarrowwhite.png')} />
       </View>
     </View>
   );

@@ -5,21 +5,23 @@ import Card from '@components/reusable/card'
 
 
 interface payoffProps {
-    data: any
+    data: any,
+    source?: any,
+    cardstyle?: any
 }
 
 
-const Payoffcard: FC<payoffProps> = ({ data }) => {
+const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle }) => {
     return (
         <>
             {data?.map((item: any, idx: any) => {
                 return (
-                    <Card style={styles.section_card} cardStyle={styles.section_card_inner} key={idx}>
+                    <Card style={[styles.section_card, cardstyle]} cardStyle={styles.section_card_inner} key={idx}>
                         <View style={styles.groupsection}>
                             <Text style={styles.groupsection_text1}>{item.name}</Text>
                             <Text style={styles.groupsection_text2}>{item.time}</Text>
                             <TouchableOpacity style={styles.button}>
-                                <Image source={require('@images/payoffplan/rightarrowwhite.png')} style={styles.image} />
+                                <Image source={source} style={styles.image} />
                             </TouchableOpacity>
                         </View>
                         <View style={styles.groupsection2}>
