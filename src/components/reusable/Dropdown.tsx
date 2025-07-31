@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 8,
     padding: 12,
-    backgroundColor: '#fff',
   },
   label: {
     marginBottom: 4,

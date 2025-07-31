@@ -20,7 +20,7 @@ const Routing: FC = () => {
         <NavigationContainer>
 
             <Stack.Navigator
-                initialRouteName="test"
+                initialRouteName="debtadd"
                 screenOptions={{
                     headerShown: false,
                 }}>

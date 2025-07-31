@@ -1,41 +1,45 @@
-import React, { memo } from 'react';
-import { TouchableOpacity, Text, StyleSheet, ViewStyle, StyleProp } from 'react-native';
+import React, { memo } from "react";
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  ViewStyle,
+  StyleProp,
+} from "react-native";
 
 interface ButtonProps {
   onPress: () => void;
-  title: string;
   style?: StyleProp<ViewStyle>;
   disabled?: boolean;
+  children?: React.ReactNode;
 }
 
-const Button: React.FC<ButtonProps> = ({ onPress, title, style, disabled }) => {
+const Button: React.FC<ButtonProps> = ({
+  onPress,
+  style,
+  disabled,
+  children,
+}) => {
   return (
     <TouchableOpacity
-      style={[styles.button, style, disabled && styles.disabled]}
+      style={[style, disabled && styles.disabled]}
       onPress={onPress}
       activeOpacity={0.7}
       disabled={disabled}
     >
-      <Text style={styles.text}>{title}</Text>
+      {children}
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 14,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginVertical: 8,
-  },
   text: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   disabled: {
-    backgroundColor: '#A0A0A0',
+    backgroundColor: "#A0A0A0",
   },
 });
 
