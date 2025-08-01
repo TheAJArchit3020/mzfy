@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Input from "../components/reusable/Input";
-import Dropdown from "../components/reusable/Dropdown";
+import Dropdown from "../components/reusable/dropdown";
 import Button from "../components/reusable/button";
 import Header from "@components/reusable/header";
 import {

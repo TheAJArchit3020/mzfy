@@ -9,6 +9,7 @@ import GraphComponent from '@components/reusable/graph';
 import TextCard2 from '@components/reusable/textcard2';
 import Popup from '@components/reusable/popup';
 import StrategyRadioCard from '@components/payoffplan/strategymodal';
+import DraggablePayoffcard from '@components/payoffplan/dragablepayoffcard';
 
 
 const PayoffplansScreen: FC = () => {
@@ -50,9 +51,9 @@ const PayoffplansScreen: FC = () => {
 
 
   const data = [
-    { name: 'Car Loan', minamt: 500, apr: '2.5%', payoffprogress: 5.5, time: 'Completes on Jul 2 2026 (9 month 1 days)' },
-    { name: 'House Loan', minamt: 500, apr: '9.5%', payoffprogress: 25.5, time: 'Completes on Jul 2 2026 (9 month 1 days)' },
-    { name: 'Bike Loan', minamt: 500, apr: '10.5%', payoffprogress: 45.5, time: 'Completes on Jul 2 2026 (9 month 1 days)' },
+    { id: 1, name: 'Car Loan', minamt: 500, apr: '2.5%', payoffprogress: 5.5, time: 'Completes on Jul 2 2026 (9 month 1 days)' },
+    { id: 2, name: 'House Loan', minamt: 500, apr: '9.5%', payoffprogress: 25.5, time: 'Completes on Jul 2 2026 (9 month 1 days)' },
+    { id: 3, name: 'Bike Loan', minamt: 500, apr: '10.5%', payoffprogress: 45.5, time: 'Completes on Jul 2 2026 (9 month 1 days)' },
   ]
 
   const upcommingdebtsList = [
@@ -65,14 +66,14 @@ const PayoffplansScreen: FC = () => {
   return (
     <>
 
-      <ScrollView>
+      {/* <ScrollView> */}
         <View style={styles.container}>
 
           {/* section1 */}
           <Strategycard title={'Debt Snowball'} subtitle={'Debt Snowball'} onPress={strategypopupHandler} />
 
           {/* section2 */}
-          <View style={styles.cardcontainer}>
+          {/* <View style={styles.cardcontainer}>
             <View style={styles.cardgroup}  >
               <TextCard2 text1={'Estimated payoff'} text2={'Mar'} text3={'2027'} text1style={styles.text1} text2style={styles.text2_1} text3style={styles.text2_2} cardStyle={styles.cardstyle}></TextCard2>
 
@@ -82,20 +83,35 @@ const PayoffplansScreen: FC = () => {
               <TextCard text1={'Estimated payoff'} text2={'₹. 80,000/-'} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
               <TextCard text1={'You save'} text2={'₹. 12,000/-'} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
             </View>
-          </View>
+          </View> */}
 
           {/* section3 */}
-          <View style={styles.cardcontainer2}>
+          {/* <View style={styles.cardcontainer2}>
             <Text style={styles.cardcontainer2_title}>Step wise Plan</Text>
             <UpcomingDebtsWithScrollbar data={upcommingdebtsList} />
-          </View>
+          </View> */}
           {/* section4 */}
-          <View style={styles.cardcontainer3}>
+          {/* <View style={styles.cardcontainer3}>
             <Text style={styles.cardcontainer3_title}>Order Wise Debt payoff</Text>
             <View style={styles.cardcontainer3_inner}>
               <Payoffcard data={data} source={require('@images/payoffplan/rightarrowwhite.png')} />
             </View>
+          </View> */}
+
+          <View style={styles.cardcontainer3}>
+            <View style={styles.cardcontainer3_content}>
+              <Text style={styles.cardcontainer3_title}>Order Wise Debt payoff</Text>
+              <View style={styles.info_content}>
+                <Image source={require('@images/payoffplan/info.png')} style={styles.infoimage} />
+                <Text style={styles.info_text}>You can Arrange debts your way</Text>
+              </View>
+            </View>
+            <View style={styles.cardcontainer3_inner}>
+              <DraggablePayoffcard data={data} source={require('@images/payoffplan/edit.png')} />
+            </View>
           </View>
+
+
           {/* section5 */}
           <View style={styles.cardcontainer4}>
             <Text style={styles.cardcontainer4_title}>Debt Reduction Timeline</Text>
@@ -110,7 +126,7 @@ const PayoffplansScreen: FC = () => {
             <Text style={styles.buttontext}>Export pdf</Text>
           </Button>
         </View>
-      </ScrollView>
+      {/* </ScrollView> */}
       {/* log payment popup */}
       <Popup
         visible={show}
@@ -293,6 +309,26 @@ const styles = StyleSheet.create({
   },
   buttonTextStyle: {
     color: '#fff'
+  },
+  infoimage: {
+    width: 12,
+    height: 12,
+    resizeMode: "contain"
+  },
+  cardcontainer3_content: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  info_text: {
+    color: '#fff',
+    fontSize: 9,
+    fontFamily: 'PlusJakartaSans-Regular',
+  },
+  info_content: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3
   }
 
 });
