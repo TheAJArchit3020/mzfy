@@ -6,9 +6,9 @@ import {
   widthToDP as wp,
 } from "react-native-responsive-screens";
 import { ChevronRightIcon, ChevronUpIcon } from "react-native-heroicons/solid";
-interface graphComponentProps {}
+interface graphComponentProps { }
 
-const GraphComponent: FC<graphComponentProps> = ({}) => {
+const GraphComponent: FC<graphComponentProps> = ({ }) => {
   return (
     <View style={styles.container}>
       <View style={styles.chartContainer}>
@@ -90,9 +90,7 @@ const GraphComponent: FC<graphComponentProps> = ({}) => {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "center",
-    alignItems: "center",
-    height: hp(100),
+    flex: 1
   },
   chartContainer: {
     backgroundColor: "#2a2a2a",

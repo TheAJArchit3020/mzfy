@@ -3,7 +3,7 @@ import React, { FC } from "react";
 
 import { NavigationContainer } from "@react-navigation/native";
 import DashboardScreen from "@screens/dashboard";
-import DebtAdd from "@screens/DebtAdd";
+import DebtAdd from "@screens/debtadd";
 import Test from "@screens/Test";
 import DebtsScreen from "@screens/debts";
 import Transaction from "@screens/transaction";

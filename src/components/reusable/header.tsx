@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { View, StyleSheet, Text, Image } from "react-native";
-import Button from "./Button";
+import Button from "./button";
 import {
   widthToDP as wp,
   heightToDP as hp,

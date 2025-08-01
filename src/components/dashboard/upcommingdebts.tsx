@@ -107,6 +107,7 @@ const styles = StyleSheet.create({
     card: {
         width: '100%',
         padding: 0,
+        height: 200
     },
     innerCard: {
         padding: 0,
@@ -114,7 +115,7 @@ const styles = StyleSheet.create({
         overflow: 'visible',
     },
     scrollArea: {
-        height: 170,
+        height: 200,
         position: 'relative',
     },
     row: {
