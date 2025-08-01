@@ -1,6 +1,6 @@
 import { Platform, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
 import React from 'react'
-
+import { widthToDP as wp } from 'react-native-responsive-screens';
 
 type CardProps = {
     children?: React.ReactNode;
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
         }),
         width: '48%',
         backgroundColor: "#2A2A2A",
-        borderRadius: 25,
+        borderRadius: wp(7),
         borderColor: "#fff",
         borderWidth: 1,
         overflow: "hidden"

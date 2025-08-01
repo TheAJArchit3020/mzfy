@@ -12,7 +12,7 @@ import {
 import LinearGradient from "react-native-linear-gradient";
 import Input from "../components/reusable/Input";
 import Dropdown from "../components/reusable/dropdown";
-import Button from "../components/reusable/button";
+import Button from "@components/reusable/Button";
 import Header from "@components/reusable/header";
 import {
   widthToDP as wp,

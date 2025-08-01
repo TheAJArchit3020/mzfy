@@ -4,6 +4,8 @@ import Card from "@components/reusable/card";
 import LinearGradient from "react-native-linear-gradient";
 import { CalendarIcon } from "react-native-heroicons/outline";
 import { paymentStatus } from "src/commonTypes";
+import { widthToDP as wp, heightToDP as hp } from "react-native-responsive-screens";
+
 interface StatusDueCardProps {
   status: paymentStatus;
   date: string;
@@ -89,11 +91,11 @@ export default StatusDueCard;
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    marginBottom: 20,
+    marginBottom: hp(2.5),
   },
   card: {
-    borderRadius: 20,
-    padding: 20,
+    borderRadius: wp(5),
+    padding: wp(5),
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -115,24 +117,24 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   statusText: {
-    fontSize: 16,
+    fontSize: wp(4),
     fontWeight: "bold",
     color: "#333",
-    marginBottom: 8,
+    marginBottom: hp(1),
   },
   dateSection: {
     flexDirection: "row",
     alignItems: "baseline",
-    marginBottom: 8,
+    marginBottom: hp(1),
   },
   dayText: {
-    fontSize: 32,
+    fontSize: wp(8),
     fontWeight: "bold",
     color: "#333",
-    marginRight: 8,
+    marginRight: wp(2),
   },
   monthYearText: {
-    fontSize: 14,
+    fontSize: wp(3.5),
     color: "#333",
     fontWeight: "500",
   },
@@ -141,7 +143,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   amountText: {
-    fontSize: 16,
+    fontSize: wp(4),
     fontWeight: "600",
     color: "#333",
   },

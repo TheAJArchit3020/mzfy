@@ -65,7 +65,6 @@ const WhatIfCalculator: FC<WhatIfCalculatorProps> = ({
 const styles = StyleSheet.create({
   container: {
     borderRadius: wp(5),
-    padding: wp(4),
   },
   headerSection: {
     marginBottom: hp(2),

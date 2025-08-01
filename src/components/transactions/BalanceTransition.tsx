@@ -46,7 +46,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#C0C0C0",
     padding: wp(4),
-    marginVertical: hp(1),
   },
   balanceRow: {
     flexDirection: "row",

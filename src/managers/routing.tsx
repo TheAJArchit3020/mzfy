@@ -1,9 +1,9 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { FC } from "react";
-
+import { paymentStatus } from "src/commonTypes";
 import { NavigationContainer } from "@react-navigation/native";
 import DashboardScreen from "@screens/dashboard";
-import DebtAdd from "@screens/debtadd";
+import DebtAdd from "@screens/DebtAdd";
 import Test from "@screens/Test";
 import DebtsScreen from "@screens/debts";
 import Transaction from "@screens/transaction";
@@ -12,7 +12,7 @@ export type RootStackParams = {
   debtadd: undefined;
   DebtsScreen: undefined;
   test: undefined; // added to test reusable components
-  Transaction: undefined;
+  Transaction: { status: paymentStatus };
 };
 
 const Stack = createNativeStackNavigator<RootStackParams>();

@@ -91,7 +91,6 @@ const Note: FC<NoteProps> = ({ onNoteChange }) => {
 const styles = StyleSheet.create({
   container: {
     borderRadius: wp(5),
-    padding: wp(4),
   },
   inputSection: {
     gap: hp(2),

@@ -22,6 +22,7 @@
     "react-native-drop-shadow": "^1.0.3",
     "react-native-heroicons": "^4.0.0",
     "react-native-linear-gradient": "^2.8.3",
+    "react-native-pie-chart": "^4.0.1",
     "react-native-responsive-screens": "^1.0.1",
     "react-native-safe-area-context": "^5.5.2",
     "react-native-screens": "^4.13.1",
