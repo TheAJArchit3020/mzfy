@@ -1,6 +1,5 @@
-import { StyleSheet, Text, View,ScrollView } from "react-native";
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from "react-native";
 import React, { FC, useState } from "react";
-import LinearGradient from "react-native-linear-gradient";
 import Debtbalance from "@components/dashboard/debtbalance";
 import Debtpaid from "@components/dashboard/debtpaid";
 import {
@@ -10,7 +9,6 @@ import {
 import SegmentButton from "@components/reusable/segmentbutton";
 import Input from "@components/reusable/Input";
 import { MagnifyingGlassIcon } from "react-native-heroicons/outline";
-import Card from "@components/reusable/card";
 import Payoffcard from "@components/payoffplan/payoffcard";
 
 
@@ -161,17 +159,12 @@ const completedDebts = [
 ];
 
 const DebtsScreen: FC = () => {
+
+
   const [searchKeyword, setSeacthKeyword] = useState("");
   const [selectedButton, setSelectedButton] = useState(0);
 
   return (
-    <LinearGradient
-      colors={["#463C9F", "#3A346E", "#23234B", "#2B293E", "#272631"]}
-      locations={[0, 0.64, 0.76, 0.87, 1]}
-      style={{ flex: 1 }}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
       <View style={styles.container}>
         <View style={styles.debtInfoContainer}>
           <Debtbalance />
@@ -180,7 +173,7 @@ const DebtsScreen: FC = () => {
 
         <View style={styles.debtsListContainer}>
           <SegmentButton
-            items={["InProgress", "Completed"]}
+            items={["InProgress(3)", "Completed(3)"]}
             onChange={(idx) => {
               setSelectedButton(idx);
             }}
@@ -203,13 +196,20 @@ const DebtsScreen: FC = () => {
             placeholderTextColor={"#747474"}
           />
           <ScrollView
-          showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
           >
-          <Payoffcard data={selectedButton === 0 ? inProgressDebts : completedDebts} />
+            <Payoffcard data={selectedButton === 0 ? inProgressDebts : completedDebts} source={require("@assets/images/dashboard/rightarrow.png")} />
           </ScrollView>
         </View>
+        <TouchableOpacity
+          style={styles.section6}
+        // onPress={() => {
+        //   navigation.navigate("debtadd");
+        // }}
+        >
+          <Text style={styles.section6_text}>+</Text>
+        </TouchableOpacity>
       </View>
-    </LinearGradient>
   );
 };
 
@@ -218,31 +218,31 @@ export default DebtsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: hp(8), //remove if not needed
-    paddingHorizontal: wp(5),
-    gap: hp(2),
+    flexDirection: "column",
+    gap: 20,
+    marginBottom: hp(5)
   },
   debtInfoContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: wp(5),
+    marginHorizontal: wp(5)
   },
   debtsListContainer: {
     backgroundColor: "#1E2D5E",
-    height: hp(65),
-    paddingHorizontal: wp(5),
+    height: hp(62),
     paddingVertical: hp(2),
     justifyContent: "flex-start",
     borderRadius: wp(5),
     borderWidth: 1,
     borderColor: "#C0C0C0",
+    marginHorizontal: wp(5)
   },
   toggleButtonContainer: {
-    justifyContent: "flex-start",
-    width: wp(55),
+    width: 'auto',
     padding: wp(1.5),
     marginTop: wp(1),
     alignSelf: "flex-start",
+    marginHorizontal: wp(4)
   },
   searchBar: {
     backgroundColor: "#C0C0C0",
@@ -251,11 +251,30 @@ const styles = StyleSheet.create({
     paddingVertical: hp(0.3),
     gap: wp(2),
     alignItems: "center",
+    marginHorizontal: wp(4)
   },
   searchInput: {
     flex: 1,
     fontSize: wp(3.5),
     fontFamily: "PlusJakartaSans-Bold",
     color: "#747474",
+  },
+  section6: {
+    backgroundColor: "#006FFF",
+    borderRadius: 25,
+    width: 50,
+    height: 50,
+    position: "absolute",
+    bottom: "0%",
+    right: "5%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  section6_text: {
+    color: "#F7F7F7",
+    fontFamily: "PlusJakartaSans-Regular",
+    fontSize: 34,
+    textAlign: "center",
+    marginTop: -14,
   },
 });

@@ -7,11 +7,8 @@ import {
   View,
 } from "react-native";
 import React, { FC, useState } from "react";
-import LinearGradient from "react-native-linear-gradient";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Card from "@components/reusable/card";
+
 import Debtcountdown from "@components/dashboard/debtcountdown";
-import Debtprogress from "@components/dashboard/debtprogress";
 import Debtbalance from "@components/dashboard/debtbalance";
 import Debtpaid from "@components/dashboard/debtpaid";
 import Upcommingdebts from "@components/dashboard/upcommingdebts";
@@ -21,8 +18,10 @@ import { useNavigation } from "@react-navigation/native";
 import { RootStackParams } from "@managers/routing";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-type navprops = NativeStackNavigationProp<RootStackParams, "dashboardscreen">;
+type navprops = NativeStackNavigationProp<RootStackParams>;
+
 const DashboardScreen: FC = () => {
+
   const navigation = useNavigation<navprops>();
   const [show, setShow] = useState(false);
 
@@ -96,9 +95,9 @@ const DashboardScreen: FC = () => {
 
       <TouchableOpacity
         style={styles.section6}
-        onPress={() => {
-          navigation.navigate("debtadd");
-        }}
+      // onPress={() => {
+      //   navigation.navigate("debtadd");
+      // }}
       >
         <Text style={styles.section6_text}>+</Text>
       </TouchableOpacity>

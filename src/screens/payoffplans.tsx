@@ -66,14 +66,14 @@ const PayoffplansScreen: FC = () => {
   return (
     <>
 
-      {/* <ScrollView> */}
+      <ScrollView showsVerticalScrollIndicator={false} >
         <View style={styles.container}>
 
           {/* section1 */}
           <Strategycard title={'Debt Snowball'} subtitle={'Debt Snowball'} onPress={strategypopupHandler} />
 
           {/* section2 */}
-          {/* <View style={styles.cardcontainer}>
+          <View style={styles.cardcontainer}>
             <View style={styles.cardgroup}  >
               <TextCard2 text1={'Estimated payoff'} text2={'Mar'} text3={'2027'} text1style={styles.text1} text2style={styles.text2_1} text3style={styles.text2_2} cardStyle={styles.cardstyle}></TextCard2>
 
@@ -83,20 +83,20 @@ const PayoffplansScreen: FC = () => {
               <TextCard text1={'Estimated payoff'} text2={'₹. 80,000/-'} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
               <TextCard text1={'You save'} text2={'₹. 12,000/-'} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
             </View>
-          </View> */}
+          </View>
 
           {/* section3 */}
-          {/* <View style={styles.cardcontainer2}>
+          <View style={styles.cardcontainer2}>
             <Text style={styles.cardcontainer2_title}>Step wise Plan</Text>
             <UpcomingDebtsWithScrollbar data={upcommingdebtsList} />
-          </View> */}
+          </View>
           {/* section4 */}
-          {/* <View style={styles.cardcontainer3}>
+          <View style={styles.cardcontainer3}>
             <Text style={styles.cardcontainer3_title}>Order Wise Debt payoff</Text>
             <View style={styles.cardcontainer3_inner}>
               <Payoffcard data={data} source={require('@images/payoffplan/rightarrowwhite.png')} />
             </View>
-          </View> */}
+          </View>
 
           <View style={styles.cardcontainer3}>
             <View style={styles.cardcontainer3_content}>
@@ -126,7 +126,7 @@ const PayoffplansScreen: FC = () => {
             <Text style={styles.buttontext}>Export pdf</Text>
           </Button>
         </View>
-      {/* </ScrollView> */}
+      </ScrollView>
       {/* log payment popup */}
       <Popup
         visible={show}

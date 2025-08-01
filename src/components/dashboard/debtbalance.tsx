@@ -73,6 +73,6 @@ const styles = StyleSheet.create({
     section_card_inner_content_item3: {
         flexDirection: "row",
         alignItems: "center",
-        gap: '10%'
+        gap: '4%'
     }
 })
