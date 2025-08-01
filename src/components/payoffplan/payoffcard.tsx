@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
         width: 165,
         color: "#fff",
         fontFamily: "PlusJakartaSans-Light",
-        fontSize: 10
+        fontSize: 10,
     },
     button: {
     },

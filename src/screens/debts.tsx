@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View,ScrollView } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import React, { FC, useState } from "react";
 import LinearGradient from "react-native-linear-gradient";
 import Debtbalance from "@components/dashboard/debtbalance";
@@ -12,7 +12,6 @@ import Input from "@components/reusable/Input";
 import { MagnifyingGlassIcon } from "react-native-heroicons/outline";
 import Card from "@components/reusable/card";
 import Payoffcard from "@components/payoffplan/payoffcard";
-
 
 const inProgressDebts = [
   {
@@ -202,10 +201,10 @@ const DebtsScreen: FC = () => {
             style={styles.searchInput}
             placeholderTextColor={"#747474"}
           />
-          <ScrollView
-          showsVerticalScrollIndicator={false}
-          >
-          <Payoffcard data={selectedButton === 0 ? inProgressDebts : completedDebts} />
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <Payoffcard
+              data={selectedButton === 0 ? inProgressDebts : completedDebts}
+            />
           </ScrollView>
         </View>
       </View>
@@ -230,7 +229,6 @@ const styles = StyleSheet.create({
   debtsListContainer: {
     backgroundColor: "#1E2D5E",
     height: hp(65),
-    paddingHorizontal: wp(5),
     paddingVertical: hp(2),
     justifyContent: "flex-start",
     borderRadius: wp(5),
@@ -238,6 +236,7 @@ const styles = StyleSheet.create({
     borderColor: "#C0C0C0",
   },
   toggleButtonContainer: {
+    marginLeft: wp(5),
     justifyContent: "flex-start",
     width: wp(55),
     padding: wp(1.5),
@@ -245,6 +244,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   searchBar: {
+    marginHorizontal: wp(5),
     backgroundColor: "#C0C0C0",
     borderRadius: wp(10),
     paddingHorizontal: wp(4),

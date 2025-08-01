@@ -1,11 +1,13 @@
 import React, { FC } from "react";
 import { View, Text } from "react-native";
-import GraphComponent from "@components/reusable/graph";
+import StatusDueCard from "@components/transactions/statusDueCard";
 
 const Test: FC = () => {
+
+
   return (
-    <View>
-      <GraphComponent />
+    <View style={{ flex: 1, padding: 20 }}>
+
     </View>
   );
 };
