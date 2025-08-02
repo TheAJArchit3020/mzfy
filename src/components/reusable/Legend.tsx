@@ -30,7 +30,7 @@ const Legend: React.FC<LegendProps> = ({
   const defaultTextStyle = {
     color: "#fff",
     fontSize: wp(3),
-    fontFamily: "PlusJakartaSans-Bold",
+    fontFamily: "PlusJakartaSans-Regular",
   };
 
   const defaultContainerStyle = {

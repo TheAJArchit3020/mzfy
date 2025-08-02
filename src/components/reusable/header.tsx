@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { View, StyleSheet, Text, Image } from "react-native";
-import Button from './Button'
+import Button from "./Button";
 import {
   widthToDP as wp,
   heightToDP as hp,
@@ -46,8 +46,8 @@ const styles = StyleSheet.create({
     paddingBottom: wp(2),
   },
   backButton: {
-    width: wp(10),
-    height: hp(5),
+    width: wp(9),
+    height: hp(4.5),
     borderRadius: wp(6.5),
     alignItems: "center",
     justifyContent: "center",

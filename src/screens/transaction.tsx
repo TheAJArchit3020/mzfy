@@ -88,8 +88,8 @@ const Transaction: FC<TransactionScreenProps> = ({ route }) => {
                 {
                   borderWidth: 1,
                   borderColor: "#fff",
-                  paddingHorizontal: wp(3),
-                  paddingTop: wp(0),
+                  paddingHorizontal: wp(1),
+                  padding: wp(0),
                 },
               ]}
             >
@@ -101,8 +101,10 @@ const Transaction: FC<TransactionScreenProps> = ({ route }) => {
                   ]}
                   canvasHeight={hp(5)}
                   fontFamily="PlusJakartaSans-Bold"
-                  labelFontSize={wp(7)}
+                  labelFontSize={wp(6.5)}
                   lineStroke={3}
+                  centerText="Breakdown"
+                  centerTextFontSize={wp(5.5)}
                 />
               </View>
               <Legend
@@ -243,12 +245,12 @@ const styles = StyleSheet.create({
   },
   textCardStyle: {
     backgroundColor: "#2A2A2A",
-    height: hp(20),
+    height: hp(22),
     justifyContent: "space-between",
     borderRadius: wp(7),
     paddingHorizontal: wp(6),
     paddingVertical: hp(2),
-    width: wp(40),
+    width: wp(43),
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -257,6 +259,7 @@ const styles = StyleSheet.create({
   },
   legendContainer: {
     paddingHorizontal: wp(3),
+    marginBottom: hp(1),
   },
   legendText: {
     color: "#fff",
@@ -307,7 +310,9 @@ const styles = StyleSheet.create({
     fontFamily: "PlusJakartaSans-Regular",
     marginLeft: wp(2),
   },
-  graphContainer: {},
+  graphContainer: {
+    height: "90%",
+  },
 });
 
 export default Transaction;

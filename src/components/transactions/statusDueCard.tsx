@@ -2,9 +2,12 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { FC } from "react";
 import Card from "@components/reusable/card";
 import LinearGradient from "react-native-linear-gradient";
-import { CalendarIcon } from "react-native-heroicons/outline";
+import { CalendarDaysIcon } from "react-native-heroicons/outline";
 import { paymentStatus } from "src/commonTypes";
-import { widthToDP as wp, heightToDP as hp } from "react-native-responsive-screens";
+import {
+  widthToDP as wp,
+  heightToDP as hp,
+} from "react-native-responsive-screens";
 
 interface StatusDueCardProps {
   status: paymentStatus;
@@ -79,7 +82,7 @@ const StatusDueCard: FC<StatusDueCardProps> = ({
           </View>
         </View>
         <View style={styles.rightSection}>
-          <CalendarIcon color="#333" size={24} />
+          <CalendarDaysIcon color="#333" size={hp(3)} />
         </View>
       </View>
     </LinearGradient>

@@ -18,6 +18,7 @@ interface InputProps extends Omit<TextInputProps, "onChangeText" | "value"> {
   textHeader?: string;
   type?: "text" | "number";
   style?: any;
+  icon?: React.ReactNode;
   inputWrapperStyle?: any;
   children?: React.ReactNode;
   iconAbove?: React.ReactNode;
@@ -30,6 +31,7 @@ const Input: React.FC<InputProps> = ({
   textHeader,
   type = "text",
   inputWrapperStyle,
+  icon,
   style,
   children,
   iconAbove,
@@ -37,7 +39,10 @@ const Input: React.FC<InputProps> = ({
 }) => {
   return (
     <View style={{ marginBottom: hp(2) }}>
-      {label && <Text style={styles.label}>{label}</Text>}
+      <View style={styles.lableContainer}>
+        {label && <Text style={styles.label}>{label}</Text>}
+        {icon && icon}
+      </View>
       <View style={[styles.inputWrapper, inputWrapperStyle]}>
         {iconAbove && (
           <View style={styles.iconAboveContainer}>{iconAbove}</View>
@@ -69,6 +74,12 @@ const styles = StyleSheet.create({
     paddingVertical: hp(1.5),
     justifyContent: "center",
     marginTop: 0,
+  },
+  lableContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    gap: wp(1),
   },
   iconAboveContainer: {
     alignItems: "center",

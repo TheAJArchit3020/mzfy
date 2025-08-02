@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     gap: wp(6),
     paddingHorizontal: wp(5),
     paddingVertical: hp(2),
-    height: hp(40),
+    height: hp(36),
   },
   segmentButtonContainer: {
     backgroundColor: "#2a2a2a",
@@ -213,12 +213,11 @@ const styles = StyleSheet.create({
   },
   chartCard: {
     borderRadius: wp(4),
-    padding: wp(4),
     alignItems: "center",
     justifyContent: "center",
   },
   balanceContainer: {
-    marginTop: hp(3),
+    marginTop: hp(1.5),
     alignItems: "center",
   },
   balanceText: {
@@ -235,17 +234,16 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: hp(2),
   },
-  graphContainer: {
-
-  },
+  graphContainer: {},
   buttonContainer: {
     alignItems: "center",
+    marginVertical: hp(4.5),
   },
   categoryButton: {
+    width: "100%",
     backgroundColor: "#177AD5",
-    borderRadius: wp(3),
-    paddingVertical: hp(2),
-    paddingHorizontal: wp(6),
+    borderRadius: wp(10),
+    paddingVertical: hp(1.5),
     alignItems: "center",
     justifyContent: "center",
   },

@@ -20,7 +20,11 @@ import {
 } from "react-native-responsive-screens";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import ColorPicker from "react-native-wheel-color-picker";
-import { CalendarIcon, EyeDropperIcon } from "react-native-heroicons/outline";
+import {
+  CalendarDaysIcon,
+  EyeDropperIcon,
+  InformationCircleIcon,
+} from "react-native-heroicons/solid";
 import { Text } from "react-native";
 
 const initialState = {
@@ -100,6 +104,7 @@ const DebtAdd: FC = () => {
                   dispatch({ type: "SET_FIELD", field: "debtName", value: val })
                 }
                 placeholder="Eg.Education Loan"
+                placeholderTextColor={"#C6C6C6"}
               />
               <Input
                 label="Creditor Name"
@@ -112,6 +117,7 @@ const DebtAdd: FC = () => {
                   })
                 }
                 placeholder="Eg.Axis Bank"
+                placeholderTextColor={"#C6C6C6"}
               />
               <Input
                 label="Principal"
@@ -123,6 +129,7 @@ const DebtAdd: FC = () => {
                     value: val,
                   })
                 }
+                placeholderTextColor={"#C6C6C6"}
                 textHeader="₹"
               />
               <Input
@@ -136,6 +143,7 @@ const DebtAdd: FC = () => {
               <Input
                 label="Monthly Minimum (EMI)"
                 value={state.minPayment}
+                placeholderTextColor={"#C6C6C6"}
                 onChangeContent={(val) =>
                   dispatch({
                     type: "SET_FIELD",
@@ -147,12 +155,20 @@ const DebtAdd: FC = () => {
               />
               <Input
                 label="APR"
+                icon={
+                  <InformationCircleIcon
+                    size={hp(2)}
+                    color={"#fff"}
+                    style={{ marginBottom: hp(1.5) }}
+                  />
+                }
                 value={state.apr}
                 onChangeContent={(val) =>
                   dispatch({ type: "SET_FIELD", field: "apr", value: val })
                 }
                 placeholder="Eg. 8"
                 keyboardType="numeric"
+                placeholderTextColor={"#C6C6C6"}
                 children={
                   <Text
                     style={{
@@ -171,9 +187,10 @@ const DebtAdd: FC = () => {
                 onChangeContent={() => {}}
                 placeholder="Eg.02/08/2025"
                 editable={false}
+                placeholderTextColor={"#C6C6C6"}
                 children={
                   <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                    <CalendarIcon
+                    <CalendarDaysIcon
                       color="#fff"
                       size={wp(5)}
                       style={{ marginLeft: wp(1) }}
@@ -209,6 +226,7 @@ const DebtAdd: FC = () => {
                 value={state.tagColor}
                 onChangeContent={() => {}}
                 placeholder="Select a tag colour"
+                placeholderTextColor={"#C6C6C6"}
                 editable={false}
                 children={
                   <View style={{ flexDirection: "row", alignItems: "center" }}>

@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   },
   balanceRow: {
     flexDirection: "row",
-    paddingVertical: hp(2),
+    paddingVertical: hp(1),
     justifyContent: "space-between",
   },
   balanceSection: {
@@ -59,12 +59,12 @@ const styles = StyleSheet.create({
   label: {
     color: "#FFFFFF",
     fontSize: wp(3.5),
-    fontFamily: "PlusJakartaSans-Regular",
+    fontFamily: "PlusJakartaSans-Bold",
     marginBottom: hp(0.5),
   },
   amount: {
     color: "#FFFFFF",
-    fontSize: wp(6),
+    fontSize: wp(7),
     fontFamily: "PlusJakartaSans-Bold",
     fontWeight: "bold",
   },
@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: wp(2),
+    marginTop: hp(4),
   },
   arrowImage: {
     width: wp(15),
