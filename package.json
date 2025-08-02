@@ -21,6 +21,7 @@
     "react-native-chart-kit": "^6.12.0",
     "react-native-drop-shadow": "^1.0.3",
     "react-native-heroicons": "^4.0.0",
+    "react-native-infinite-wheel-picker": "^1.0.0",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-responsive-screens": "^1.0.1",
     "react-native-safe-area-context": "^5.5.2",

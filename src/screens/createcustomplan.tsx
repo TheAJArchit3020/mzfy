@@ -120,12 +120,10 @@ const Createcustomplan: FC = () => {
             <Popup
                 visible={show}
                 onClose={() => setShow(false)}
-                titleStyle={styles.popuptitle}
                 containerStyle={styles.popupContainerStyle}
                 buttonText='Set'
                 color1="#B2FF59"
                 color2="#00C853"
-                buttonTextStyle={styles.buttonTextStyle}
             >
                 <View style={styles.formgroup}>
 
@@ -140,7 +138,6 @@ const Createcustomplan: FC = () => {
                                 // do anything else with the selection
                                 console.log('picked', val);
                             }}
-                            style={styles.dropdownCustom}
                         />
 
                     </View>

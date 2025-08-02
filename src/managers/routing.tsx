@@ -8,6 +8,7 @@ import Particulardebtdetail from "@screens/particulardebtdetail";
 import DebtAdd from "@screens/adddebt";
 import Createcustomeplan from "@screens/createcustomplan";
 import Createcustomplan from "@screens/createcustomplan";
+import Registrationlayout from "@screens/registrationlayout";
 
 
 export type RootStackParams = {
@@ -15,20 +16,25 @@ export type RootStackParams = {
     adddebtscreen: undefined
     particulardebtdetailscreen: undefined
     createcustomplanscreen: undefined
+    registrationlayoutscreen: undefined
 };
 
 const Stack = createNativeStackNavigator<RootStackParams>();
 
 const Routing: FC = () => {
+
+    
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName="layoutscreen"
+                initialRouteName="registrationlayoutscreen"
                 screenOptions={{
                     headerShown: false,
                 }}
             >
+                <Stack.Screen name="registrationlayoutscreen" component={Registrationlayout} />
                 <Stack.Screen name="layoutscreen" component={Layout} />
+
                 <Stack.Screen name="adddebtscreen" component={DebtAdd} />
                 <Stack.Screen name="particulardebtdetailscreen" component={Particulardebtdetail} />
                 <Stack.Screen name="createcustomplanscreen" component={Createcustomplan} />

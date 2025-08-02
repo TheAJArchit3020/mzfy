@@ -12,8 +12,8 @@ import {
 } from "react-native-responsive-screens";
 
 interface InputProps extends Omit<TextInputProps, "onChangeText" | "value"> {
-  value: string | number;
-  onChangeContent: (value: string) => void;
+  value?: string | number;
+  onChangeContent?: (value: string) => void;
   label?: string;
   textHeader?: string;
   type?: "text" | "number";
