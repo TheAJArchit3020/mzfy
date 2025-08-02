@@ -90,7 +90,11 @@ const GraphComponent: FC<graphComponentProps> = ({ }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    borderRadius: 16,
+    overflow:"hidden",
+    borderWidth:0.5,
+    borderColor:"#C0C0C0",
   },
   chartContainer: {
     backgroundColor: "#2a2a2a",
@@ -104,6 +108,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+   
   },
   horizontalLine: {
     borderWidth: .8,

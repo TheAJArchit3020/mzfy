@@ -57,11 +57,11 @@ const PayoffplansScreen: FC = () => {
   ]
 
   const upcommingdebtsList = [
-    { name: "Car loan", amount: 20000, date: "20/02/2025" },
-    { name: "Car loan", amount: 20000, date: "20/02/2025" },
-    { name: "Car loan", amount: 20000, date: "20/02/2025" },
-    { name: "Car loan", amount: 20000, date: "20/02/2025" },
-    { name: "Car loan", amount: 20000, date: "20/02/2025" },
+    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
+    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
+    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
+    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
+    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
   ];
   return (
     <>
@@ -88,17 +88,17 @@ const PayoffplansScreen: FC = () => {
           {/* section3 */}
           <View style={styles.cardcontainer2}>
             <Text style={styles.cardcontainer2_title}>Step wise Plan</Text>
-            <UpcomingDebtsWithScrollbar data={upcommingdebtsList} />
+            <UpcomingDebtsWithScrollbar data={upcommingdebtsList} style={styles.payoffcard} showicon={false} />
           </View>
           {/* section4 */}
           <View style={styles.cardcontainer3}>
             <Text style={styles.cardcontainer3_title}>Order Wise Debt payoff</Text>
             <View style={styles.cardcontainer3_inner}>
-              <Payoffcard data={data} source={require('@images/payoffplan/rightarrowwhite.png')} />
+              <Payoffcard data={data} source={require('@images/payoffplan/rightarrowwhite.png')}  />
             </View>
           </View>
 
-          <View style={styles.cardcontainer3}>
+          {/* <View style={styles.cardcontainer3}>
             <View style={styles.cardcontainer3_content}>
               <Text style={styles.cardcontainer3_title}>Order Wise Debt payoff</Text>
               <View style={styles.info_content}>
@@ -109,7 +109,7 @@ const PayoffplansScreen: FC = () => {
             <View style={styles.cardcontainer3_inner}>
               <DraggablePayoffcard data={data} source={require('@images/payoffplan/edit.png')} />
             </View>
-          </View>
+          </View> */}
 
 
           {/* section5 */}
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
   },
   text2: {
     color: '#fff',
-    fontSize: 30,
+    fontSize: 40,
     fontFamily: 'PlusJakartaSans-Bold',
     textAlign: "center"
 
@@ -204,13 +204,13 @@ const styles = StyleSheet.create({
   },
   text2_1: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: 'PlusJakartaSans-Bold',
     textAlign: "center"
   },
   text2_2: {
     color: '#fff',
-    fontSize: 30,
+    fontSize: 40,
     fontFamily: 'PlusJakartaSans-Bold',
     textAlign: "center"
   },
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
   },
 
   cardcontainer3_inner: {
-    marginHorizontal: 5
+    marginHorizontal: 0
   },
 
   cardcontainer2_title: {
@@ -329,6 +329,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 3
+  },
+  payoffcard:{
+    overflow:"hidden"
   }
 
 });

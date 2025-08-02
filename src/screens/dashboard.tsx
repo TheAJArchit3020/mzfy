@@ -17,6 +17,7 @@ import Popup from "@components/reusable/popup";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParams } from "@managers/routing";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import UpcomingDebtsWithScrollbar from "@components/dashboard/upcommingdebts";
 
 type navprops = NativeStackNavigationProp<RootStackParams>;
 
@@ -44,11 +45,11 @@ const DashboardScreen: FC = () => {
   };
 
   const upcommingdebtsList = [
-    { name: "Car loan", amount: 20000, date: "20/02/2025" },
-    { name: "Car loan", amount: 20000, date: "20/02/2025" },
-    { name: "Car loan", amount: 20000, date: "20/02/2025" },
-    { name: "Car loan", amount: 20000, date: "20/02/2025" },
-    { name: "Car loan", amount: 20000, date: "20/02/2025" },
+    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
+    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
+    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
+    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
+    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
   ];
 
   const nextDueList = [
@@ -89,15 +90,15 @@ const DashboardScreen: FC = () => {
         </View>
         <View style={styles.section5}>
           <Text style={styles.section5_text}>Upcoming Transactions</Text>
-          <Upcommingdebts data={upcommingdebtsList} />
+          <UpcomingDebtsWithScrollbar data={upcommingdebtsList} style={styles.cardstyle1} />
         </View>
       </ScrollView>
 
       <TouchableOpacity
         style={styles.section6}
-      // onPress={() => {
-      //   navigation.navigate("debtadd");
-      // }}
+        onPress={() => {
+          navigation.navigate("createcustomplanscreen");
+        }}
       >
         <Text style={styles.section6_text}>+</Text>
       </TouchableOpacity>
@@ -242,4 +243,9 @@ const styles = StyleSheet.create({
   popupContainerStyle: {
     backgroundColor: "#2A2A2A",
   },
+
+  cardstyle1: {
+    overflow: "hidden"
+  },
+
 });

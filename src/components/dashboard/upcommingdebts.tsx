@@ -21,10 +21,14 @@ export interface DebtItem {
 
 interface UpcomingDebtsWithScrollbarProps {
     data: DebtItem[]
+    style?: any
+    cardStyle?: any
+    sort?: any
+    showicon?: any
 }
 
 const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
-    data,
+    data, cardStyle, style, sort = true, showicon = true
 }) => {
     const [containerHeight, setContainerHeight] = useState(0)
     const [contentHeight, setContentHeight] = useState(1)
@@ -48,7 +52,7 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
         setScrollY(e.nativeEvent.contentOffset.y)
 
     return (
-        <Card style={styles.card} cardStyle={styles.innerCard}>
+        <Card style={[styles.card, style]} cardStyle={[styles.innerCard, cardStyle]}>
             <View style={styles.scrollArea} onLayout={onContainerLayout}>
                 <ScrollView
                     onScroll={onScroll}
@@ -59,22 +63,43 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
                     {data.map((item, idx) => {
                         const isLast = idx === data.length - 1
                         return (
-                            <View
-                                key={idx}
-                                style={[
-                                    styles.row,
-                                    isLast && styles.noBorder,
-                                ]}
-                            >
-                                <Text style={styles.text}>{item.name}</Text>
-                                <Text style={styles.text}>
-                                    {'\u20B9'} {item.amount}
-                                </Text>
-                                <Text style={styles.text}>{item.date}</Text>
-                                <TouchableOpacity>
-                                    <Image source={require('@images/dashboard/rightarrow.png')} style={styles.image} />
-                                </TouchableOpacity>
-                            </View>
+                            <>
+                                {sort ?
+                                    (<View
+                                        key={idx}
+                                        style={[
+                                            styles.row,
+                                            isLast && styles.noBorder,
+                                        ]}
+                                    >
+                                        <Text style={styles.text}>{item.date}</Text>
+
+                                        <Text style={styles.text}>
+                                            {'\u20B9'} {item.amount}
+                                        </Text>
+                                        <Text style={styles.text}>{item.name}</Text>
+
+                                        {showicon && <TouchableOpacity>
+                                            <Image source={require('@images/dashboard/rightarrow.png')} style={styles.image} />
+                                        </TouchableOpacity>}
+                                    </View>)
+                                    : (<View
+                                        key={idx}
+                                        style={[
+                                            styles.row,
+                                            isLast && styles.noBorder,
+                                        ]}
+                                    >
+                                        <Text style={styles.text}>{item.date}</Text>
+                                        <Text style={styles.text}></Text>
+                                        <Text style={styles.text}>
+                                            {'\u20B9'} {item.amount} /-
+                                        </Text>
+                                        {showicon && <TouchableOpacity>
+                                            <Image source={require('@images/dashboard/rightarrow.png')} style={styles.image} />
+                                        </TouchableOpacity>}
+                                    </View>)}
+                            </>
                         )
                     })}
                 </ScrollView>
@@ -107,12 +132,14 @@ const styles = StyleSheet.create({
     card: {
         width: '100%',
         padding: 0,
-        height: 200
+        height: 200,
     },
     innerCard: {
         padding: 0,
         justifyContent: 'flex-start',
         overflow: 'visible',
+        backgroundColor: "#2A2A2A"
+
     },
     scrollArea: {
         height: 200,

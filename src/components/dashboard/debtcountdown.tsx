@@ -8,16 +8,16 @@ const Debtcountdown = () => {
             <Text style={styles.section_card_text}>Debt free countdown</Text>
             <View style={styles.section_card_inner_content}>
                 <View style={styles.section_card_inner_content_item}>
-                    <Text style={styles.section_card_inner_content_item_text}>03</Text>
-                    <Text style={styles.section_card_inner_content_item_text2}>Years</Text>
+                    <Text style={styles.section_card_inner_content_item_text}>3</Text>
+                    <Text style={styles.section_card_inner_content_item_text2}>Year</Text>
                 </View>
                 <View style={styles.section_card_inner_content_item}>
                     <Text style={styles.section_card_inner_content_item_text}>10</Text>
-                    <Text style={styles.section_card_inner_content_item_text2}>Months</Text>
+                    <Text style={styles.section_card_inner_content_item_text2}>Month</Text>
                 </View>
                 <View style={styles.section_card_inner_content_item}>
                     <Text style={styles.section_card_inner_content_item_text} >20</Text>
-                    <Text style={styles.section_card_inner_content_item_text2}>Days</Text>
+                    <Text style={styles.section_card_inner_content_item_text2}>Day</Text>
                 </View>
             </View>
             <Text style={styles.section_card_text2}>Countdown to financial freedom</Text>
@@ -28,7 +28,9 @@ const Debtcountdown = () => {
 export default Debtcountdown
 
 const styles = StyleSheet.create({
-    section_card:{},
+    section_card: {
+        borderWidth: 0.5
+    },
     section_card_text: {
         color: '#fff',
         fontFamily: "PlusJakartaSans-Bold",
@@ -42,7 +44,7 @@ const styles = StyleSheet.create({
     section_card_inner_content_item: {
         flexDirection: "row",
         alignItems: "baseline",
-        gap: '3%'
+        gap: '6%'
     },
     section_card_inner_content_item_text: {
         color: '#fff',
@@ -51,12 +53,12 @@ const styles = StyleSheet.create({
     },
     section_card_inner_content_item_text2: {
         color: '#fff',
-        fontFamily: "PlusJakartaSans-Bold",
+        fontFamily: "PlusJakartaSans-Regular",
         fontSize: 20,
     },
     section_card_text2: {
         color: '#fff',
-        fontFamily: "PlusJakartaSans-Italic",
+        fontStyle: "italic",
         fontSize: 12,
     },
     section_card_inner: {

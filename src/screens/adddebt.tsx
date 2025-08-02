@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Input from "../components/reusable/Input";
-import Dropdown from "../components/reusable/dropdown";
 import Button from "../components/reusable/button";
 import Header from "@components/reusable/header";
 import {
@@ -168,7 +167,7 @@ const DebtAdd: FC = () => {
               <Input
                 label="Next due date"
                 value={state.nextDueDate}
-                onChangeContent={() => {}}
+                onChangeContent={() => { }}
                 placeholder="Eg.02/08/2025"
                 editable={false}
                 children={
@@ -207,7 +206,7 @@ const DebtAdd: FC = () => {
               <Input
                 label="Tag colour"
                 value={state.tagColor}
-                onChangeContent={() => {}}
+                onChangeContent={() => { }}
                 placeholder="Select a tag colour"
                 editable={false}
                 children={
@@ -256,10 +255,10 @@ const DebtAdd: FC = () => {
                   </View>
                 </View>
               </Modal>
-              <Button onPress={() => {}} style={styles.saveButton}>
+              <Button onPress={() => { }} style={styles.saveButton}>
                 <Text style={styles.buttonText}>Save</Text>
               </Button>
-              <Button onPress={() => {}} style={styles.cancelButton}>
+              <Button onPress={() => { }} style={styles.cancelButton}>
                 <Text style={styles.buttonText}>Cancel</Text>
               </Button>
             </View>

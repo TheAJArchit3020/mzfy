@@ -61,10 +61,10 @@ const Input: React.FC<InputProps> = ({
 const styles = StyleSheet.create({
   inputWrapper: {
     backgroundColor: "transparent",
-    borderWidth: 1,
+    borderWidth: 0.5,
     flexDirection: "row",
     borderColor: "#BCBCBC",
-    borderRadius: wp(4),
+    borderRadius: wp(3),
     paddingHorizontal: wp(4),
     paddingVertical: hp(1.5),
     justifyContent: "center",

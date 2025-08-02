@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
     section_card: {
         width: '48%',
         height: 168,
+        borderWidth: 0.5
     },
     section_card_text: {
         color: '#fff',
