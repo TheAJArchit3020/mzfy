@@ -8,6 +8,7 @@ import Test from "@screens/Test";
 import DebtsScreen from "@screens/debts";
 import Transaction from "@screens/transaction";
 import Expenses from "@screens/Expenses";
+import LogExpense from "@screens/LogExpense";
 export type RootStackParams = {
   dashboardscreen: undefined;
   debtadd: undefined;
@@ -15,6 +16,7 @@ export type RootStackParams = {
   test: undefined; // added to test reusable components
   Transaction: { status: paymentStatus };
   Expenses: undefined;
+  LogExpense: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParams>();
@@ -23,7 +25,7 @@ const Routing: FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Expenses"
+        initialRouteName="LogExpense"
         screenOptions={{
           headerShown: false,
         }}
@@ -33,6 +35,7 @@ const Routing: FC = () => {
         <Stack.Screen name="DebtsScreen" component={DebtsScreen} />
         <Stack.Screen name="Transaction" component={Transaction} />
         <Stack.Screen name="Expenses" component={Expenses} />
+        <Stack.Screen name="LogExpense" component={LogExpense} />
         <Stack.Screen name="test" component={Test} />
       </Stack.Navigator>
     </NavigationContainer>
