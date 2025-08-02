@@ -18,6 +18,8 @@ import { StackScreenProps } from "@react-navigation/stack";
 import TextCard2 from "@components/reusable/textcard2";
 import PieChartComponent from "@components/reusable/pieChart";
 import Popup from "@components/reusable/popup";
+import DonutChart from "../../src/DonutChart";
+import Legend from "@components/reusable/Legend";
 
 type TransactionScreenProps = StackScreenProps<RootStackParams, "Transaction">;
 
@@ -83,30 +85,35 @@ const Transaction: FC<TransactionScreenProps> = ({ route }) => {
             <View
               style={[
                 styles.textCardStyle,
-                { borderWidth: 1, borderColor: "#fff" },
+                {
+                  borderWidth: 1,
+                  borderColor: "#fff",
+                  paddingHorizontal: wp(3),
+                  paddingTop: wp(0),
+                },
               ]}
             >
-              <PieChartComponent
-                data={[
-                  { value: 87, label: "Principle", color: "#006FFF" },
-                  { value: 13, label: "Intrest", color: "#DC143C" },
-                ]}
-                showInnerCircle={true}
-              />
-              <View style={styles.legendContainer}>
-                <View style={styles.legendtextContainer}>
-                  <View
-                    style={[styles.circle, { backgroundColor: "#DC143C" }]}
-                  />
-                  <Text style={styles.legendText}>Interest</Text>
-                </View>
-                <View style={styles.legendtextContainer}>
-                  <View
-                    style={[styles.circle, { backgroundColor: "#006FFF" }]}
-                  />
-                  <Text style={styles.legendText}>Principle</Text>
-                </View>
+              <View style={styles.graphContainer}>
+                <DonutChart
+                  data={[
+                    { value: 87, label: "87%", color: "#006FFF" },
+                    { value: 13, label: "13%", color: "#DC143C" },
+                  ]}
+                  canvasHeight={hp(5)}
+                  fontFamily="PlusJakartaSans-Bold"
+                  labelFontSize={wp(7)}
+                  lineStroke={3}
+                />
               </View>
+              <Legend
+                data={[
+                  { name: "Interest", color: "#DC143C" },
+                  { name: "Principle", color: "#006FFF" },
+                ]}
+                layout="row"
+                containerStyle={styles.legendContainer}
+                textStyle={styles.legendText}
+              />
             </View>
           </View>
           <StatusDueCard
@@ -249,25 +256,11 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   legendContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: wp(0.5),
-  },
-  legendtextContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: wp(0.5),
+    paddingHorizontal: wp(3),
   },
   legendText: {
     color: "#fff",
     fontSize: wp(2),
-  },
-  circle: {
-    width: wp(3),
-    height: hp(1.5),
-    borderRadius: wp(2),
   },
   // Popup styles
   popupContainer: {
@@ -293,7 +286,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#666",
     borderRadius: wp(3),
-    marginHorizontal:wp(3),
+    marginHorizontal: wp(3),
     paddingHorizontal: wp(4),
   },
   rupeeSymbolInput: {
@@ -314,6 +307,7 @@ const styles = StyleSheet.create({
     fontFamily: "PlusJakartaSans-Regular",
     marginLeft: wp(2),
   },
+  graphContainer: {},
 });
 
 export default Transaction;
