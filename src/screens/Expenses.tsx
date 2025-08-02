@@ -215,11 +215,12 @@ const Expenses: FC<ExpensesProps> = ({}) => {
           {/* Expenses List */}
           <View style={styles.expensesListContainer}>
             <ExpenseByDateList data={expensesData} />
-            <View style={styles.fabContainer}>
-              <Button onPress={handleAddExpense} style={styles.fabButton}>
-                <PlusIcon size={wp(6)} color="#fff" />
-              </Button>
-            </View>
+          </View>
+
+          <View style={styles.fabContainer}>
+            <Button onPress={handleAddExpense} style={styles.fabButton}>
+              <PlusIcon size={wp(6)} color="#fff" />
+            </Button>
           </View>
 
           {/* Spending Trend Section */}
@@ -336,7 +337,6 @@ const styles = StyleSheet.create({
   },
   graphContainer: {
     width: "100%",
-    height: "90%",
   },
   chart: {
     flexDirection: "row",
@@ -366,6 +366,8 @@ const styles = StyleSheet.create({
     height: "10%",
     alignItems: "center",
     marginVertical: hp(4.5),
+    alignSelf: "center",
+    paddingBottom: hp(5),
   },
   categoryButton: {
     width: "100%",

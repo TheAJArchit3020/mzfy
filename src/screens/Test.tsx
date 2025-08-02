@@ -1,18 +1,21 @@
 import React, { FC } from "react";
 import { View, Text } from "react-native";
-import StatusDueCard from "@components/transactions/statusDueCard";
-import PieChartComponent from "@components/reusable/pieChart";
-import DonutChart from "../../src/DonutChart";
+import LinearGradient from "react-native-linear-gradient";
+import AddDebts from "./RegistartionScreens/addDebt";
+import IncomeDetails from "./RegistartionScreens/income";
 const Test: FC = () => {
   return (
-    <View style={{ flex: 1, padding: 20, backgroundColor: "#000" }}>
-      <DonutChart
-        data={[
-          { value: 10, color: "red", label: "Red" },
-          { value: 20, color: "blue", label: "Blue" },
-        ]}
-      />
-    </View>
+       <LinearGradient
+         colors={["#463C9F", "#3A346E", "#23234B", "#2B293E", "#272631"]}
+         locations={[0, 0.64, 0.76, 0.87, 1]}
+         style={{ flex: 1 }}
+         start={{ x: 0, y: 0 }}
+         end={{ x: 0, y: 1 }}
+        
+       >
+        <IncomeDetails/>
+
+       </LinearGradient>
   );
 };
 

@@ -9,6 +9,8 @@ import DebtsScreen from "@screens/debts";
 import Transaction from "@screens/transaction";
 import Expenses from "@screens/Expenses";
 import LogExpense from "@screens/LogExpense";
+import catagoryManagement from "@screens/catagoryManagement";
+import IncomeDetails from "@screens/RegistartionScreens/income";
 export type RootStackParams = {
   dashboardscreen: undefined;
   debtadd: undefined;
@@ -17,6 +19,8 @@ export type RootStackParams = {
   Transaction: { status: paymentStatus };
   Expenses: undefined;
   LogExpense: undefined;
+  catagoryManagement: undefined;
+  IncomeDetails: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParams>();
@@ -25,7 +29,7 @@ const Routing: FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="LogExpense"
+        initialRouteName="Expenses"
         screenOptions={{
           headerShown: false,
         }}
@@ -36,7 +40,12 @@ const Routing: FC = () => {
         <Stack.Screen name="Transaction" component={Transaction} />
         <Stack.Screen name="Expenses" component={Expenses} />
         <Stack.Screen name="LogExpense" component={LogExpense} />
+        <Stack.Screen name="IncomeDetails" component={IncomeDetails} />
         <Stack.Screen name="test" component={Test} />
+        <Stack.Screen
+          name="catagoryManagement"
+          component={catagoryManagement}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
