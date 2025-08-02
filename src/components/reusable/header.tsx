@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { View, StyleSheet, Text, Image } from "react-native";
+import { View, StyleSheet, Text, Image, TouchableOpacity } from "react-native";
 import Button from "./button";
 import {
   widthToDP as wp,
@@ -21,14 +21,20 @@ const Header: FC<headerProps> = ({ title }) => {
   };
   return (
     <View style={styles.container}>
-      <Button onPress={backHandler}>
+      <TouchableOpacity onPress={backHandler}>
+        <Image
+          style={{ width: 40, height: 40 }}
+          source={require("../../assets/images/backButton/arrow.png")}
+        />
+      </TouchableOpacity>
+      {/* <Button onPress={backHandler}>
         <View style={styles.backButton}>
           <Image
             style={{ width: "100%", height: "100%" }}
             source={require("../../assets/images/backButton/arrow.png")}
           />
         </View>
-      </Button>
+      </Button> */}
       <Text style={styles.title}>{title}</Text>
     </View>
   );
@@ -36,13 +42,11 @@ const Header: FC<headerProps> = ({ title }) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: wp(100),
-    height: hp(12),
+    
     flexDirection: "row",
     gap: wp(4),
-    alignItems: "center",
     paddingLeft: wp(5),
-    paddingTop: wp(10),
+    paddingTop: wp(12),
     paddingBottom: wp(2),
   },
   backButton: {

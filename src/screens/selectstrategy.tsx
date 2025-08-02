@@ -1,0 +1,272 @@
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { FC, useState } from 'react'
+import LinearGradient from 'react-native-linear-gradient'
+import Header from '@components/reusable/header'
+import { useNavigation } from '@react-navigation/native'
+import Card from '@components/reusable/card'
+import { heightToDP, widthToDP } from 'react-native-responsive-screens'
+import Dropdown from '@components/reusable/dropdown'
+import Customstrategydropdown from '@components/strategy/customstrategydropdown'
+
+
+interface CustomOption {
+    id: number;
+    label: string;
+    value: string;
+}
+
+const customOptions: CustomOption[] = [
+    { id: 1, label: "Custom1", value: "Custom1" },
+    { id: 2, label: "Custom2", value: "Custom2" },
+    { id: 3, label: "Custom3", value: "Custom3" },
+    { id: 4, label: "Custom4", value: "Custom4" },
+
+];
+
+type Strategy = {
+    key: string
+    title: string
+    advantage: string
+    payoffTime: string
+    interestSaved: string
+    hasCrown?: boolean,
+    subtitle?: string
+}
+
+
+// move this out as a proper component so it can get props
+const CustomDropdown: FC<{
+    customPlan: string
+    setCustomPlan: (val: string) => void
+}> = ({ customPlan, setCustomPlan }) => {
+    return (
+
+            <Customstrategydropdown style={styles.dropdown}
+                options={customOptions}
+                value={customPlan}
+                onChange={(val: any) => setCustomPlan(val)}
+                placeholder="Select currency"
+                maxheight={140}
+            />
+    )
+}
+
+
+
+
+
+
+const Selectstrategy: FC = () => {
+
+    const navigation = useNavigation()
+    const [selectedStrategy, setSelectedStrategy] = useState('')
+    const [customPlan, setCustomPlan] = useState('')
+
+    const handleSelect = (value: string) => {
+        setSelectedStrategy(value)
+        console.log('selectedStrategy : ', value)
+    }
+
+    const STRATEGIES: Strategy[] = [
+        {
+            key: 'Moneezify plan',
+            title: 'Moneezify plan',
+            advantage: 'Fastest payoff and least interest',
+            payoffTime: '28 Days',
+            interestSaved: '1500',
+            hasCrown: true,
+        },
+        {
+            key: 'Debt Avalanche',
+            title: 'Debt Avalanche',
+            advantage: 'Fastest payoff and least interest ',
+            payoffTime: '28 Days',
+            interestSaved: '1500',
+            subtitle: '(Prioritize highest interest rate)'
+        },
+        {
+            key: 'Debt Snowball',
+            title: 'Debt Snowball',
+            advantage: 'The most quick wins',
+            payoffTime: '28 Days',
+            interestSaved: '1500',
+            subtitle: '(Prioritize lowest balance first)'
+        },
+        {
+            key: 'Custom',
+            title: 'Custom',
+            advantage: 'Customized Plan',
+            payoffTime: '3 yrs 2 mos',
+            interestSaved: '1500',
+            subtitle: '(Customized Plan)'
+
+        },
+    ]
+
+
+
+    return (
+        <LinearGradient
+            colors={['#5145BC', '#2F2C4A', '#2B293E', '#272631', '#232323']}
+            locations={[0, 0.64, 0.76, 0.87, 1]}
+            start={{ x: 1, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.gradient}
+        >
+            <Header title='Select Strategy' />
+
+            <View style={styles.container}>
+                <Card cardStyle={styles.innercardstyle}>
+                    {STRATEGIES.map((strategy, idx) => {
+                        const selected = selectedStrategy === strategy.key
+                        return (
+                            <View key={strategy.key}>
+                                <View style={styles.radiocard}>
+                                    <TouchableOpacity
+                                        style={styles.optionRow}
+                                        activeOpacity={0.7}
+                                        onPress={() => handleSelect(strategy.key)}
+                                    >
+                                        <View style={styles.radioWrapper}>
+                                            <View
+                                                style={[styles.outer, selected && styles.outerSelected]}
+                                            >
+                                                {selected && <View style={styles.inner} />}
+                                            </View>
+                                        </View>
+                                        <View style={[styles.titleGroup, strategy.subtitle && { justifyContent: "flex-start", gap: 5 }]}>
+                                            <Text style={styles.title}>{strategy.title}</Text>
+                                            {strategy.hasCrown && (
+                                                <Image
+                                                    source={require('@images/registration/crown.png')}
+                                                    style={styles.crownimage}
+                                                />
+                                            )}
+                                            {strategy.subtitle && <Text style={styles.subtitle}>{strategy.subtitle}</Text>}
+                                        </View>
+                                    </TouchableOpacity>
+
+                                    {strategy.key === 'Custom' && (
+                                        <CustomDropdown customPlan={customPlan} setCustomPlan={setCustomPlan} />
+                                    )}
+
+                                    <View style={styles.radio_content}>
+                                        <Text style={styles.label}>Advantage : </Text>
+                                        <Text style={styles.value}>{strategy.advantage}</Text>
+                                    </View>
+
+                                    <View style={styles.radio_content}>
+                                        <Text style={styles.label}>
+                                            Time to all debts paid off :
+                                        </Text>
+                                        <Text style={styles.value}> {strategy.payoffTime}</Text>
+                                    </View>
+
+                                    <View style={styles.radio_content}>
+                                        <Text style={styles.label}>Interest saved : </Text>
+                                        <Text style={styles.value}>{strategy.interestSaved}</Text>
+                                    </View>
+                                </View>
+
+                                {/* replicate your original divider placement */}
+                                {idx === 1 || idx === 2 ? <View style={styles.divider} /> : null}
+                            </View>
+                        )
+                    })}
+                </Card>
+            </View>
+        </LinearGradient>
+    )
+}
+
+export default Selectstrategy
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: widthToDP(6)
+    },
+    gradient: {
+        flex: 1
+    },
+    innercardstyle: {
+        flexDirection: "column",
+        gap: 24
+    },
+    optionRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+    },
+    radioWrapper: {
+        padding: 4,
+    },
+    outer: {
+        width: 16,
+        height: 16,
+        borderRadius: 11,
+        borderWidth: 2,
+        borderColor: '#888',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    outerSelected: {
+        borderColor: '#fff',
+    },
+    inner: {
+        width: 9,
+        height: 9,
+        borderRadius: 6,
+        backgroundColor: '#006FFF',
+    },
+    titleGroup: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        flex: 1,
+    },
+    radio_content: {
+        flexDirection: "row",
+        alignItems: "center"
+    },
+    title: {
+        color: "#fff",
+        fontFamily: "PlusJakartaSans-Bold",
+        fontSize: 16,
+        marginTop: -4
+    },
+    label: {
+        color: "#fff",
+        fontFamily: "PlusJakartaSans-Bold",
+        fontSize: 10
+    },
+    value: {
+        color: "#fff",
+        fontFamily: "PlusJakartaSans-Regular",
+        fontSize: 10
+    },
+    crownimage: {
+        width: 20,
+        height: 20
+    },
+    radiocard: {
+        flexDirection: "column",
+        gap: heightToDP(1)
+    },
+    divider: {
+        borderWidth: 1,
+        borderColor: "#fff",
+        marginTop: 30
+    },
+    subtitle: {
+        color: "#fff",
+        fontFamily: "PlusJakartaSans-Regular",
+        fontSize: 9
+    },
+    
+    dropdown: {
+        overflow: "hidden",
+        borderRadius: 0,
+        borderWidth: 0,
+    }
+})

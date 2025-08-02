@@ -9,6 +9,7 @@ import DebtAdd from "@screens/adddebt";
 import Createcustomeplan from "@screens/createcustomplan";
 import Createcustomplan from "@screens/createcustomplan";
 import Registrationlayout from "@screens/registrationlayout";
+import Selectstrategy from "@screens/selectstrategy";
 
 
 export type RootStackParams = {
@@ -17,17 +18,18 @@ export type RootStackParams = {
     particulardebtdetailscreen: undefined
     createcustomplanscreen: undefined
     registrationlayoutscreen: undefined
+    selectstrategyscreen: undefined
 };
 
 const Stack = createNativeStackNavigator<RootStackParams>();
 
 const Routing: FC = () => {
 
-    
+
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName="registrationlayoutscreen"
+                initialRouteName="selectstrategyscreen"
                 screenOptions={{
                     headerShown: false,
                 }}
@@ -38,7 +40,7 @@ const Routing: FC = () => {
                 <Stack.Screen name="adddebtscreen" component={DebtAdd} />
                 <Stack.Screen name="particulardebtdetailscreen" component={Particulardebtdetail} />
                 <Stack.Screen name="createcustomplanscreen" component={Createcustomplan} />
-
+                <Stack.Screen name="selectstrategyscreen" component={Selectstrategy} />
 
             </Stack.Navigator>
         </NavigationContainer>
