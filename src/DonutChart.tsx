@@ -66,7 +66,7 @@ const DonutChart: FC<DonutChartProps> = ({
   const svgWidth = donutSize + buffer * 0.3 + canvasWidth;
   const svgHeight = donutSize + canvasHeight;
   const centerX = svgWidth / 2;
-  const centerY = svgHeight / 2;
+  const centerY = svgHeight / 2.5;
 
   return (
     <View style={[{ overflow: "visible" }, style]}>

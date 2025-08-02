@@ -126,6 +126,7 @@ const Expenses: FC<ExpensesProps> = ({}) => {
       >
         <View style={styles.container}>
           <DateNavigator
+            containerStyle={{ marginHorizontal: wp(5) }}
             onDateChange={handleDateChange}
             initialDate={selectedDate}
           />
@@ -162,11 +163,16 @@ const Expenses: FC<ExpensesProps> = ({}) => {
                 // Expenses View
                 <View style={styles.chartCard}>
                   <View style={styles.chart}>
-                    <PieChartComponent data={pieChartData} radius={wp(20)} />
+                    <PieChartComponent
+                      containerStyle={{ width: "50%", marginLeft: wp(10) }}
+                      data={pieChartData}
+                      radius={wp(20)}
+                    />
                     <Legend
                       containerStyle={{
                         gap: hp(2),
                         width: "30%",
+                        alignItems: "flex-start",
                       }}
                       data={pieChartData}
                       layout={"column"}
@@ -182,10 +188,13 @@ const Expenses: FC<ExpensesProps> = ({}) => {
                 <View style={styles.graphContainer}>
                   <DonutChart
                     data={categoriesData}
-                    radius={wp(20)}
+                    radius={wp(30)}
+                    arcCornerRadius={0}
                     labelOffset={30}
+                    canvasHeight={wp(45)}
+                    canvasWidth={wp(40)}
                     fontFamily="PlusJakartaSans-Bold"
-                    labelFontSize={wp(3)}
+                    labelFontSize={wp(4)}
                     lineStroke={wp(0.5)}
                   />
                 </View>
@@ -217,12 +226,6 @@ const Expenses: FC<ExpensesProps> = ({}) => {
             <ExpenseByDateList data={expensesData} />
           </View>
 
-          <View style={styles.fabContainer}>
-            <Button onPress={handleAddExpense} style={styles.fabButton}>
-              <PlusIcon size={wp(6)} color="#fff" />
-            </Button>
-          </View>
-
           {/* Spending Trend Section */}
           <View style={styles.spendingTrendContainer}>
             <Text style={styles.sectionTitle}>Spending trend</Text>
@@ -245,6 +248,12 @@ const Expenses: FC<ExpensesProps> = ({}) => {
           </View>
         </View>
       </ScrollView>
+
+      <View style={styles.fabContainer}>
+        <Button onPress={handleAddExpense} style={styles.fabButton}>
+          <PlusIcon size={wp(6)} color="#fff" />
+        </Button>
+      </View>
     </LinearGradient>
   );
 };
@@ -254,9 +263,9 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: hp(2),
     paddingTop: hp(4),
-    paddingHorizontal: wp(5),
   },
   cardsContainer: {
+    paddingHorizontal: wp(5),
     flexDirection: "row",
     justifyContent: "space-between",
     gap: wp(3),
@@ -281,7 +290,7 @@ const styles = StyleSheet.create({
   cardLabel: {
     color: "#fff",
     fontSize: wp(3.5),
-    fontFamily: "PlusJakartaSans-Regular",
+    fontFamily: "PlusJakartaSans-Bold",
     marginBottom: hp(1),
     opacity: 0.8,
   },
@@ -290,8 +299,10 @@ const styles = StyleSheet.create({
     fontSize: wp(5.5),
     fontFamily: "PlusJakartaSans-Bold",
     fontWeight: "bold",
+    textAlign: "center",
   },
   expensesDataContainer: {
+    marginHorizontal: wp(5),
     backgroundColor: "#1E2D5E",
     borderWidth: 1,
     borderColor: "#C0C0C0",
@@ -334,6 +345,7 @@ const styles = StyleSheet.create({
     borderRadius: wp(4),
     alignItems: "center",
     gap: wp(5),
+    alignSelf: "center",
   },
   graphContainer: {
     width: "100%",
@@ -341,7 +353,7 @@ const styles = StyleSheet.create({
   chart: {
     flexDirection: "row",
     alignItems: "center",
-    gap: wp(5),
+    gap: wp(3),
   },
   balanceContainer: {
     marginTop: hp(1.5),
@@ -353,7 +365,9 @@ const styles = StyleSheet.create({
     fontFamily: "PlusJakartaSans-Bold",
     fontWeight: "600",
   },
-  spendingTrendContainer: {},
+  spendingTrendContainer: {
+    marginHorizontal: wp(5),
+  },
   sectionTitle: {
     color: "#fff",
     fontSize: wp(4.5),
@@ -389,7 +403,8 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   recentExpensesHeader: {
-    marginBottom: hp(5),
+    marginHorizontal: wp(5),
+    marginBottom: hp(1),
   },
   recentExpensesTitle: {
     color: "#fff",
@@ -418,12 +433,15 @@ const styles = StyleSheet.create({
     fontFamily: "PlusJakartaSans-Regular",
   },
   expensesListContainer: {
+    paddingHorizontal: wp(5),
+    paddingVertical: hp(2),
     height: hp(30),
+    backgroundColor: "#2A2A2A",
   },
   fabContainer: {
     position: "absolute",
-    top: hp(-6),
-    right: wp(2),
+    bottom: hp(5),
+    right: wp(10),
     zIndex: 1000,
   },
   fabButton: {

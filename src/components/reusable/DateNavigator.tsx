@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React, {useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet,ViewStyle } from "react-native";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -12,10 +12,12 @@ import {
 interface DateNavigatorProps {
   onDateChange?: (date: Date) => void;
   initialDate?: Date;
+  containerStyle?: ViewStyle;
 }
 
 const DateNavigator: React.FC<DateNavigatorProps> = ({
   onDateChange,
+  containerStyle,
   initialDate = new Date(),
 }) => {
   const [currentDate, setCurrentDate] = useState(initialDate);
@@ -41,7 +43,7 @@ const DateNavigator: React.FC<DateNavigatorProps> = ({
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,containerStyle]}>
       <View style={styles.navigationBar}>
         <TouchableOpacity
           style={styles.arrowButton}

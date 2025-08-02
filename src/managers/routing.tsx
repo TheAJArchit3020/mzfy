@@ -29,7 +29,7 @@ const Routing: FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Expenses"
+        initialRouteName="LogExpense"
         screenOptions={{
           headerShown: false,
         }}

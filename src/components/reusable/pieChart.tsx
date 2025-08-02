@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Dimensions, ViewStyle } from "react-native";
 import {
   widthToDP as wp,
   heightToDP as hp,
@@ -16,16 +16,21 @@ interface PieChartProps {
   width?: number;
   paddingLeft?: number;
   radius?: number;
+  containerStyle: ViewStyle;
 }
 
-const PieChartComponent: FC<PieChartProps> = ({ data, radius = wp(15) }) => {
+const PieChartComponent: FC<PieChartProps> = ({
+  containerStyle,
+  data,
+  radius = wp(15),
+}) => {
   const chartData = data.map((item) => ({
     value: item.value,
     color: item.color,
     text: `${item.value}%`,
   }));
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, containerStyle]}>
       <View style={styles.chartContainer}>
         <PieChart
           data={chartData}
@@ -34,7 +39,6 @@ const PieChartComponent: FC<PieChartProps> = ({ data, radius = wp(15) }) => {
           textColor="#fff"
           textSize={wp(4)}
         />
-  
       </View>
     </View>
   );
