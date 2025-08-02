@@ -30,6 +30,8 @@ interface DropdownProps {
   placeholder?: string;
   style?: any;
   label?: string;
+  maxheight?: any;
+  dropdownoptionstyle?: any
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
@@ -39,6 +41,8 @@ const Dropdown: React.FC<DropdownProps> = ({
   placeholder = 'Select',
   style,
   label,
+  maxheight = 130,
+  dropdownoptionstyle
 }) => {
   const [visible, setVisible] = useState(false);
   const [triggerLayout, setTriggerLayout] = useState<LayoutRectangle | null>(null);
@@ -74,7 +78,7 @@ const Dropdown: React.FC<DropdownProps> = ({
     dropdownStyle.width = triggerLayout.width;
     dropdownStyle.top = triggerLayout.y + triggerLayout.height + 4; // gap of 4
     // optional: limit max height so it doesn't overflow
-    dropdownStyle.maxHeight = 130;
+    dropdownStyle.maxHeight = maxheight;
     dropdownStyle.zIndex = 1000;
   } else {
     // fallback center-ish if measurement not ready
@@ -147,7 +151,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         />
 
         {/* positioned list */}
-        <View style={[styles.modalContent, dropdownStyle]}  >
+        <View style={[styles.modalContent, dropdownStyle, dropdownoptionstyle]}  >
           <View onLayout={onContainerLayout}>
             <ScrollView
               onContentSizeChange={onContentSizeChange}
@@ -226,7 +230,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     borderTopWidth: 0,
-    backgroundColor: '#2A2A2A',
+    // backgroundColor: '#2A2A2A',
     borderRadius: 8,
     paddingVertical: 4,
     borderWidth: 0.5,
@@ -238,11 +242,12 @@ const styles = StyleSheet.create({
 
   },
   option: {
-    paddingHorizontal: 16,
+    marginHorizontal: 20,
     paddingVertical: 14,
     borderBottomWidth: 0.5,
     borderBottomColor: '#FFFFFF',
-    width: "100%"
+    width: "90%",
+    
   },
   optionText: {
     color: '#FFF',
