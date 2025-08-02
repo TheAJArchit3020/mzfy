@@ -46,8 +46,8 @@ const styles = StyleSheet.create({
     paddingBottom: wp(2),
   },
   backButton: {
-    width: wp(9),
-    height: hp(4.5),
+    width: wp(7.5),
+    height: hp(4),
     borderRadius: wp(6.5),
     alignItems: "center",
     justifyContent: "center",
@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
     fontFamily: "PlusJakartaSans-Bold",
     color: "#fff",
     fontSize: wp(5),
+    marginBottom: wp(1.5),
   },
 });
 
