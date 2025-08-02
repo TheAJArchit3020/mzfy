@@ -44,7 +44,7 @@ const Legend: React.FC<LegendProps> = ({
     <View style={[defaultContainerStyle, containerStyle]}>
       {data.map((item, index) => (
         <View
-          key={index}
+          key={index+1}
           style={[
             styles.legendItemContainer,
             {

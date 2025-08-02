@@ -11,15 +11,10 @@ interface PieChartProps {
   data: Array<{
     value: number;
     color: string;
-    label: string;
   }>;
   height?: number;
   width?: number;
   paddingLeft?: number;
-  showInnerCircle?: boolean;
-  reduceOuterCirclewidthBy?: number;
-  reduceOuterCircleHeightBy?: number;
-  centerText?: string;
   radius?: number;
 }
 
@@ -27,7 +22,7 @@ const PieChartComponent: FC<PieChartProps> = ({ data, radius = wp(15) }) => {
   const chartData = data.map((item) => ({
     value: item.value,
     color: item.color,
-    text: item.label,
+    text: `${item.value}%`,
   }));
   return (
     <View style={styles.container}>
@@ -36,10 +31,10 @@ const PieChartComponent: FC<PieChartProps> = ({ data, radius = wp(15) }) => {
           data={chartData}
           radius={radius}
           showText
-          showValuesAsLabels
           textColor="#fff"
           textSize={wp(4)}
         />
+  
       </View>
     </View>
   );

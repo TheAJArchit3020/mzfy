@@ -10,8 +10,10 @@ import {
 } from "react-native-responsive-screens";
 import GraphComponent from "@components/reusable/graph";
 import Button from "@components/reusable/Button";
-import { PencilIcon } from "react-native-heroicons/solid";
-
+import { PencilIcon, PlusIcon } from "react-native-heroicons/solid";
+import ExpenseByDateList from "@components/Expenses/ExpenseByDateList";
+import Legend from "@components/reusable/Legend";
+import DonutChart from "../../src/DonutChart";
 interface ExpensesProps {}
 
 const Expenses: FC<ExpensesProps> = ({}) => {
@@ -23,9 +25,9 @@ const Expenses: FC<ExpensesProps> = ({}) => {
     console.log("Selected date:", date.toLocaleDateString());
   };
 
-  const expensesData = [
-    { value: 64, color: "#FF6B6B", label: "Total spent" },
-    { value: 26, color: "#177AD5", label: "Monthly budget" },
+  const pieChartData = [
+    { value: 64, color: "#DC143C", name: "Total Spent" },
+    { value: 26, color: "#006FFF", name: "Monthly Budget" },
   ];
 
   const categoriesData = [
@@ -43,6 +45,72 @@ const Expenses: FC<ExpensesProps> = ({}) => {
     // Add navigation or modal logic here
   };
 
+  const handleAddExpense = () => {
+    console.log("Add expense pressed");
+    // Add navigation or modal logic here
+  };
+
+  // Sample expenses data with dates
+  const expensesData = [
+    {
+      date: "31 Thu",
+      transactions: [
+        {
+          id: "1",
+          category: "Food",
+          item: "Biriyani",
+          amount: 350,
+          date: "31 Thu",
+        },
+        {
+          id: "2",
+          category: "Health",
+          item: "Tablet",
+          amount: 200,
+          date: "31 Thu",
+        },
+      ],
+    },
+    {
+      date: "30 Wed",
+      transactions: [
+        {
+          id: "3",
+          category: "Food",
+          item: "Biriyani",
+          amount: 350,
+          date: "30 Wed",
+        },
+        {
+          id: "4",
+          category: "Entertainment",
+          item: "Movie",
+          amount: 200,
+          date: "30 Wed",
+        },
+      ],
+    },
+    {
+      date: "29 Tue",
+      transactions: [
+        {
+          id: "5",
+          category: "Investment",
+          item: "Stocks",
+          amount: 1000,
+          date: "29 Tue",
+        },
+        {
+          id: "6",
+          category: "Miscellaneous",
+          item: "Books",
+          amount: 150,
+          date: "29 Tue",
+        },
+      ],
+    },
+  ];
+
   return (
     <LinearGradient
       colors={["#463C9F", "#3A346E", "#23234B", "#2B293E", "#272631"]}
@@ -51,7 +119,11 @@ const Expenses: FC<ExpensesProps> = ({}) => {
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
-      <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={{ flex: 1 }}
+        showsVerticalScrollIndicator={false}
+        nestedScrollEnabled={true}
+      >
         <View style={styles.container}>
           <DateNavigator
             onDateChange={handleDateChange}
@@ -89,17 +161,64 @@ const Expenses: FC<ExpensesProps> = ({}) => {
               {selectedTab === 0 ? (
                 // Expenses View
                 <View style={styles.chartCard}>
-                  <PieChartComponent data={expensesData} radius={wp(20)} />
+                  <View style={styles.chart}>
+                    <PieChartComponent data={pieChartData} radius={wp(20)} />
+                    <Legend
+                      containerStyle={{
+                        gap: hp(2),
+                        width: "30%",
+                      }}
+                      data={pieChartData}
+                      layout={"column"}
+                      gap={hp(0.5)}
+                    />
+                  </View>
                   <View style={styles.balanceContainer}>
                     <Text style={styles.balanceText}>Balance: ₹18,000</Text>
                   </View>
                 </View>
               ) : (
                 // Categories View
-                <View style={styles.chartCard}>
-                  <PieChartComponent data={categoriesData} radius={wp(25)} />
+                <View style={styles.graphContainer}>
+                  <DonutChart
+                    data={categoriesData}
+                    radius={wp(20)}
+                    labelOffset={30}
+                    fontFamily="PlusJakartaSans-Bold"
+                    labelFontSize={wp(3)}
+                    lineStroke={wp(0.5)}
+                  />
                 </View>
               )}
+            </View>
+          </View>
+
+          {/* Recent Expenses Header */}
+          <View style={styles.recentExpensesHeader}>
+            <Text style={styles.recentExpensesTitle}>Recent expenses</Text>
+            <View style={styles.financialOverview}>
+              <View style={styles.financialItem}>
+                <Text style={styles.financialLabel}>Budget</Text>
+                <Text style={styles.financialAmount}>₹50,000</Text>
+              </View>
+              <View style={styles.financialItem}>
+                <Text style={styles.financialLabel}>Exp.</Text>
+                <Text style={styles.financialAmount}>₹32,000</Text>
+              </View>
+              <View style={styles.financialItem}>
+                <Text style={styles.financialLabel}>Remaining</Text>
+                <Text style={styles.financialAmount}>₹18,000</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Expenses List */}
+          <View style={styles.expensesListContainer}>
+            <ExpenseByDateList data={expensesData} />
+            <View style={styles.fabContainer}>
+              <Button onPress={handleAddExpense} style={styles.fabButton}>
+                <PlusIcon size={wp(6)} color="#fff" />
+              </Button>
             </View>
           </View>
 
@@ -176,8 +295,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#C0C0C0",
     borderRadius: wp(5),
-    gap: wp(6),
-    paddingHorizontal: wp(5),
+    paddingHorizontal: wp(2),
     paddingVertical: hp(2),
     height: hp(36),
   },
@@ -214,7 +332,16 @@ const styles = StyleSheet.create({
   chartCard: {
     borderRadius: wp(4),
     alignItems: "center",
-    justifyContent: "center",
+    gap: wp(5),
+  },
+  graphContainer: {
+    width: "100%",
+    height: "90%",
+  },
+  chart: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: wp(5),
   },
   balanceContainer: {
     marginTop: hp(1.5),
@@ -234,8 +361,9 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: hp(2),
   },
-  graphContainer: {},
   buttonContainer: {
+    width: "90%",
+    height: "10%",
     alignItems: "center",
     marginVertical: hp(4.5),
   },
@@ -257,6 +385,60 @@ const styles = StyleSheet.create({
     fontSize: wp(4),
     fontFamily: "PlusJakartaSans-Bold",
     fontWeight: "600",
+  },
+  recentExpensesHeader: {
+    marginBottom: hp(5),
+  },
+  recentExpensesTitle: {
+    color: "#fff",
+    fontSize: wp(4.5),
+    fontFamily: "PlusJakartaSans-Bold",
+    marginBottom: hp(2),
+  },
+  financialOverview: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  financialItem: {
+    alignItems: "center",
+    flex: 1,
+  },
+  financialLabel: {
+    color: "#fff",
+    fontSize: wp(4),
+    fontFamily: "PlusJakartaSans-Bold",
+    opacity: 0.8,
+    marginBottom: hp(0.5),
+  },
+  financialAmount: {
+    color: "#68AAFF",
+    fontSize: wp(4),
+    fontFamily: "PlusJakartaSans-Regular",
+  },
+  expensesListContainer: {
+    height: hp(30),
+  },
+  fabContainer: {
+    position: "absolute",
+    top: hp(-6),
+    right: wp(2),
+    zIndex: 1000,
+  },
+  fabButton: {
+    width: wp(14),
+    height: wp(14),
+    borderRadius: wp(7),
+    backgroundColor: "#006FFF",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
 });
 
