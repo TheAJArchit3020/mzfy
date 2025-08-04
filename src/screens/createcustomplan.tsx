@@ -72,10 +72,10 @@ const Createcustomplan: FC = () => {
             end={{ x: 0, y: 1 }}
         >
             <Header title='Create Custom Plan' />
-            <ScrollView showsVerticalScrollIndicator={false}>
+            {/* <ScrollView showsVerticalScrollIndicator={false}> */}
 
                 <View style={styles.container}>
-                    <View style={styles.cardcontainer}>
+                    {/* <View style={styles.cardcontainer}>
                         <View style={styles.cardgroup}  >
                             <TextCard2 text1={'Estimated payoff'} text2={'Mar'} text3={'2027'} text1style={styles.text1} text2style={styles.text2_1} text3style={styles.text2_2} cardStyle={styles.cardstyle}></TextCard2>
 
@@ -85,7 +85,7 @@ const Createcustomplan: FC = () => {
                             <TextCard text1={'Estimated payoff'} text2={'₹. 80,000/-'} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
                             <TextCard text1={'You save'} text2={'₹. 12,000/-'} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
                         </View>
-                    </View>
+                    </View> */}
 
                     <View style={styles.cardcontainer3}>
                         <View style={styles.cardcontainer3_content}>
@@ -123,7 +123,7 @@ const Createcustomplan: FC = () => {
                     </View>
                 </View>
 
-            </ScrollView>
+            {/* </ScrollView> */}
 
             {/* log payment popup */}
             <Popup

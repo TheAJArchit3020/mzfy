@@ -31,7 +31,7 @@ const DraggablePayoffcard: FC<payoffProps> = ({
     const renderItem = ({ item, drag, isActive }: any) => {
         return (
             <View style={[styles.cardcontainer_inner, isActive && styles.activeItem]}>
-                <TouchableOpacity onLongPress={drag} style={styles.dragHandle}>
+                <TouchableOpacity onPressIn={drag} style={styles.dragHandle}>
                     <Image source={require('@images/payoffplan/drag.png')} style={styles.dragimage} />
                 </TouchableOpacity>
                 <Card style={[styles.section_card, cardstyle]} cardStyle={styles.section_card_inner}>

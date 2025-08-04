@@ -6,12 +6,12 @@ import { NavigationContainer } from "@react-navigation/native";
 import Layout from "@screens/layout";
 import Particulardebtdetail from "@screens/particulardebtdetail";
 import DebtAdd from "@screens/adddebt";
-import Createcustomeplan from "@screens/createcustomplan";
 import Createcustomplan from "@screens/createcustomplan";
 import Registrationlayout from "@screens/registrationlayout";
 import Selectstrategy from "@screens/selectstrategy";
 import Profile from "@screens/profile";
 import Login from "@screens/login";
+import Paywall from "@screens/paywall";
 
 
 export type RootStackParams = {
@@ -23,6 +23,7 @@ export type RootStackParams = {
     selectstrategyscreen: undefined
     profilescreen: undefined
     loginscreen: undefined
+    paywallscreen: undefined
 };
 
 const Stack = createNativeStackNavigator<RootStackParams>();
@@ -33,7 +34,7 @@ const Routing: FC = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName="createcustomplanscreen"
+                initialRouteName="paywallscreen"
                 screenOptions={{
                     headerShown: false,
                 }}
@@ -47,6 +48,7 @@ const Routing: FC = () => {
                 <Stack.Screen name="selectstrategyscreen" component={Selectstrategy} />
                 <Stack.Screen name="profilescreen" component={Profile} />
                 <Stack.Screen name="loginscreen" component={Login} />
+                <Stack.Screen name="paywallscreen" component={Paywall} />
 
             </Stack.Navigator>
         </NavigationContainer>

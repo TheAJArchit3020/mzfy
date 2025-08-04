@@ -3,7 +3,7 @@ import React from 'react'
 
 
 type CardProps = {
-    children: React.ReactNode;
+    children?: React.ReactNode;
     style?: StyleProp<ViewStyle>;
     cardStyle?: StyleProp<ViewStyle>;
 };
