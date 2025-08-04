@@ -50,8 +50,8 @@ const Profile: FC = () => {
                         <View style={styles.section2_content}>
                             <Text style={styles.label} >Sign in method</Text>
                             <View style={styles.section2_content_item}>
-                                <Text style={styles.section2_content_item_title}>Mobile number</Text>
-                                <Text style={styles.section2_content_item_value}>9822179100</Text>
+                                <Text style={styles.section2_content_item_title}>Email</Text>
+                                <Text style={styles.section2_content_item_value}>sumittest@gmail.com</Text>
                             </View>
                         </View>
                         {/* <View style={styles.section2_content}>
@@ -93,7 +93,7 @@ const Profile: FC = () => {
                             <Text style={styles.buttontext}>Log out</Text>
                         </Button>
                         <Button style={styles.deletebutton}>
-                            <Image source={require('@images/profile/logout.png')} style={styles.buttonimage} />
+                            <Image source={require('@images/profile/bin.png')} style={styles.buttonimage} />
                             <Text style={styles.buttontext}>Delete account</Text>
                         </Button>
                     </View>

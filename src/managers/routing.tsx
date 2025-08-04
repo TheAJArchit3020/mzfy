@@ -11,6 +11,7 @@ import Createcustomplan from "@screens/createcustomplan";
 import Registrationlayout from "@screens/registrationlayout";
 import Selectstrategy from "@screens/selectstrategy";
 import Profile from "@screens/profile";
+import Login from "@screens/login";
 
 
 export type RootStackParams = {
@@ -21,6 +22,7 @@ export type RootStackParams = {
     registrationlayoutscreen: undefined
     selectstrategyscreen: undefined
     profilescreen: undefined
+    loginscreen: undefined
 };
 
 const Stack = createNativeStackNavigator<RootStackParams>();
@@ -31,7 +33,7 @@ const Routing: FC = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName="profilescreen"
+                initialRouteName="loginscreen"
                 screenOptions={{
                     headerShown: false,
                 }}
@@ -44,6 +46,7 @@ const Routing: FC = () => {
                 <Stack.Screen name="createcustomplanscreen" component={Createcustomplan} />
                 <Stack.Screen name="selectstrategyscreen" component={Selectstrategy} />
                 <Stack.Screen name="profilescreen" component={Profile} />
+                <Stack.Screen name="loginscreen" component={Login} />
 
             </Stack.Navigator>
         </NavigationContainer>

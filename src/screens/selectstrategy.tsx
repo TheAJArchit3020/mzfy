@@ -16,7 +16,7 @@ interface CustomOption {
 }
 
 const customOptions: CustomOption[] = [
-    { id: 1, label: "Custom1", value: "Custom1" },
+    { id: 1, label: "Custom plan 1", value: "Custom1" },
     { id: 2, label: "Custom2", value: "Custom2" },
     { id: 3, label: "Custom3", value: "Custom3" },
     { id: 4, label: "Custom4", value: "Custom4" },
@@ -41,13 +41,14 @@ const CustomDropdown: FC<{
 }> = ({ customPlan, setCustomPlan }) => {
     return (
 
-            <Customstrategydropdown style={styles.dropdown}
-                options={customOptions}
-                value={customPlan}
-                onChange={(val: any) => setCustomPlan(val)}
-                placeholder="Select currency"
-                maxheight={140}
-            />
+        <Customstrategydropdown
+            style={styles.dropdown}
+            options={customOptions}
+            value={customPlan}
+            onChange={(val: any) => setCustomPlan(val)}
+            placeholder="custom plan"
+            maxheight={140}
+        />
     )
 }
 
@@ -169,7 +170,7 @@ const Selectstrategy: FC = () => {
                                 </View>
 
                                 {/* replicate your original divider placement */}
-                                {idx === 1 || idx === 2 ? <View style={styles.divider} /> : null}
+                                {idx === 0 || idx === 1 || idx === 2 ? <View style={styles.divider} /> : null}
                             </View>
                         )
                     })}
@@ -263,10 +264,10 @@ const styles = StyleSheet.create({
         fontFamily: "PlusJakartaSans-Regular",
         fontSize: 9
     },
-    
+
     dropdown: {
         overflow: "hidden",
-        borderRadius: 0,
-        borderWidth: 0,
+        borderRadius: 10,
+        // borderWidth: 0,
     }
 })
