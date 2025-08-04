@@ -34,22 +34,31 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
     const [contentHeight, setContentHeight] = useState(1)
     const [scrollY, setScrollY] = useState(0)
 
-    const thumbHeight = Math.max(
-        (containerHeight / contentHeight) * 100,  // base thumb on 100px track
-        20
-    )
-    const maxThumbPos = 100 - thumbHeight
+    // Calculate scrollbar dimensions
     const scrollableRange = Math.max(contentHeight - containerHeight, 1)
-    const thumbTop = (scrollY / scrollableRange) * maxThumbPos
+    const thumbHeight = Math.max(
+        (containerHeight / contentHeight) * 120,  // 120px is the track height
+        20  // minimum thumb height
+    )
+    const maxThumbPos = 120 - thumbHeight
+    const thumbTop = scrollableRange > 0 ? (scrollY / scrollableRange) * maxThumbPos : 0
 
-    const onContainerLayout = (e: LayoutChangeEvent) =>
-        setContainerHeight(e.nativeEvent.layout.height)
+    const onContainerLayout = (e: LayoutChangeEvent) => {
+        const height = e.nativeEvent.layout.height
+        console.log('Container height:', height)
+        setContainerHeight(height)
+    }
 
-    const onContentSizeChange = (_: number, h: number) =>
+    const onContentSizeChange = (_: number, h: number) => {
+        console.log('Content height:', h)
         setContentHeight(h)
+    }
 
-    const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) =>
-        setScrollY(e.nativeEvent.contentOffset.y)
+    const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const offset = e.nativeEvent.contentOffset.y
+        console.log('Scroll offset:', offset, 'Max scroll:', e.nativeEvent.contentSize.height - e.nativeEvent.layoutMeasurement.height)
+        setScrollY(offset)
+    }
 
     const scrollViewRef = useRef<ScrollView>(null)
 
@@ -108,23 +117,25 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
                     })}
                 </ScrollView>
 
-                {/* fixed‐height (100px) scrollbar track, vertically centered */}
-                <View
-                    style={[
-                        styles.scrollbarTrack,
-                        {
-                            height: 120,
-                            top: (containerHeight - 120) / 2,
-                        },
-                    ]}
-                >
+                {/* Custom scrollbar */}
+                {contentHeight > containerHeight && (
                     <View
                         style={[
-                            styles.scrollbarThumb,
-                            { height: thumbHeight, top: thumbTop },
+                            styles.scrollbarTrack,
+                            {
+                                height: 120,
+                                top: (containerHeight - 120) / 2,
+                            },
                         ]}
-                    />
-                </View>
+                    >
+                        <View
+                            style={[
+                                styles.scrollbarThumb,
+                                { height: thumbHeight, top: thumbTop },
+                            ]}
+                        />
+                    </View>
+                )}
             </View>
         </Card>
     )
