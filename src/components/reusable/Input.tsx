@@ -5,6 +5,7 @@ import {
   TextInputProps,
   View,
   Text,
+  TouchableOpacity,
 } from "react-native";
 import {
   widthToDP as wp,
@@ -22,6 +23,8 @@ interface InputProps extends Omit<TextInputProps, "onChangeText" | "value"> {
   inputWrapperStyle?: any;
   children?: React.ReactNode;
   iconAbove?: React.ReactNode;
+  onIconPress?: () => void; // <-- NEW Handler
+  iconDisabled?: boolean;   // <-- NEW Disabled Prop
 }
 
 const Input: React.FC<InputProps> = ({
@@ -35,13 +38,23 @@ const Input: React.FC<InputProps> = ({
   style,
   children,
   iconAbove,
+  onIconPress,
+  iconDisabled = true,
   ...rest
 }) => {
   return (
     <View style={{ marginBottom: hp(2) }}>
       <View style={styles.lableContainer}>
         {label && <Text style={styles.label}>{label}</Text>}
-        {icon && icon}
+        {icon && (
+          <TouchableOpacity
+            disabled={iconDisabled}
+            onPress={onIconPress}
+            activeOpacity={iconDisabled ? 1 : 0.6}
+          >
+            {icon}
+          </TouchableOpacity>
+        )}
       </View>
       <View style={[styles.inputWrapper, inputWrapperStyle]}>
         {iconAbove && (

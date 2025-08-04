@@ -57,6 +57,7 @@ const DebtAdd: FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const [showAprInfo, setShowAprInfo] = useState(false);
   const [enableKeyBoardAvoidingView, setenableKeyBoardAvoidingView] =
     useState(false);
 
@@ -161,6 +162,8 @@ const DebtAdd: FC = () => {
                     style={{ marginBottom: hp(1.5) }}
                   />
                 }
+                onIconPress={() => setShowAprInfo((prev) => !prev)}
+                iconDisabled={false}
                 value={state.apr}
                 onChangeContent={(val) =>
                   dispatch({ type: "SET_FIELD", field: "apr", value: val })
@@ -183,7 +186,7 @@ const DebtAdd: FC = () => {
               <Input
                 label="Next due date"
                 value={state.nextDueDate}
-                onChangeContent={() => { }}
+                onChangeContent={() => {}}
                 placeholder="Eg.02/08/2025"
                 editable={false}
                 placeholderTextColor={"#C6C6C6"}
@@ -223,7 +226,7 @@ const DebtAdd: FC = () => {
               <Input
                 label="Tag colour"
                 value={state.tagColor}
-                onChangeContent={() => { }}
+                onChangeContent={() => {}}
                 placeholder="Select a tag colour"
                 placeholderTextColor={"#C6C6C6"}
                 editable={false}
@@ -273,10 +276,10 @@ const DebtAdd: FC = () => {
                   </View>
                 </View>
               </Modal>
-              <Button onPress={() => { }} style={styles.saveButton}>
+              <Button onPress={() => {}} style={styles.saveButton}>
                 <Text style={styles.buttonText}>Save</Text>
               </Button>
-              <Button onPress={() => { }} style={styles.cancelButton}>
+              <Button onPress={() => {}} style={styles.cancelButton}>
                 <Text style={styles.buttonText}>Cancel</Text>
               </Button>
             </View>
