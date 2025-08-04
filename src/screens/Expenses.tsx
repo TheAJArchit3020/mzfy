@@ -14,6 +14,7 @@ import { PencilIcon, PlusIcon } from "react-native-heroicons/solid";
 import ExpenseByDateList from "@components/Expenses/ExpenseByDateList";
 import Legend from "@components/reusable/Legend";
 import DonutChart from "../../src/DonutChart";
+import { BookOpenIcon } from "react-native-heroicons/solid";
 interface ExpensesProps {}
 
 const Expenses: FC<ExpensesProps> = ({}) => {
@@ -31,12 +32,16 @@ const Expenses: FC<ExpensesProps> = ({}) => {
   ];
 
   const categoriesData = [
-    { value: 40.8, color: "#4CAF50", label: "Investment" },
-    { value: 30.19, color: "#177AD5", label: "Entertainment" },
-    { value: 13.69, color: "#FF6B6B", label: "Health" },
-    { value: 8.06, color: "#8BC34A", label: "Miscellaneous" },
-    { value: 7.57, color: "#9C27B0", label: "Food" },
-  ];
+    { value: 40.8, color: "#4CAF50", label: "Investment", emoji: "💹" },
+    { value: 30.19, color: "#177AD5", label: "Entertainment", emoji: "🎬" },
+    { value: 10.69, color: "#FF6B6B", label: "Health", emoji: "🩺" },
+    { value: 8.06, color: "#8BC34A", label: "Miscellaneous", emoji: "🧰" },
+    { value: 10, color: "#9C27B0", label: "Food", emoji: "🍽️" },
+  ].map((item) => ({
+    ...item,
+    line1: item.label,
+    line2: `${item.value}% ${item.emoji}`,
+  }));
 
   const segmentItems = ["Expenses", "Categories"];
 
@@ -187,13 +192,14 @@ const Expenses: FC<ExpensesProps> = ({}) => {
                 <View style={styles.graphContainer}>
                   <DonutChart
                     data={categoriesData}
-                    radius={wp(30)}
+                    donutStrokeWidth={wp(3)}
+                    radius={wp(20)}
                     arcCornerRadius={0}
-                    labelOffset={30}
+                    labelOffset={20}
                     canvasHeight={wp(45)}
                     canvasWidth={wp(40)}
                     fontFamily="PlusJakartaSans-Bold"
-                    labelFontSize={wp(4)}
+                    labelFontSize={wp(3)}
                     lineStroke={wp(0.5)}
                   />
                 </View>
@@ -203,7 +209,16 @@ const Expenses: FC<ExpensesProps> = ({}) => {
 
           {/* Recent Expenses Header */}
           <View style={styles.recentExpensesHeader}>
-            <Text style={styles.recentExpensesTitle}>Recent expenses</Text>
+            <View style={styles.recentExpensesTitleContainer}>
+              <Text style={styles.recentExpensesTitle}>Recent expenses</Text>
+              <Button
+                onPress={() => console.log("See all expenses")}
+                style={styles.expensesButton}
+              >
+                <BookOpenIcon size={wp(5)} color="white" />
+                <Text style={[styles.expensesText]}>All expenses</Text>
+              </Button>
+            </View>
             <View style={styles.financialOverview}>
               <View style={styles.financialItem}>
                 <Text style={styles.financialLabel}>Budget</Text>
@@ -282,7 +297,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: "#C0C0C0",
   },
   cardLabel: {
@@ -302,38 +317,39 @@ const styles = StyleSheet.create({
   expensesDataContainer: {
     marginHorizontal: wp(5),
     backgroundColor: "#1E2D5E",
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: "#C0C0C0",
     borderRadius: wp(5),
     paddingHorizontal: wp(2),
-    paddingVertical: hp(2),
+    paddingVertical: hp(1),
     height: hp(36),
   },
   segmentButtonContainer: {
     backgroundColor: "#2a2a2a",
-    borderRadius: wp(5),
+    borderRadius: wp(8),
     padding: wp(1),
+    paddingVertical: hp(1.3),
     width: wp(60),
     marginTop: 0,
   },
   segmentButton: {
     paddingVertical: hp(1),
     paddingHorizontal: wp(4),
-    borderRadius: wp(5),
+    borderRadius: wp(8),
   },
   activeSegmentButton: {
     backgroundColor: "#177AD5",
+    paddingVertical: hp(0),
   },
   segmentText: {
     color: "#fff",
-    fontSize: wp(3.5),
+    fontSize: wp(3),
     fontFamily: "PlusJakartaSans-Regular",
   },
   activeSegmentText: {
     color: "#fff",
-    fontSize: wp(3.5),
+    fontSize: wp(3),
     fontFamily: "PlusJakartaSans-Bold",
-    fontWeight: "600",
   },
   chartContainer: {
     alignItems: "center",
@@ -404,11 +420,33 @@ const styles = StyleSheet.create({
     marginHorizontal: wp(5),
     marginBottom: hp(1),
   },
+  recentExpensesTitleContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: hp(0.5),
+    marginTop: hp(0.5),
+  },
   recentExpensesTitle: {
     color: "#fff",
     fontSize: wp(4.5),
     fontFamily: "PlusJakartaSans-Bold",
     marginBottom: hp(2),
+  },
+  expensesButton: {
+    backgroundColor: "#006EFF",
+    borderRadius: wp(10),
+    height: hp(4),
+    paddingHorizontal: wp(2),
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    gap: wp(2),
+  },
+  expensesText: {
+    color: "#fff",
+    fontSize: wp(3.5),
+    fontFamily: "PlusJakartaSans-Bold",
+    marginBottom: hp(0.3),
   },
   financialOverview: {
     flexDirection: "row",

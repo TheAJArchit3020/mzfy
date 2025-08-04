@@ -86,9 +86,9 @@ const Transaction: FC<TransactionScreenProps> = ({ route }) => {
               style={[
                 styles.textCardStyle,
                 {
-                  borderWidth: 1,
-                  borderColor: "#fff",
-                  paddingHorizontal: wp(1),
+                  borderWidth: 0.5,
+                  borderColor: "#F7F7F7",
+                  paddingHorizontal: wp(1.5),
                   padding: wp(0),
                 },
               ]}
@@ -100,6 +100,7 @@ const Transaction: FC<TransactionScreenProps> = ({ route }) => {
                     { value: 13, label: "13%", color: "#DC143C" },
                   ]}
                   canvasHeight={hp(5)}
+                  arcCornerRadius={0}
                   fontFamily="PlusJakartaSans-Bold"
                   labelFontSize={wp(6.5)}
                   lineStroke={3}
@@ -251,6 +252,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp(6),
     paddingVertical: hp(2),
     width: wp(43),
+
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,

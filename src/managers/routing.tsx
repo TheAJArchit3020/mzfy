@@ -19,8 +19,10 @@ import Createcustomeplan from "@screens/createcustomplan";
 import Createcustomplan from "@screens/createcustomplan";
 import Registrationlayout from "@screens/registrationlayout";
 import Selectstrategy from "@screens/selectstrategy";
+
 import Intro from "@screens/intro";
 import Splash from "@screens/splash";
+import TransactionScreen from "@screens/transaction";
 
 export type RootStackParams = {
   Intro: undefined;
@@ -39,6 +41,7 @@ export type RootStackParams = {
   layoutscreen: undefined;
   registrationlayoutscreen: undefined;
   Splash: undefined;
+  AddDebts: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParams>();
@@ -47,7 +50,7 @@ const Routing: FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="adddebtscreen"
+        initialRouteName="LogExpense"
         screenOptions={{
           headerShown: false,
         }}
@@ -59,7 +62,7 @@ const Routing: FC = () => {
           component={Registrationlayout}
         />
         <Stack.Screen name="layoutscreen" component={Layout} />
-
+        <Stack.Screen name="Transaction" component={Transaction} />
         <Stack.Screen name="adddebtscreen" component={DebtAdd} />
         <Stack.Screen
           name="particulardebtdetailscreen"
@@ -70,6 +73,11 @@ const Routing: FC = () => {
           component={Createcustomplan}
         />
         <Stack.Screen name="selectstrategyscreen" component={Selectstrategy} />
+        <Stack.Screen name="LogExpense" component={LogExpense} />
+        <Stack.Screen
+          name="catagoryManagement"
+          component={catagoryManagement}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

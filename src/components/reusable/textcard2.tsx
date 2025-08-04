@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
         width: '48%',
         backgroundColor: "#2A2A2A",
         borderRadius: wp(7),
-        borderColor: "#fff",
+        borderColor: "#F7F7F7",
         borderWidth: 0.5,
         overflow: "hidden"
 

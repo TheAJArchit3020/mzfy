@@ -153,36 +153,46 @@ const DebtAdd: FC = () => {
                 }
                 textHeader="₹"
               />
-              <Input
-                label="APR"
-                icon={
-                  <InformationCircleIcon
-                    size={hp(2)}
-                    color={"#fff"}
-                    style={{ marginBottom: hp(1.5) }}
-                  />
-                }
-                onIconPress={() => setShowAprInfo((prev) => !prev)}
-                iconDisabled={false}
-                value={state.apr}
-                onChangeContent={(val) =>
-                  dispatch({ type: "SET_FIELD", field: "apr", value: val })
-                }
-                placeholder="Eg. 8"
-                keyboardType="numeric"
-                placeholderTextColor={"#C6C6C6"}
-                children={
-                  <Text
-                    style={{
-                      color: "#fff",
-                      fontSize: wp(4.5),
-                      marginLeft: wp(1),
-                    }}
-                  >
-                    %
-                  </Text>
-                }
-              />
+              <View style={styles.aprContainer}>
+                <Input
+                  label="APR"
+                  icon={
+                    <InformationCircleIcon
+                      size={hp(2)}
+                      color={"#fff"}
+                      style={{ marginBottom: hp(1.5) }}
+                    />
+                  }
+                  onIconPress={() => setShowAprInfo((prev) => !prev)}
+                  iconDisabled={false}
+                  value={state.apr}
+                  onChangeContent={(val) =>
+                    dispatch({ type: "SET_FIELD", field: "apr", value: val })
+                  }
+                  placeholder="Eg. 8"
+                  keyboardType="numeric"
+                  placeholderTextColor={"#C6C6C6"}
+                  children={
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: wp(4.5),
+                        marginLeft: wp(1),
+                      }}
+                    >
+                      %
+                    </Text>
+                  }
+                />
+                {showAprInfo && (
+                  <View style={styles.aprInfoContainer}>
+                    <Text style={styles.aprInfoText}>
+                      APR (Annual Percentage Rate) shows the yearly cost of your
+                      loan, including interest and fees.
+                    </Text>
+                  </View>
+                )}
+              </View>
               <Input
                 label="Next due date"
                 value={state.nextDueDate}
@@ -366,6 +376,23 @@ const styles = StyleSheet.create({
     height: wp(3),
     borderRadius: wp(1.5),
     marginRight: wp(1),
+  },
+  aprContainer: {},
+  aprInfoContainer: {
+    position: "absolute",
+    backgroundColor: "#2A2A2A",
+    paddingVertical: hp(1),
+    paddingHorizontal: wp(5),
+    borderRadius: wp(8),
+    borderWidth: 1,
+    borderColor: "#F7F7F7",
+    top: hp(-6.5),
+  },
+  aprInfoText: {
+    color: "#fff",
+    fontSize: wp(3),
+    fontFamily: "PlusJakartaSans-Bold",
+    textAlign: "left",
   },
 });
 

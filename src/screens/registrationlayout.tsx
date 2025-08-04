@@ -12,7 +12,7 @@ import Monthlyexpensesummary from "./registration/monthlyexpensesummary";
 import Adddebts from "./registration/adddebts";
 import Addnewdebt from "./registration/addnewdebt";
 import ExpensesOverView from "./registration/expensesOverView";
-import Premiumpage from "./registration/premiumpage";
+import IncomeDetails from "./registration/personalincome";
 
 const Registrationlayout: FC = () => {
   const PAGES = [
@@ -32,30 +32,25 @@ const Registrationlayout: FC = () => {
     },
     {
       id: 5,
+      name: "IncomeDetails",
+      page: <IncomeDetails />,
+      title: "What is your personal income?",
+    },
+    {
+      id: 6,
       name: "monthlyexpense",
       page: <Monthlyexpense />,
       title: "What is your monthly expenses?",
     },
-    { id: 6, name: "loading", page: <ExpensesOverView />, title: "" },
-    {
-      id: 7,
-      name: "monthlyexpensesummary",
-      page: <Monthlyexpensesummary />,
-      title: "",
-    },
+    { id: 7, name: "loading", page: <ExpensesOverView />, title: "" },
     { id: 8, name: "adddebts", page: <Adddebts />, title: "Add your debts" },
-    {
-      id: 9,
-      name: "addnewdebt",
-      page: <Addnewdebt />,
-      title: "Add your debts",
-    },
-    {
-      id: 10,
-      name: "premiumpage",
-      page: <Premiumpage />,
-      title: "Select your strategy",
-    }, 
+
+    // {
+    //   id: 10,
+    //   name: "premiumpage",
+    //   page: <Premiumpage />,
+    //   title: "Select your strategy",
+    // },
   ];
 
   const [selectedIndex, setSelectedIndex] = useState(0);

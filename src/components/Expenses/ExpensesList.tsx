@@ -1,5 +1,5 @@
-import React, { FC, useMemo, useState } from "react";
-import { View, Text, StyleSheet, FlatList, Image } from "react-native";
+import React, { FC, useState } from "react";
+import { View, Text, StyleSheet, Image } from "react-native";
 import {
   widthToDP as wp,
   heightToDP as hp,
@@ -10,39 +10,7 @@ interface ExpensesListProps {
   data: expenseItem;
 }
 
-const CustomScrollIndicator: FC<{
-  scrollOffset: number;
-  contentHeight: number;
-  containerHeight: number;
-}> = ({ scrollOffset, contentHeight, containerHeight }) => {
-  const indicatorHeight = Math.max(
-    (containerHeight / contentHeight) * containerHeight,
-    20
-  );
-  const indicatorPosition =
-    (scrollOffset / (contentHeight - containerHeight)) *
-    (containerHeight - indicatorHeight);
-
-  return (
-    <View style={styles.scrollIndicatorContainer}>
-      <View
-        style={[
-          styles.scrollIndicator,
-          {
-            height: indicatorHeight,
-            transform: [{ translateY: indicatorPosition }],
-          },
-        ]}
-      />
-    </View>
-  );
-};
-
 const ExpensesList: FC<ExpensesListProps> = ({ data }) => {
-  const [scrollOffset, setScrollOffset] = useState(0);
-  const [contentHeight, setContentHeight] = useState(0);
-  const [containerHeight, setContainerHeight] = useState(0);
-
   const calculateDayTotal = (transactions: Transaction[]) => {
     return transactions.reduce(
       (total, transaction) => total + transaction.amount,
@@ -50,7 +18,6 @@ const ExpensesList: FC<ExpensesListProps> = ({ data }) => {
     );
   };
 
-  // Get category image and color
   const getCategoryImage = (category: string) => {
     switch (category.toLowerCase()) {
       case "food":
@@ -76,84 +43,42 @@ const ExpensesList: FC<ExpensesListProps> = ({ data }) => {
     }
   };
 
-  const renderTransaction = ({
-    item,
-    index,
-  }: {
-    item: Transaction;
-    index: number;
-  }) => {
-    const { image } = getCategoryImage(item.category);
-    return (
-      <View key={index} style={styles.transactionItem}>
-        <View style={styles.transactionLeft}>
-          <View style={styles.transactionDetailContainer}>
-            <Image
-              source={image}
-              style={styles.iconImage}
-              resizeMode="contain"
-            />
-            <Text style={styles.categoryText}>{item.category}</Text>
-          </View>
-          <Text style={styles.itemText}>{item.item}</Text>
-        </View>
-        <Text style={styles.amountText}>₹{item.amount}</Text>
-      </View>
-    );
-  };
-
-  const keyExtractor = (item: Transaction) => item.id;
-
-  const handleScroll = (event: any) => {
-    setScrollOffset(event.nativeEvent.contentOffset.y);
-  };
-
-  const handleContentSizeChange = (width: number, height: number) => {
-    setContentHeight(height);
-  };
-
-  const handleLayout = (event: any) => {
-    setContainerHeight(event.nativeEvent.layout.height);
-  };
-
   return (
-    <>
-      <View key={data.date} style={styles.dateSection}>
-        {/* Date Header */}
-        <View style={styles.header}>
-          <View style={styles.dateContainer}>
-            <Text style={styles.dateText}>{data.date.split(" ")[0]}</Text>
-            <Text style={styles.dayText}>{data.date.split(" ")[1]}</Text>
-          </View>
-          <Text style={styles.totalAmount}>
-            ₹{calculateDayTotal(data.transactions)}
-          </Text>
+    <View key={data.date} style={styles.dateSection}>
+      {/* Date Header */}
+      <View style={styles.header}>
+        <View style={styles.dateContainer}>
+          <Text style={styles.dateText}>{data.date.split(" ")[0]}</Text>
+          <Text style={styles.dayText}>{data.date.split(" ")[1]}</Text>
         </View>
-
-        {/* Transactions List */}
-        <View style={styles.transactionsContainer} onLayout={handleLayout}>
-          <FlatList
-            data={data.transactions}
-            renderItem={renderTransaction}
-            keyExtractor={keyExtractor}
-            style={styles.transactionsFlatList}
-            contentContainerStyle={styles.transactionsContentContainer}
-            onScroll={handleScroll}
-            onContentSizeChange={handleContentSizeChange}
-            scrollEventThrottle={16}
-            showsVerticalScrollIndicator={false}
-            nestedScrollEnabled={true}
-          />
-          {contentHeight > containerHeight && (
-            <CustomScrollIndicator
-              scrollOffset={scrollOffset}
-              contentHeight={contentHeight}
-              containerHeight={containerHeight}
-            />
-          )}
-        </View>
+        <Text style={styles.totalAmount}>
+          ₹{calculateDayTotal(data.transactions)}
+        </Text>
       </View>
-    </>
+
+      {/* Transactions List */}
+      <View style={styles.transactionsContainer}>
+        {data.transactions.map((item, index) => {
+          const { image } = getCategoryImage(item.category);
+          return (
+            <View key={item.id} style={styles.transactionItem}>
+              <View style={styles.transactionLeft}>
+                <View style={styles.transactionDetailContainer}>
+                  <Image
+                    source={image}
+                    style={styles.iconImage}
+                    resizeMode="contain"
+                  />
+                  <Text style={styles.categoryText}>{item.category}</Text>
+                </View>
+                <Text style={styles.itemText}>{item.item}</Text>
+              </View>
+              <Text style={styles.amountText}>₹{item.amount}</Text>
+            </View>
+          );
+        })}
+      </View>
+    </View>
   );
 };
 
@@ -199,12 +124,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp(5),
     position: "relative",
   },
-  transactionsFlatList: {
-    flex: 1,
-  },
-  transactionsContentContainer: {
-    flexGrow: 1,
-  },
   transactionItem: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -242,20 +161,6 @@ const styles = StyleSheet.create({
     color: "#68AAFF",
     fontSize: wp(4),
     fontFamily: "PlusJakartaSans-Regular",
-  },
-  scrollIndicatorContainer: {
-    position: "absolute",
-    right: wp(0.5),
-    top: hp(0.5),
-    bottom: hp(0.5),
-    width: wp(1),
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: wp(0.5),
-  },
-  scrollIndicator: {
-    width: "100%",
-    backgroundColor: "rgba(255, 255, 255, 0.6)",
-    borderRadius: wp(0.5),
   },
 });
 

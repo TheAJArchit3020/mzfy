@@ -1,5 +1,5 @@
-import React, { FC, useMemo, useState } from "react";
-import { View, StyleSheet, FlatList, Dimensions } from "react-native";
+import React, { FC, useState } from "react";
+import { View, StyleSheet, ScrollView, Dimensions } from "react-native";
 import {
   widthToDP as wp,
   heightToDP as hp,
@@ -44,27 +44,15 @@ const ExpenseByDateList: FC<ExpenseByDateListProps> = ({ data }) => {
   const [contentHeight, setContentHeight] = useState(0);
   const [containerHeight, setContainerHeight] = useState(0);
 
-  const renderItem = ({
-    item,
-    index,
-  }: {
-    item: expenseItem;
-    index: number;
-  }) => (
-    <View style={styles.dateSection} key={index}>
-      <ExpensesList data={item} />
-      <View style={styles.seperator} />
-    </View>
-  );
-
-  const keyExtractor = (item: expenseItem, index: number) => `expense-${index}`;
-
   const handleScroll = (event: any) => {
     setScrollOffset(event.nativeEvent.contentOffset.y);
   };
 
-  const handleContentSizeChange = (width: number, height: number) => {
-    setContentHeight(height);
+  const handleContentSizeChange = (
+    contentWidth: number,
+    contentHeight: number
+  ) => {
+    setContentHeight(contentHeight);
   };
 
   const handleLayout = (event: any) => {
@@ -73,10 +61,7 @@ const ExpenseByDateList: FC<ExpenseByDateListProps> = ({ data }) => {
 
   return (
     <View style={styles.container} onLayout={handleLayout}>
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={keyExtractor}
+      <ScrollView
         style={styles.flatList}
         contentContainerStyle={styles.contentContainer}
         onScroll={handleScroll}
@@ -84,7 +69,15 @@ const ExpenseByDateList: FC<ExpenseByDateListProps> = ({ data }) => {
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled={true}
-      />
+      >
+        {data.map((item, index) => (
+          <View style={styles.dateSection} key={`expense-${index}`}>
+            <ExpensesList data={item} />
+            <View style={styles.seperator} />
+          </View>
+        ))}
+      </ScrollView>
+
       {contentHeight > containerHeight && (
         <CustomScrollIndicator
           scrollOffset={scrollOffset}
@@ -112,10 +105,10 @@ const styles = StyleSheet.create({
   },
   scrollIndicatorContainer: {
     position: "absolute",
-    right: wp(1),
-    top: hp(1),
-    bottom: hp(1),
-    width: wp(1.5),
+    right: 0,
+    top: 0,
+    bottom: 0,
+    width: wp(1),
     backgroundColor: "#D9D9D9",
     borderRadius: wp(0.75),
   },
@@ -126,7 +119,7 @@ const styles = StyleSheet.create({
   },
   seperator: {
     borderColor: "#F7F7F7",
-    borderWidth: 1,
+    borderBottomWidth: 0.75,
     alignSelf: "center",
     width: "90%",
   },

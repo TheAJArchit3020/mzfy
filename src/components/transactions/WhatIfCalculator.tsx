@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     borderRadius: wp(3),
     padding: wp(3),
     alignItems: "center",
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: "#C0C0C0",
   },
   savingsText: {

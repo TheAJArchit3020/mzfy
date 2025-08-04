@@ -59,14 +59,41 @@ const CategoryManagement = () => {
   const [selectedColor, setSelectedColor] = useState("#FF6B6B");
   const [showColorPicker, setShowColorPicker] = useState(false);
 
+  const CategoryIcon = ({ category }: { category: string }) => {
+    let iconSource;
+
+    switch (category.trim().toLowerCase()) {
+      case "food":
+        iconSource = require("../assets/images/Expenses/Items/food.png");
+        break;
+      case "investment":
+        iconSource = require("../assets/images/Expenses/Items/Investment.png");
+        break;
+      case "health":
+        iconSource = require("../assets/images/Expenses/Items/Health.png");
+        break;
+      case "miscellaneous":
+        iconSource = require("../assets/images/Expenses/Items/Miscellaneous.png");
+        break;
+    }
+
+    return (
+      <Image
+        source={iconSource}
+        style={styles.categoryIcon}
+        resizeMode="contain"
+      />
+    );
+  };
+
   const handleAddCategory = () => {
     if (newCategoryName.trim() && newCategoryBudget.trim()) {
-             const newCategory: Category = {
-         id: Date.now().toString(),
-         name: newCategoryName,
-         color: selectedColor,
-         budget: `₹${newCategoryBudget}`,
-       };
+      const newCategory: Category = {
+        id: Date.now().toString(),
+        name: newCategoryName,
+        color: selectedColor,
+        budget: `₹${newCategoryBudget}`,
+      };
       setCategories([...categories, newCategory]);
       setNewCategoryName("");
       setNewCategoryBudget("");
@@ -106,18 +133,34 @@ const CategoryManagement = () => {
 
         {/* Existing Categories */}
         <View style={styles.categoriesContainer}>
-          {categories.map((category) => (
-            <View key={category.id} style={styles.categoryItem}>
-              <View style={styles.categoryLeft}>
-                <View
-                  style={[styles.colorBar, { backgroundColor: category.color }]}
-                />
+          {categories.map((category) => {
+            const isPredefined = [
+              "food",
+              "investment",
+              "health",
+              "miscellaneous",
+            ].includes(category.name.toLowerCase());
+
+            return (
+              <View key={category.id} style={styles.categoryItem}>
+                <View style={styles.categoryLeft}>
+                  <View style={styles.categoryIconContainer}>
+                    {isPredefined && <CategoryIcon category={category.name} />}
+                    <Text style={styles.categoryName}>{category.name}</Text>
+                  </View>
+                  <View
+                    style={[
+                      styles.colorBar,
+                      { backgroundColor: category.color },
+                    ]}
+                  />
+                </View>
+                <View style={styles.budgetInput}>
+                  <Text style={styles.budgetText}>{category.budget}</Text>
+                </View>
               </View>
-              <View style={styles.budgetInput}>
-                <Text style={styles.budgetText}>{category.budget}</Text>
-              </View>
-            </View>
-          ))}
+            );
+          })}
         </View>
 
         {/* Add New Category Section */}
@@ -126,8 +169,6 @@ const CategoryManagement = () => {
             <View style={styles.nameInputContainer}>
               <TextInput
                 style={styles.nameInput}
-                placeholder="Category name"
-                placeholderTextColor="#888"
                 value={newCategoryName}
                 onChangeText={setNewCategoryName}
               />
@@ -143,8 +184,6 @@ const CategoryManagement = () => {
             <View style={styles.budgetInputContainer}>
               <TextInput
                 style={styles.budgetInputField}
-                placeholder="Budget"
-                placeholderTextColor="#888"
                 value={newCategoryBudget}
                 onChangeText={setNewCategoryBudget}
                 keyboardType="numeric"
@@ -244,32 +283,43 @@ const styles = StyleSheet.create({
   budgetLabel: {
     color: "#fff",
     fontSize: wp(4),
-    fontFamily: "PlusJakartaSans-Bold",
+    fontFamily: "PlusJakartaSans-Medium",
   },
   categoriesContainer: {
-    marginBottom: hp(4),
+    marginBottom: hp(1),
   },
   categoryItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: hp(2),
+    justifyContent: "space-between",
+    marginBottom: hp(0.3),
     paddingVertical: hp(1),
   },
   categoryLeft: {
     flexDirection: "row",
     alignItems: "center",
-    flex: 1,
+    width: wp(50),
+    justifyContent: "space-between",
+  },
+  categoryIconContainer: {
+    flexDirection: "row",
+    gap: wp(1),
+  },
+  categoryName: {
+    color: "#fff",
+    fontSize: wp(3.5),
+    fontFamily: "PlusJakartaSans-Medium",
   },
   categoryIcon: {
-    width: wp(6),
-    height: wp(6),
-    marginRight: wp(2),
+    width: wp(4),
+    height: wp(4),
     resizeMode: "contain",
+    marginTop: hp(0.3),
   },
   colorBar: {
-    width: wp(8),
-    height: hp(1),
-    borderRadius: wp(0.5),
+    width: wp(7),
+    height: hp(1.2),
+    borderRadius: wp(1),
     marginRight: wp(3),
   },
   budgetInput: {
@@ -279,63 +329,54 @@ const styles = StyleSheet.create({
     borderRadius: wp(2),
     paddingHorizontal: wp(3),
     paddingVertical: hp(0.5),
-    minWidth: wp(20),
+    width: wp(30),
   },
   budgetText: {
     color: "#fff",
     fontSize: wp(3.5),
-    fontFamily: "PlusJakartaSans-Regular",
+    fontFamily: "PlusJakartaSans-Medium",
     textAlign: "center",
   },
-  addCategorySection: {
-    marginTop: hp(2),
-  },
+  addCategorySection: {},
   addCategoryRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: hp(2),
-    gap: wp(2),
+    justifyContent: "space-between",
+    marginBottom: hp(2.5),
   },
   nameInputContainer: {
-    flex: 1,
+    width: wp(30),
   },
   nameInput: {
     backgroundColor: "transparent",
     borderWidth: 1,
     borderColor: "#BCBCBC",
     borderRadius: wp(2),
-    paddingHorizontal: wp(3),
-    paddingVertical: hp(1.5),
+    paddingVertical: hp(0.5),
     color: "#fff",
-    fontSize: wp(4),
-    fontFamily: "PlusJakartaSans-Regular",
+    fontSize: wp(3.5),
+    fontFamily: "PlusJakartaSans-Medium",
   },
-  colorPickerButton: {
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: wp(2),
-    padding: wp(2),
-    alignItems: "center",
-    justifyContent: "center",
-  },
+  colorPickerButton: {},
   budgetInputContainer: {
-    flex: 1,
+    width: wp(30),
   },
   budgetInputField: {
     backgroundColor: "transparent",
     borderWidth: 1,
     borderColor: "#BCBCBC",
     borderRadius: wp(2),
-    paddingHorizontal: wp(3),
-    paddingVertical: hp(1.5),
+    paddingHorizontal: wp(1.5),
+    paddingVertical: hp(0.5),
     color: "#fff",
     fontSize: wp(4),
-    fontFamily: "PlusJakartaSans-Regular",
+    fontFamily: "PlusJakartaSans-Medium",
   },
   addCategoryButton: {
-    backgroundColor: "#3b82f6",
+    backgroundColor: "#006FFF",
     borderRadius: wp(5),
     paddingVertical: hp(1),
-    width: wp(40),
+    width: wp(38),
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -343,7 +384,7 @@ const styles = StyleSheet.create({
   },
   addCategoryText: {
     color: "#fff",
-    fontSize: wp(4),
+    fontSize: wp(3.5),
     fontFamily: "PlusJakartaSans-Bold",
   },
   actionButtons: {
@@ -376,7 +417,7 @@ const styles = StyleSheet.create({
   cancelButtonText: {
     color: "#888",
     fontSize: wp(4),
-    fontFamily: "PlusJakartaSans-Regular",
+    fontFamily: "PlusJakartaSans-Bold",
   },
   modalOverlay: {
     flex: 1,

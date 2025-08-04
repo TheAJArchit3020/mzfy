@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#2A2A2A",
     borderRadius: wp(5),
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: "#C0C0C0",
     padding: wp(4),
   },

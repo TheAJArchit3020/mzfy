@@ -31,22 +31,57 @@ const AddDebts = () => {
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.addButton} onPress={handleAddDebt}>
-            <Image source={require("@images/reg/addIcon.png")} style={styles.plusImage} />
+          <Image
+            source={require("@images/registration/add.png")}
+            style={styles.plusImage}
+          />
         </TouchableOpacity>
       </View>
-      <Text style={styles.instruction}>
-        <Text style={{ fontFamily: "PlusJakartaSans-Bold" }}>Click </Text>
-        <Text style={styles.plusInline}>+</Text> to add all your debt details.
-      </Text>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          flexWrap: "wrap",
+          marginVertical: hp(2),
+        }}
+      >
+        <Text
+          style={[styles.instruction, { fontFamily: "PlusJakartaSans-Bold" }]}
+        >
+          Click{" "}
+        </Text>
+        <View
+          style={{
+            width: wp(9),
+            height: hp(5),
+            paddingHorizontal: wp(1),
+            paddingTop: hp(1),
+            justifyContent: "center",
+            alignItems: "center",
+            marginHorizontal: wp(1),
+          }}
+        >
+          <Image
+            source={require("@images/registration/add.png")}
+            style={{ width: "100%", height: "100%", resizeMode: "contain" }}
+          />
+        </View>
+        <Text
+          style={[styles.instruction, { fontFamily: "PlusJakartaSans-Bold" }]}
+        >
+          to add all your debt details.
+        </Text>
+      </View>
 
       {debts.length > 0 && (
         <View style={styles.debtsContainer}>
           <FlatList
             data={debts}
+            showsVerticalScrollIndicator={false}
             keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => {
+            renderItem={({ item, index }) => {
               return (
-                <View style={styles.cardcontainer}>
+                <View style={index > 0 && { marginTop: hp(2) }}>
                   <Payoffcard data={[item]} />
                 </View>
               );
@@ -61,13 +96,10 @@ const AddDebts = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#1E2D5E",
+    height: "69%",
     alignItems: "center",
-    marginTop: hp(3),
   },
   buttonContainer: {
-    marginTop: hp(5),
     width: wp(90),
     borderRadius: wp(5),
     paddingVertical: hp(5),
@@ -86,9 +118,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(255, 255, 255, 0.1)",
   },
-  plusImage:{
-    width: '100%',
-    height: '100%',
+  plusImage: {
+    width: "100%",
+    height: "100%",
   },
   plusSign: {
     color: "#FFFFFF",
@@ -98,8 +130,10 @@ const styles = StyleSheet.create({
   instruction: {
     marginTop: hp(1.5),
     color: "#FFFFFF",
-    fontSize: wp(4),
+    fontSize: wp(4.5),
     textAlign: "center",
+    alignItems: "center",
+    justifyContent: "center",
     fontFamily: "PlusJakartaSans-Regular",
   },
   plusInline: {
@@ -109,10 +143,7 @@ const styles = StyleSheet.create({
   },
   debtsContainer: {
     width: "100%",
-    marginTop: hp(5),
-  },
-  cardcontainer: {
-    marginVertical: hp(2),
+    paddingHorizontal: wp(2.5),
   },
 });
 

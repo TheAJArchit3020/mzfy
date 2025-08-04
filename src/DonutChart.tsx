@@ -1,13 +1,22 @@
 // DonutChart.tsx
 import React, { FC } from "react";
 import { View, StyleProp, ViewStyle } from "react-native";
-import Svg, { G, Path, Polyline, Text as SvgText } from "react-native-svg";
+import Svg, {
+  G,
+  Path,
+  Polyline,
+  Text as SvgText,
+  TSpan,
+} from "react-native-svg";
 import { pie, arc, PieArcDatum, Arc as ArcGenerator } from "d3-shape";
 
 export interface DonutDataItem {
   value: number;
   color: string;
   label: string;
+  line1: string;
+  line2: string;
+  emoji: string;
 }
 
 export interface DonutChartProps {
@@ -84,7 +93,7 @@ const DonutChart: FC<DonutChartProps> = ({
             const x0 = Math.cos(midAngle) * midRadius;
             const y0 = Math.sin(midAngle) * midRadius;
 
-            const c = 6;
+            const c = 15;
             const x1 = Math.cos(midAngle) * (radius + c);
             const y1 = Math.sin(midAngle) * (radius + c);
 
@@ -94,7 +103,8 @@ const DonutChart: FC<DonutChartProps> = ({
 
             const pct = (slice.value / total) * 100;
             const text = `${data[i].label}`;
-
+            const line1 = `${data[i].line1}`;
+            const line2 = `${data[i].line2}`;
             return (
               <G key={i}>
                 <Path d={arcGen(slice) || undefined} fill={data[i].color} />
@@ -120,7 +130,12 @@ const DonutChart: FC<DonutChartProps> = ({
                   textAnchor={isRight ? "start" : "end"}
                   alignmentBaseline="middle"
                 >
-                  {text}
+                  <TSpan x={x2 + (isRight ? 4 : -4)} dy="0">
+                    {line1}
+                  </TSpan>
+                  <TSpan x={x2 + (isRight ? 4 : -4)} dy={labelFontSize}>
+                    {line2}
+                  </TSpan>
                 </SvgText>
               </G>
             );

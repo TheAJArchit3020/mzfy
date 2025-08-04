@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   textInput: {
     backgroundColor: "#3A3A3A",
     borderRadius: wp(3),
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: "#C0C0C0",
     padding: wp(3),
     color: "#fff",
@@ -129,10 +129,11 @@ const styles = StyleSheet.create({
     gap: hp(2),
   },
   noteLabel: {
-    color: "#fff",
+    color: "#AAAAAA",
     fontSize: wp(4),
     textAlign: "justify",
     fontFamily: "PlusJakartaSans-Bold",
+    paddingLeft: wp(3),
   },
   editButton: {
     borderRadius: wp(10),
