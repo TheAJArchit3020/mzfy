@@ -29,7 +29,7 @@ const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainersty
                             </View>
                             <View style={styles.groupsection2}>
                                 <Text style={styles.groupsection_text1}>Minimun: {item.minamt} {'\u20B9'}</Text>
-                                <Text style={styles.groupsection_text1}>APR: {item.apr}</Text>
+                                <Text style={styles.groupsection_text1}>APR: {item.apr}%</Text>
 
                             </View>
                             <View style={styles.groupsection3}>
@@ -59,7 +59,8 @@ const styles = StyleSheet.create({
         borderWidth: 0,
         width: '95%',
         alignSelf: "center",
-        paddingHorizontal: 10,
+        paddingHorizontal: 6,
+        borderRadius: 10
     },
     section_card_inner: {
         flexDirection: "column",

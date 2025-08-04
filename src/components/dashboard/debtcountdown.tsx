@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontStyle: "italic",
         fontSize: 12,
+        marginTop: 10
     },
     section_card_inner: {
         height: 'auto',

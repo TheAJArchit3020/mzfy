@@ -127,28 +127,7 @@ const PayoffplansScreen: FC = () => {
           </Button>
         </View>
       </ScrollView>
-      {/* log payment popup */}
-      <Popup
-        visible={show}
-        onClose={() => setShow(false)}
-        titleStyle={styles.popuptitle}
-        containerStyle={styles.popupContainerStyle}
-        buttonText='Select strategy'
-        color1="#006FFF"
-        color2="#006FFF"
-        buttonTextStyle={styles.buttonTextStyle}
-      >
-        <View style={styles.inputgroup}>
-          {strategies.map(opt => (
-            <StrategyRadioCard
-              key={opt.value}
-              option={opt}
-              selectedValue={choice}
-              onSelect={setChoice}
-            />
-          ))}
-        </View>
-      </Popup>
+    
     </>
   );
 };

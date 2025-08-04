@@ -213,7 +213,9 @@ const styles = StyleSheet.create({
     info_content: {
         flexDirection: "row",
         alignItems: "center",
-        gap: 3
+        gap: 3,
+        marginTop: 5
+
     },
     button: {
         backgroundColor: "#006EFF",

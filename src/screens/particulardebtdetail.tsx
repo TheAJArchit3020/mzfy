@@ -10,6 +10,8 @@ import Nextduedate from '@components/dashboard/nextduedate'
 import Popup from '@components/reusable/popup'
 import ProgressBar from '@components/reusable/progressbar'
 import GraphComponent from '@components/reusable/graph'
+import TextCard from '@components/reusable/textcard'
+import Card from '@components/reusable/card'
 
 const Particulardebtdetail = () => {
 
@@ -41,7 +43,18 @@ const Particulardebtdetail = () => {
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.container}>
                     <View style={styles.section1}>
-                        <Debtcountdown />
+                        {/* <Debtcountdown /> */}
+                        <Card cardStyle={styles.cardcontainer} >
+                            <View style={styles.balancegrp1} >
+                                <Text style={styles.text1}>Curent balance</Text>
+                                <Text style={styles.text2}>$ 20,000</Text>
+                            </View>
+                            <View style={styles.balancegrp} >
+                                <Image source={require('@images/dashboard/rightarrow.png')} style={styles.arrowimage} />
+                                <Text style={styles.balancetext} >-35%</Text>
+                            </View>
+                        </Card>
+
                     </View>
                     <View style={styles.section2}>
                         <View style={styles.section2_header_content}>
@@ -166,7 +179,7 @@ const styles = StyleSheet.create({
     cardstyle: {
         borderWidth: 0,
         overflow: "hidden",
-        backgroundColor: 'none',
+        backgroundColor: '#1E2D5E',
     },
     cardstyle2: {
         backgroundColor: 'none',
@@ -191,7 +204,41 @@ const styles = StyleSheet.create({
         marginBottom: -10,
         alignSelf: "flex-end"
     },
-    segmentText:{
+    segmentText: {
         fontSize: 11
+    },
+    text1: {
+        fontSize: 16,
+        fontFamily: "PlusJakartaSans-Bold",
+        color: "#fff",
+    },
+    text2: {
+        fontSize: 32,
+        fontFamily: "PlusJakartaSans-Bold",
+        color: "#fff",
+    },
+    balancegrp: {
+        flexDirection: "row",
+        gap: 10
+    },
+    arrowimage: {
+        width: 16,
+        height: 16,
+        resizeMode: "contain",
+        transform: [{ rotate: '90deg' }],
+    },
+    balancetext: {
+        color: "#1AD054",
+        fontSize: 10,
+        fontFamily: "PlusJakartaSans-Bold",
+    },
+    cardcontainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between"
+    },
+    balancegrp1: {
+        flexDirection: "column",
+        gap: 13
     }
 })

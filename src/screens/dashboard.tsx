@@ -46,10 +46,13 @@ const DashboardScreen: FC = () => {
 
   const upcommingdebtsList = [
     { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
-    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
-    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
-    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
-    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
+    { name: "Bike loan", amount: 15000, date: "Apr 10 2025" },
+    { name: "Home loan", amount: 500000, date: "Apr 15 2025" },
+    { name: "Personal loan", amount: 50000, date: "Apr 20 2025" },
+    { name: "Education loan", amount: 100000, date: "Apr 25 2025" },
+    { name: "Business loan", amount: 200000, date: "Apr 30 2025" },
+    { name: "Credit card", amount: 25000, date: "May 5 2025" },
+    { name: "Medical loan", amount: 75000, date: "May 10 2025" },
   ];
 
   const nextDueList = [

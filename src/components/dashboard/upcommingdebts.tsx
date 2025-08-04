@@ -51,6 +51,8 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
     const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) =>
         setScrollY(e.nativeEvent.contentOffset.y)
 
+    const scrollViewRef = useRef<ScrollView>(null)
+
     return (
         <Card style={[styles.card, style]} cardStyle={[styles.innerCard, cardStyle]}>
             <View style={styles.scrollArea} onLayout={onContainerLayout}>
@@ -59,14 +61,17 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
                     scrollEventThrottle={16}
                     onContentSizeChange={onContentSizeChange}
                     showsVerticalScrollIndicator={false}
+                    style={styles.scrollView}
+                    contentContainerStyle={styles.scrollContent}
+                    nestedScrollEnabled={true}
+                    ref={scrollViewRef}
                 >
                     {data.map((item, idx) => {
                         const isLast = idx === data.length - 1
                         return (
-                            <>
+                            <View key={idx}>
                                 {sort ?
                                     (<View
-                                        key={idx}
                                         style={[
                                             styles.row,
                                             isLast && styles.noBorder,
@@ -84,7 +89,6 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
                                         </TouchableOpacity>}
                                     </View>)
                                     : (<View
-                                        key={idx}
                                         style={[
                                             styles.row,
                                             isLast && styles.noBorder,
@@ -99,7 +103,7 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
                                             <Image source={require('@images/dashboard/rightarrow.png')} style={styles.image} />
                                         </TouchableOpacity>}
                                     </View>)}
-                            </>
+                            </View>
                         )
                     })}
                 </ScrollView>
@@ -138,12 +142,18 @@ const styles = StyleSheet.create({
         padding: 0,
         justifyContent: 'flex-start',
         overflow: 'visible',
-        backgroundColor: "#2A2A2A"
+        // backgroundColor: "#2A2A2A"
 
     },
     scrollArea: {
         height: 200,
         position: 'relative',
+    },
+    scrollView: {
+        flex: 1,
+    },
+    scrollContent: {
+        flexGrow: 1,
     },
     row: {
         flexDirection: 'row',

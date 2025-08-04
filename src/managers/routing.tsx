@@ -29,7 +29,7 @@ const Routing: FC = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName="selectstrategyscreen"
+                initialRouteName="layoutscreen"
                 screenOptions={{
                     headerShown: false,
                 }}

@@ -10,7 +10,7 @@ interface strategyProps {
     onPress?: any
 }
 
-const Strategycard: FC<strategyProps> = ({ title, subtitle ,onPress}) => {
+const Strategycard: FC<strategyProps> = ({ title, subtitle, onPress }) => {
 
 
 
@@ -35,7 +35,7 @@ const Strategycard: FC<strategyProps> = ({ title, subtitle ,onPress}) => {
 
 
             <LinearGradient
-                colors={['#ffffff']}
+                colors={['#ffffff', '#ffffff']}
                 locations={[0, 1]}
                 start={{ x: 1, y: 0 }}
                 end={{ x: 0, y: 1 }}

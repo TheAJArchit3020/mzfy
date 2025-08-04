@@ -140,7 +140,7 @@ const DebtsScreen: FC = () => {
         <Input
           iconAbove={
             <MagnifyingGlassIcon
-              size={wp(5)}
+              size={wp(4)}
               color={"#747474"}
               style={{ marginTop: hp(0.8) }}
             />
@@ -206,17 +206,18 @@ const styles = StyleSheet.create({
   searchBar: {
     backgroundColor: "#C0C0C0",
     borderRadius: wp(10),
-    paddingHorizontal: wp(4),
-    paddingVertical: hp(0.3),
-    gap: wp(2),
+    // paddingHorizontal: wp(4),
+    // paddingVertical: hp(0.3),
+    gap: wp(1),
     alignItems: "center",
-    marginHorizontal: wp(4)
+    marginHorizontal: wp(4),
+    height: hp(4.5)
   },
   searchInput: {
-    flex: 1,
-    fontSize: wp(3.5),
+    fontSize: wp(2.5),
     fontFamily: "PlusJakartaSans-Bold",
     color: "#747474",
+    height: 40,
   },
   section6: {
     backgroundColor: "#006FFF",
