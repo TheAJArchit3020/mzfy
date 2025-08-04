@@ -61,7 +61,7 @@ const ProgressBar: FC<ProgressBarProps> = ({
     // tooltip dimensions
     const TIP_W = 120
     const TIP_H = 28
-    const ARROW_H = 10
+    const ARROW_H = 5
 
     // compute left offset so center of tip = fill-head
     const leftInterpolated = animatedValue.interpolate({
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     tooltip: {
-        width: '120%',
+        width: '100%',
         height: 'auto',
         borderRadius: 100,
         justifyContent: 'center',
@@ -147,8 +147,8 @@ const styles = StyleSheet.create({
     },
     tooltipText: {
         color: '#FFF',
-        fontSize: 12,
-        fontWeight: '600',
+        fontSize: 8,
+        fontFamily: "PlusJakartaSans-Bold"
     },
     arrow: {
         width: 0,

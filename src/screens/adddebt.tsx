@@ -11,8 +11,12 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Input from "../components/reusable/Input";
+<<<<<<< HEAD:src/screens/DebtAdd.tsx
 import Dropdown from "../components/reusable/dropdown";
 import Button from "@components/reusable/Button";
+=======
+import Button from "../components/reusable/button";
+>>>>>>> 5980a1971813680518bd92b7bedabf4f08c99324:src/screens/adddebt.tsx
 import Header from "@components/reusable/header";
 import {
   widthToDP as wp,
@@ -184,7 +188,7 @@ const DebtAdd: FC = () => {
               <Input
                 label="Next due date"
                 value={state.nextDueDate}
-                onChangeContent={() => {}}
+                onChangeContent={() => { }}
                 placeholder="Eg.02/08/2025"
                 editable={false}
                 placeholderTextColor={"#C6C6C6"}
@@ -224,7 +228,7 @@ const DebtAdd: FC = () => {
               <Input
                 label="Tag colour"
                 value={state.tagColor}
-                onChangeContent={() => {}}
+                onChangeContent={() => { }}
                 placeholder="Select a tag colour"
                 placeholderTextColor={"#C6C6C6"}
                 editable={false}
@@ -274,10 +278,10 @@ const DebtAdd: FC = () => {
                   </View>
                 </View>
               </Modal>
-              <Button onPress={() => {}} style={styles.saveButton}>
+              <Button onPress={() => { }} style={styles.saveButton}>
                 <Text style={styles.buttonText}>Save</Text>
               </Button>
-              <Button onPress={() => {}} style={styles.cancelButton}>
+              <Button onPress={() => { }} style={styles.cancelButton}>
                 <Text style={styles.buttonText}>Cancel</Text>
               </Button>
             </View>

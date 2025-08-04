@@ -36,8 +36,8 @@ const styles = StyleSheet.create({
         width: 'auto',
         backgroundColor: "#2A2A2A",
         borderRadius: 25,
-        borderColor:"#fff",
-        borderWidth:1
+        borderColor: "#fff",
+        borderWidth: 0.5
     },
     card: {
         padding: '5%'

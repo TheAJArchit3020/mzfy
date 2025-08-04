@@ -12,8 +12,8 @@ import {
 } from "react-native-responsive-screens";
 
 interface InputProps extends Omit<TextInputProps, "onChangeText" | "value"> {
-  value: string | number;
-  onChangeContent: (value: string) => void;
+  value?: string | number;
+  onChangeContent?: (value: string) => void;
   label?: string;
   textHeader?: string;
   type?: "text" | "number";
@@ -66,10 +66,10 @@ const Input: React.FC<InputProps> = ({
 const styles = StyleSheet.create({
   inputWrapper: {
     backgroundColor: "transparent",
-    borderWidth: 1,
+    borderWidth: 0.5,
     flexDirection: "row",
     borderColor: "#BCBCBC",
-    borderRadius: wp(4),
+    borderRadius: wp(3),
     paddingHorizontal: wp(4),
     paddingVertical: hp(1.5),
     justifyContent: "center",

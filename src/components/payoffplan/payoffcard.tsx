@@ -9,10 +9,11 @@ interface payoffProps {
     source?: any,
     cardstyle?: any,
     cardcontainerstyle?: any
+    onPress?: any
 }
 
 
-const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainerstyle }) => {
+const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainerstyle, onPress }) => {
     return (
         <>
             <View style={styles.cardcontainer}>
@@ -22,18 +23,18 @@ const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainersty
                             <View style={styles.groupsection}>
                                 <Text style={styles.groupsection_text1}>{item.name}</Text>
                                 <Text style={styles.groupsection_text2}>{item.time}</Text>
-                                <TouchableOpacity style={styles.button}>
+                                <TouchableOpacity style={styles.button} onPress={onPress}>
                                     <Image source={source} style={styles.image} />
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.groupsection2}>
                                 <Text style={styles.groupsection_text1}>Minimun: {item.minamt} {'\u20B9'}</Text>
-                                <Text style={styles.groupsection_text1}>APR: {item.apr}</Text>
+                                <Text style={styles.groupsection_text1}>APR: {item.apr}%</Text>
 
                             </View>
                             <View style={styles.groupsection3}>
                                 <Text style={styles.groupsection_text1}>Payoff Progress</Text>
-                                <ProgressBar progress={item?.payoffprogress} tooltipLabel={`Sumit 20,000 ${'\u20B9'}`} showTooltip={true} style={styles.progressbar} />
+                                <ProgressBar progress={item?.payoffprogress} tooltipLabel={`Balance 20,000 ${'\u20B9'}`} showTooltip={true} style={styles.progressbar} />
                                 <Text style={styles.groupsection_text1}>{item.payoffprogress} %</Text>
 
                             </View>
@@ -56,9 +57,10 @@ const styles = StyleSheet.create({
     section_card: {
         backgroundColor: "rgba(51, 255, 0, 0.38)",
         borderWidth: 0,
-        width: '90%',
+        width: '95%',
         alignSelf: "center",
-        paddingHorizontal: 10,
+        paddingHorizontal: 6,
+        borderRadius: 10
     },
     section_card_inner: {
         flexDirection: "column",
@@ -88,7 +90,7 @@ const styles = StyleSheet.create({
         fontSize: 14
     },
     groupsection_text2: {
-        width: 165,
+        width: 120,
         color: "#fff",
         fontFamily: "PlusJakartaSans-Light",
         fontSize: 10,

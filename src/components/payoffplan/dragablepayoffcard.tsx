@@ -9,10 +9,12 @@ interface payoffProps {
     source?: any,
     cardstyle?: any,
     cardcontainerstyle?: any
+    showicon?: any
+    showcustom?: any
 }
 
 
-const DraggablePayoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainerstyle }) => {
+const DraggablePayoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainerstyle, showicon = true, showcustom = false }) => {
     return (
         <>
             <View style={styles.cardcontainer}>
@@ -24,18 +26,18 @@ const DraggablePayoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcon
                                 <View style={styles.groupsection}>
                                     <Text style={styles.groupsection_text1}>{item.name}</Text>
                                     <Text style={styles.groupsection_text2}>{item.time}</Text>
-                                    <TouchableOpacity style={styles.button}>
+                                    {showicon && <TouchableOpacity style={styles.button}>
                                         <Image source={source} style={styles.editimage} />
-                                    </TouchableOpacity>
+                                    </TouchableOpacity>}
                                 </View>
                                 <View style={styles.groupsection2}>
-                                    <Text style={styles.groupsection_text1}>Minimun: {item.minamt} {'\u20B9'}</Text>
+                                    {showcustom ? (<Text style={styles.groupsection_text1}>Monthly Minimum (EMI): {item.minamt} {'\u20B9'}</Text>) : (<Text style={styles.groupsection_text1}>Minimun: {item.minamt} {'\u20B9'}</Text>)}
                                     <Text style={styles.groupsection_text1}>APR: {item.apr}</Text>
 
                                 </View>
                                 <View style={styles.groupsection3}>
                                     <Text style={styles.groupsection_text1}>Payoff Progress</Text>
-                                    <ProgressBar progress={item?.payoffprogress} tooltipLabel={`Sumit 20,000 ${'\u20B9'}`} showTooltip={true} style={styles.progressbar} />
+                                    <ProgressBar progress={item?.payoffprogress} tooltipLabel={`Balance 20,000 ${'\u20B9'}`} showTooltip={true} style={styles.progressbar} />
                                     <Text style={styles.groupsection_text1}>{item.payoffprogress} %</Text>
 
                                 </View>
@@ -63,6 +65,7 @@ const styles = StyleSheet.create({
         width: '90%',
         alignSelf: "center",
         paddingHorizontal: 10,
+        borderRadius: 12
     },
     section_card_inner: {
         flexDirection: "column",
@@ -89,10 +92,10 @@ const styles = StyleSheet.create({
     groupsection_text1: {
         color: "#fff",
         fontFamily: "PlusJakartaSans-Bold",
-        fontSize: 14
+        fontSize: 10
     },
     groupsection_text2: {
-        width: 165,
+        width: 120,
         color: "#fff",
         fontFamily: "PlusJakartaSans-Light",
         fontSize: 10

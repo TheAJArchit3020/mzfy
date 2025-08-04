@@ -1,0 +1,342 @@
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
+import React, { FC, useReducer, useState } from 'react'
+import LinearGradient from 'react-native-linear-gradient'
+import Header from '@components/reusable/header'
+import DraggablePayoffcard from '@components/payoffplan/dragablepayoffcard'
+import Button from '@components/reusable/button'
+import TextCard2 from '@components/reusable/textcard2'
+import TextCard from '@components/reusable/textcard'
+import Popup from '@components/reusable/popup'
+import Dropdown from '@components/reusable/dropdown'
+import Input from '@components/reusable/Input'
+import { widthToDP } from 'react-native-responsive-screens'
+
+
+const initialState = {
+    debtName: "",
+    extrapay: ""
+};
+
+type State = typeof initialState;
+type Action =
+    | { type: "SET_FIELD"; field: keyof State; value: any }
+    | { type: "RESET" };
+
+function reducer(state: State, action: Action): State {
+    switch (action.type) {
+        case "SET_FIELD":
+            return { ...state, [action.field]: action.value };
+        case "RESET":
+            return initialState;
+        default:
+            return state;
+    }
+}
+
+const Createcustomplan: FC = () => {
+
+    const [show, setShow] = useState(false);
+    const [state, dispatch] = useReducer(reducer, initialState);
+    const showsetPopup = () => {
+        setShow(true);
+    };
+
+    const data = [
+        { id: 1, name: 'Car Loan', minamt: 500, apr: '2.5%', payoffprogress: 5.5, time: 'Completes on Jul 2 2026 (9 month 1 days)' },
+        { id: 2, name: 'House Loan', minamt: 500, apr: '9.5%', payoffprogress: 25.5, time: 'Completes on Jul 2 2026 (9 month 1 days)' },
+        { id: 3, name: 'Bike Loan', minamt: 500, apr: '10.5%', payoffprogress: 45.5, time: 'Completes on Jul 2 2026 (9 month 1 days)' },
+    ]
+
+    const debts = [
+        { label: 'Debt name 1', value: 'debt1' },
+        { label: 'Debt name 2', value: 'debt2' },
+        { label: 'Debt name 3', value: 'debt3' },
+        { label: 'Debt name 1', value: 'debt1' },
+        { label: 'Debt name 2', value: 'debt2' },
+        { label: 'Debt name 3', value: 'debt3' },
+    ];
+
+    const [selectedDebt, setSelectedDebt] = useState(null);
+
+
+    return (
+        <LinearGradient
+            colors={["#443C9F", "#3A346E", "#2B293E", "#272631", "#232323"]}
+            locations={[0, 0.64, 0.76, 0.87, 1]}
+            style={{ flex: 1 }}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+        >
+            <Header title='Create Custom Plan' />
+
+            <ScrollView showsVerticalScrollIndicator={false} >
+
+                <View style={styles.container}>
+                    <View style={styles.cardcontainer}>
+                        <View style={styles.cardgroup}  >
+                            <TextCard2 text1={'Estimated payoff'} text2={'Mar'} text3={'2027'} text1style={styles.text1} text2style={styles.text2_1} text3style={styles.text2_2} cardStyle={styles.cardstyle}></TextCard2>
+
+                            <TextCard text1={'Months'} text2={'42'} text1style={styles.text1} text2style={styles.text2} cardStyle={styles.cardstyle} ></TextCard>
+                        </View>
+                        <View style={styles.cardgroup2}>
+                            <TextCard text1={'Estimated payoff'} text2={'₹. 80,000/-'} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
+                            <TextCard text1={'You save'} text2={'₹. 12,000/-'} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
+                        </View>
+                    </View>
+
+                    <View style={styles.cardcontainer3}>
+                        <View style={styles.cardcontainer3_content}>
+                            <View>
+
+                                <Text style={styles.cardcontainer3_title}>Order Wise Debt payoff</Text>
+                                <View style={styles.info_content}>
+                                    <Image source={require('@images/payoffplan/info.png')} style={styles.infoimage} />
+                                    <Text style={styles.info_text}>You can Arrange debts your way</Text>
+                                </View>
+                            </View>
+                            <Button style={styles.button} onPress={showsetPopup} >
+                                <Image source={require('@images/payoffplan/pluswhite.png')} style={styles.plusimage} />
+                                <Text style={styles.button_text}>Set extra payment</Text>
+                            </Button>
+                        </View>
+                        <View style={styles.cardcontainer3_inner}>
+                            <DraggablePayoffcard data={data} source={require('@images/payoffplan/edit.png')} showicon={false} showcustom={true} />
+                        </View>
+                    </View>
+
+                    <View style={styles.buttongroup}>
+                        <Button style={styles.button_save}>
+                            <Text style={styles.button_save_text}>Save</Text>
+                        </Button>
+                        <Button style={styles.button_cancel}>
+                            <Text style={styles.button_cancel_text}>Cancel</Text>
+                        </Button>
+                    </View>
+                </View>
+
+            </ScrollView>
+
+            {/* log payment popup */}
+            <Popup
+                visible={show}
+                onClose={() => setShow(false)}
+                containerStyle={styles.popupContainerStyle}
+                buttonText='Set'
+                color1="#B2FF59"
+                color2="#00C853"
+            >
+                <View style={styles.formgroup}>
+
+                    <View style={styles.inputgroup}>
+                        <Text style={styles.inputgroup_label}>Select a debt</Text>
+                        <Dropdown
+                            options={debts}
+                            value={selectedDebt}
+                            placeholder="Debt name"
+                            onChange={(val) => {
+                                setSelectedDebt(val);
+                                // do anything else with the selection
+                                console.log('picked', val);
+                            }}
+                        />
+
+                    </View>
+                    <View style={styles.inputgroup}>
+                        <Text style={styles.inputgroup_label}>Extra payment</Text>
+                        <Input
+                            value={state.extrapay}
+                            onChangeContent={(val) =>
+                                dispatch({ type: "SET_FIELD", field: "extrapay", value: val })
+                            }
+                            textHeader="₹"
+                            inputWrapperStyle={styles.inputWrapperStyle}
+                            children={
+                                <Text
+                                    style={{
+                                        color: "#fff",
+                                        fontSize: widthToDP(4.5),
+                                        marginLeft: widthToDP(1),
+                                    }}
+                                >
+                                    /-
+                                </Text>
+                            }
+                        />
+
+                    </View>
+                </View>
+            </Popup>
+
+        </LinearGradient>
+    )
+}
+
+export default Createcustomplan
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        flexDirection: "column",
+        gap: 16,
+        marginVertical: 20,
+        marginBottom: 30
+    },
+    cardcontainer3: {
+        marginHorizontal: 20,
+        flexDirection: "column",
+        gap: 25,
+        marginTop: 20
+    },
+
+    cardcontainer3_inner: {
+        marginHorizontal: 5
+    },
+    cardcontainer3_title: {
+        color: '#fff',
+        fontSize: 18,
+        fontFamily: 'PlusJakartaSans-Bold',
+    },
+    infoimage: {
+        width: 12,
+        height: 12,
+        resizeMode: "contain"
+    },
+    cardcontainer3_content: {
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
+    info_text: {
+        color: '#fff',
+        fontSize: 9,
+        fontFamily: 'PlusJakartaSans-Regular',
+    },
+    info_content: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 3,
+        marginTop: 5
+
+    },
+    button: {
+        backgroundColor: "#006EFF",
+        borderRadius: 45,
+        flexDirection: "row",
+        alignItems: "center",
+        padding: 6,
+        paddingHorizontal: 12,
+        gap: 5
+    },
+    button_text: {
+        color: "#fff",
+        fontFamily: "PlusJakartaSans-Bold",
+        fontSize: 12
+    },
+    plusimage: {
+        width: 15,
+        height: 15
+    },
+    cardcontainer: {
+        flexDirection: "column",
+        gap: 32
+    },
+    cardgroup: {
+        marginHorizontal: 20,
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    cardgroup2: {
+        marginHorizontal: 20,
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    cardstyle: {
+        padding: 20,
+        flexDirection: "column",
+        gap: 30
+    },
+    cardstyle2: {
+        padding: 20,
+        flexDirection: "column",
+        gap: 15
+    },
+    text1: {
+        color: '#fff',
+        fontSize: 14,
+        fontFamily: 'PlusJakartaSans-Bold'
+    },
+    text2: {
+        color: '#fff',
+        fontSize: 40,
+        fontFamily: 'PlusJakartaSans-Bold',
+        textAlign: "center"
+
+    },
+    text3: {
+        color: '#fff',
+        fontSize: 22,
+        fontFamily: 'PlusJakartaSans-Bold',
+    },
+    text2_1: {
+        color: '#fff',
+        fontSize: 16,
+        fontFamily: 'PlusJakartaSans-Bold',
+        textAlign: "center"
+    },
+    text2_2: {
+        color: '#fff',
+        fontSize: 40,
+        fontFamily: 'PlusJakartaSans-Bold',
+        textAlign: "center"
+    },
+    buttongroup: {
+        flexDirection: "column",
+        gap: 16,
+        marginTop: 90
+    },
+    button_save: {
+        backgroundColor: "#006EFF",
+        borderRadius: 45,
+        padding: 16,
+        paddingHorizontal: 20,
+        marginHorizontal: 20
+    },
+    button_save_text: {
+        color: "#fff",
+        fontFamily: 'PlusJakartaSans-Bold',
+        textAlign: "center"
+    },
+    button_cancel: {
+        backgroundColor: "transparent",
+        borderRadius: 45,
+        padding: 16,
+        paddingHorizontal: 20,
+        marginHorizontal: 20
+    },
+    button_cancel_text: {
+        color: "#BCBCBC",
+        fontFamily: 'PlusJakartaSans-Bold',
+        textAlign: "center"
+    },
+    popupContainerStyle: {
+        backgroundColor: "#2A2A2A",
+        width: '90%',
+        justifyContent: "center"
+    },
+    inputWrapperStyle: {
+        borderColor: "#C0C0C0",
+        borderWidth: 0.5
+    },
+    inputgroup_label: {
+        color: "#fff",
+        fontFamily: 'PlusJakartaSans-Bold',
+    },
+    inputgroup: {
+        paddingHorizontal: 20,
+        flexDirection: "column",
+        gap: 15
+    },
+    formgroup: {
+        paddingTop: 20
+    }
+
+})

@@ -7,11 +7,8 @@ import {
   View,
 } from "react-native";
 import React, { FC, useState } from "react";
-import LinearGradient from "react-native-linear-gradient";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Card from "@components/reusable/card";
+
 import Debtcountdown from "@components/dashboard/debtcountdown";
-import Debtprogress from "@components/dashboard/debtprogress";
 import Debtbalance from "@components/dashboard/debtbalance";
 import Debtpaid from "@components/dashboard/debtpaid";
 import Upcommingdebts from "@components/dashboard/upcommingdebts";
@@ -20,9 +17,12 @@ import Popup from "@components/reusable/popup";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParams } from "@managers/routing";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import UpcomingDebtsWithScrollbar from "@components/dashboard/upcommingdebts";
 
-type navprops = NativeStackNavigationProp<RootStackParams, "dashboardscreen">;
+type navprops = NativeStackNavigationProp<RootStackParams>;
+
 const DashboardScreen: FC = () => {
+
   const navigation = useNavigation<navprops>();
   const [show, setShow] = useState(false);
 
@@ -45,11 +45,14 @@ const DashboardScreen: FC = () => {
   };
 
   const upcommingdebtsList = [
-    { name: "Car loan", amount: 20000, date: "20/02/2025" },
-    { name: "Car loan", amount: 20000, date: "20/02/2025" },
-    { name: "Car loan", amount: 20000, date: "20/02/2025" },
-    { name: "Car loan", amount: 20000, date: "20/02/2025" },
-    { name: "Car loan", amount: 20000, date: "20/02/2025" },
+    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
+    { name: "Bike loan", amount: 15000, date: "Apr 10 2025" },
+    { name: "Home loan", amount: 500000, date: "Apr 15 2025" },
+    { name: "Personal loan", amount: 50000, date: "Apr 20 2025" },
+    { name: "Education loan", amount: 100000, date: "Apr 25 2025" },
+    { name: "Business loan", amount: 200000, date: "Apr 30 2025" },
+    { name: "Credit card", amount: 25000, date: "May 5 2025" },
+    { name: "Medical loan", amount: 75000, date: "May 10 2025" },
   ];
 
   const nextDueList = [
@@ -90,14 +93,14 @@ const DashboardScreen: FC = () => {
         </View>
         <View style={styles.section5}>
           <Text style={styles.section5_text}>Upcoming Transactions</Text>
-          <Upcommingdebts data={upcommingdebtsList} />
+          <UpcomingDebtsWithScrollbar data={upcommingdebtsList} style={styles.cardstyle1} />
         </View>
       </ScrollView>
 
       <TouchableOpacity
         style={styles.section6}
         onPress={() => {
-          navigation.navigate("debtadd");
+          navigation.navigate("createcustomplanscreen");
         }}
       >
         <Text style={styles.section6_text}>+</Text>
@@ -243,4 +246,9 @@ const styles = StyleSheet.create({
   popupContainerStyle: {
     backgroundColor: "#2A2A2A",
   },
+
+  cardstyle1: {
+    overflow: "hidden"
+  },
+
 });

@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { FC } from "react";
 import { paymentStatus } from "src/commonTypes";
 import { NavigationContainer } from "@react-navigation/native";
+<<<<<<< HEAD
 import DashboardScreen from "@screens/dashboard";
 import DebtAdd from "@screens/DebtAdd";
 import Test from "@screens/Test";
@@ -21,11 +22,31 @@ export type RootStackParams = {
   LogExpense: undefined;
   catagoryManagement: undefined;
   IncomeDetails: undefined;
+=======
+
+import Layout from "@screens/layout";
+import Particulardebtdetail from "@screens/particulardebtdetail";
+import DebtAdd from "@screens/adddebt";
+import Createcustomeplan from "@screens/createcustomplan";
+import Createcustomplan from "@screens/createcustomplan";
+import Registrationlayout from "@screens/registrationlayout";
+import Selectstrategy from "@screens/selectstrategy";
+
+
+export type RootStackParams = {
+    layoutscreen: undefined
+    adddebtscreen: undefined
+    particulardebtdetailscreen: undefined
+    createcustomplanscreen: undefined
+    registrationlayoutscreen: undefined
+    selectstrategyscreen: undefined
+>>>>>>> 5980a1971813680518bd92b7bedabf4f08c99324
 };
 
 const Stack = createNativeStackNavigator<RootStackParams>();
 
 const Routing: FC = () => {
+<<<<<<< HEAD
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -49,6 +70,29 @@ const Routing: FC = () => {
       </Stack.Navigator>
     </NavigationContainer>
   );
+=======
+
+
+    return (
+        <NavigationContainer>
+            <Stack.Navigator
+                initialRouteName="layoutscreen"
+                screenOptions={{
+                    headerShown: false,
+                }}
+            >
+                <Stack.Screen name="registrationlayoutscreen" component={Registrationlayout} />
+                <Stack.Screen name="layoutscreen" component={Layout} />
+
+                <Stack.Screen name="adddebtscreen" component={DebtAdd} />
+                <Stack.Screen name="particulardebtdetailscreen" component={Particulardebtdetail} />
+                <Stack.Screen name="createcustomplanscreen" component={Createcustomplan} />
+                <Stack.Screen name="selectstrategyscreen" component={Selectstrategy} />
+
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
+>>>>>>> 5980a1971813680518bd92b7bedabf4f08c99324
 };
 
 export default Routing;

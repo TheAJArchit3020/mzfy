@@ -21,6 +21,9 @@ const Nextduedate: FC<NextduedateProps> = ({ data, logpopupHandler }) => {
     const buttontestcolor = '#fff'
     const buttontestcolor2 = '#000'
 
+    const textcolor1 = "#2A2A2A"
+    const textcolor2 = "#fff"
+
     const image = require('@images/dashboard/whitecalendar.png')
     const image2 = require('@images/dashboard/blackcalendar.png')
 
@@ -48,6 +51,7 @@ const Nextduedate: FC<NextduedateProps> = ({ data, logpopupHandler }) => {
                 let buttonColors: string[]
                 let buttonTextColors: string
                 let images: any
+                let textcolor: string
 
 
                 if (gapDays <= 7) {
@@ -55,16 +59,19 @@ const Nextduedate: FC<NextduedateProps> = ({ data, logpopupHandler }) => {
                     buttonColors = buttoncolor1
                     buttonTextColors = buttontestcolor2
                     images = image
+                    textcolor = textcolor2
                 } else if (gapDays <= 30) {
                     cardColors = cardcolor2
                     buttonColors = buttoncolor2
                     buttonTextColors = buttontestcolor
                     images = image2
+                    textcolor = textcolor1
                 } else {
                     cardColors = cardcolor3
                     buttonColors = buttoncolor3
                     buttonTextColors = buttontestcolor
                     images = image2
+                    textcolor = textcolor1
                 }
                 return (
                     <Card style={styles.section_card} cardStyle={styles.section_card_inner} key={idx} >
@@ -79,18 +86,17 @@ const Nextduedate: FC<NextduedateProps> = ({ data, logpopupHandler }) => {
                                 <View style={styles.section_card_inner_content_item}>
                                     <View style={styles.grpsection}>
                                         <View>
-                                            <Text style={styles.section_card_text1}>Next</Text>
-                                            <Text style={styles.section_card_text2}>Due date</Text>
+                                            <Text style={[styles.section_card_text1, { color: textcolor }]}>Next</Text>
+                                            <Text style={[styles.section_card_text2, { color: textcolor }]}>Due date <Text style={[styles.section_card_text3, { color: textcolor }]}>({item.name})</Text></Text>
                                         </View>
                                         <View>
                                             <Image source={images} style={styles.image} />
                                         </View>
                                     </View>
-                                    <Text style={styles.section_card_text3}>{item.name}</Text>
 
-                                    <Text style={styles.section_card_text4}>
+                                    <Text style={[styles.section_card_text4, { color: textcolor }]}>
                                         {dueDate.getDate()}{' '}
-                                        <Text style={styles.section_card_span}>
+                                        <Text style={[styles.section_card_span, { color: textcolor }]}>
                                             {dueDate.toLocaleString('default', {
                                                 month: 'long',
                                                 year: 'numeric',
@@ -98,7 +104,7 @@ const Nextduedate: FC<NextduedateProps> = ({ data, logpopupHandler }) => {
                                         </Text>
                                     </Text>
 
-                                    <Text style={styles.section_card_text5}>{item.amount} /- </Text>
+                                    <Text style={[styles.section_card_text5, { color: textcolor }]}>{item.amount} /- </Text>
                                 </View>
                             </View>
                         </LinearGradient>
@@ -107,6 +113,7 @@ const Nextduedate: FC<NextduedateProps> = ({ data, logpopupHandler }) => {
                             locations={[0, 1]}
                             start={{ x: 1, y: 0 }}
                             end={{ x: 0, y: 1 }}
+                            style={styles.button_gradient}
                         >
                             <TouchableOpacity style={styles.logbutton} onPress={logpopupHandler} >
                                 <Text style={[styles.logbutton_text, { color: buttonTextColors }]}>Log Payment</Text>
@@ -162,14 +169,16 @@ const styles = StyleSheet.create({
     },
     section_card_text2: {
         color: '#fff',
-        fontFamily: "PlusJakartaSans-Bold",
+        fontWeight: "bold",
         fontSize: 14,
+        marginBottom: 14,
+
     },
     section_card_text3: {
         color: '#fff',
         fontStyle: "italic",
         fontSize: 14,
-        marginBottom: 11
+        fontWeight: "normal"
     },
     section_card_text4: {
         color: '#fff',
@@ -199,7 +208,8 @@ const styles = StyleSheet.create({
     },
     section_card_inner: {
         padding: '0%',
-        flexDirection: "column"
+        flexDirection: "column",
+        borderWidth: 0,
     },
     image: {
         width: 24,
@@ -222,6 +232,13 @@ const styles = StyleSheet.create({
         fontFamily: "PlusJakartaSans-Bold",
         fontSize: 14,
         textAlign: "center"
+    },
+    button_gradient: {
+        shadowColor: 'rgba(0,0,0,0.25)',
+        shadowOffset: { width: 0, height: -4 },
+        shadowOpacity: 1,
+        shadowRadius: 4,
+        elevation: 5,
     }
 
 })

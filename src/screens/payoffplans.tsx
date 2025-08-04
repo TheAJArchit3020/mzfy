@@ -57,23 +57,23 @@ const PayoffplansScreen: FC = () => {
   ]
 
   const upcommingdebtsList = [
-    { name: "Car loan", amount: 20000, date: "20/02/2025" },
-    { name: "Car loan", amount: 20000, date: "20/02/2025" },
-    { name: "Car loan", amount: 20000, date: "20/02/2025" },
-    { name: "Car loan", amount: 20000, date: "20/02/2025" },
-    { name: "Car loan", amount: 20000, date: "20/02/2025" },
+    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
+    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
+    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
+    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
+    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
   ];
   return (
     <>
 
-      {/* <ScrollView> */}
+      <ScrollView showsVerticalScrollIndicator={false} >
         <View style={styles.container}>
 
           {/* section1 */}
           <Strategycard title={'Debt Snowball'} subtitle={'Debt Snowball'} onPress={strategypopupHandler} />
 
           {/* section2 */}
-          {/* <View style={styles.cardcontainer}>
+          <View style={styles.cardcontainer}>
             <View style={styles.cardgroup}  >
               <TextCard2 text1={'Estimated payoff'} text2={'Mar'} text3={'2027'} text1style={styles.text1} text2style={styles.text2_1} text3style={styles.text2_2} cardStyle={styles.cardstyle}></TextCard2>
 
@@ -83,22 +83,22 @@ const PayoffplansScreen: FC = () => {
               <TextCard text1={'Estimated payoff'} text2={'₹. 80,000/-'} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
               <TextCard text1={'You save'} text2={'₹. 12,000/-'} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
             </View>
-          </View> */}
+          </View>
 
           {/* section3 */}
-          {/* <View style={styles.cardcontainer2}>
+          <View style={styles.cardcontainer2}>
             <Text style={styles.cardcontainer2_title}>Step wise Plan</Text>
-            <UpcomingDebtsWithScrollbar data={upcommingdebtsList} />
-          </View> */}
+            <UpcomingDebtsWithScrollbar data={upcommingdebtsList} style={styles.payoffcard} showicon={false} />
+          </View>
           {/* section4 */}
-          {/* <View style={styles.cardcontainer3}>
+          <View style={styles.cardcontainer3}>
             <Text style={styles.cardcontainer3_title}>Order Wise Debt payoff</Text>
             <View style={styles.cardcontainer3_inner}>
-              <Payoffcard data={data} source={require('@images/payoffplan/rightarrowwhite.png')} />
+              <Payoffcard data={data} source={require('@images/payoffplan/rightarrowwhite.png')}  />
             </View>
-          </View> */}
+          </View>
 
-          <View style={styles.cardcontainer3}>
+          {/* <View style={styles.cardcontainer3}>
             <View style={styles.cardcontainer3_content}>
               <Text style={styles.cardcontainer3_title}>Order Wise Debt payoff</Text>
               <View style={styles.info_content}>
@@ -109,7 +109,7 @@ const PayoffplansScreen: FC = () => {
             <View style={styles.cardcontainer3_inner}>
               <DraggablePayoffcard data={data} source={require('@images/payoffplan/edit.png')} />
             </View>
-          </View>
+          </View> */}
 
 
           {/* section5 */}
@@ -126,29 +126,8 @@ const PayoffplansScreen: FC = () => {
             <Text style={styles.buttontext}>Export pdf</Text>
           </Button>
         </View>
-      {/* </ScrollView> */}
-      {/* log payment popup */}
-      <Popup
-        visible={show}
-        onClose={() => setShow(false)}
-        titleStyle={styles.popuptitle}
-        containerStyle={styles.popupContainerStyle}
-        buttonText='Select strategy'
-        color1="#006FFF"
-        color2="#006FFF"
-        buttonTextStyle={styles.buttonTextStyle}
-      >
-        <View style={styles.inputgroup}>
-          {strategies.map(opt => (
-            <StrategyRadioCard
-              key={opt.value}
-              option={opt}
-              selectedValue={choice}
-              onSelect={setChoice}
-            />
-          ))}
-        </View>
-      </Popup>
+      </ScrollView>
+    
     </>
   );
 };
@@ -192,7 +171,7 @@ const styles = StyleSheet.create({
   },
   text2: {
     color: '#fff',
-    fontSize: 30,
+    fontSize: 40,
     fontFamily: 'PlusJakartaSans-Bold',
     textAlign: "center"
 
@@ -204,13 +183,13 @@ const styles = StyleSheet.create({
   },
   text2_1: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: 'PlusJakartaSans-Bold',
     textAlign: "center"
   },
   text2_2: {
     color: '#fff',
-    fontSize: 30,
+    fontSize: 40,
     fontFamily: 'PlusJakartaSans-Bold',
     textAlign: "center"
   },
@@ -226,7 +205,7 @@ const styles = StyleSheet.create({
   },
 
   cardcontainer3_inner: {
-    marginHorizontal: 5
+    marginHorizontal: 0
   },
 
   cardcontainer2_title: {
@@ -329,6 +308,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 3
+  },
+  payoffcard:{
+    overflow:"hidden"
   }
 
 });

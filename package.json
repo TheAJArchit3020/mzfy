@@ -23,6 +23,7 @@
     "react-native-drop-shadow": "^1.0.3",
     "react-native-gifted-charts": "^1.4.63",
     "react-native-heroicons": "^4.0.0",
+    "react-native-infinite-wheel-picker": "^1.0.0",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-pie-chart": "^4.0.1",
     "react-native-responsive-screens": "^1.0.1",

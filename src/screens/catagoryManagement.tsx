@@ -31,7 +31,6 @@ const CategoryManagement = () => {
     {
       id: "1",
       name: "Food",
-
       color: "#FF6B6B",
       budget: "₹5,000",
     },
@@ -62,12 +61,12 @@ const CategoryManagement = () => {
 
   const handleAddCategory = () => {
     if (newCategoryName.trim() && newCategoryBudget.trim()) {
-      const newCategory: Category = {
-        id: Date.now().toString(),
-        name: newCategoryName,
-        color: selectedColor,
-        budget: `₹${newCategoryBudget}`,
-      };
+             const newCategory: Category = {
+         id: Date.now().toString(),
+         name: newCategoryName,
+         color: selectedColor,
+         budget: `₹${newCategoryBudget}`,
+       };
       setCategories([...categories, newCategory]);
       setNewCategoryName("");
       setNewCategoryBudget("");
@@ -110,12 +109,10 @@ const CategoryManagement = () => {
           {categories.map((category) => (
             <View key={category.id} style={styles.categoryItem}>
               <View style={styles.categoryLeft}>
-                <Text style={styles.nameText}>{category.name}</Text>
                 <View
                   style={[styles.colorBar, { backgroundColor: category.color }]}
                 />
               </View>
-
               <View style={styles.budgetInput}>
                 <Text style={styles.budgetText}>{category.budget}</Text>
               </View>
@@ -129,6 +126,8 @@ const CategoryManagement = () => {
             <View style={styles.nameInputContainer}>
               <TextInput
                 style={styles.nameInput}
+                placeholder="Category name"
+                placeholderTextColor="#888"
                 value={newCategoryName}
                 onChangeText={setNewCategoryName}
               />
@@ -144,6 +143,8 @@ const CategoryManagement = () => {
             <View style={styles.budgetInputContainer}>
               <TextInput
                 style={styles.budgetInputField}
+                placeholder="Budget"
+                placeholderTextColor="#888"
                 value={newCategoryBudget}
                 onChangeText={setNewCategoryBudget}
                 keyboardType="numeric"
@@ -251,15 +252,13 @@ const styles = StyleSheet.create({
   categoryItem: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: hp(1),
+    marginBottom: hp(2),
     paddingVertical: hp(1),
   },
   categoryLeft: {
-    width: wp(50),
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
+    flex: 1,
   },
   categoryIcon: {
     width: wp(6),
@@ -271,6 +270,7 @@ const styles = StyleSheet.create({
     width: wp(8),
     height: hp(1),
     borderRadius: wp(0.5),
+    marginRight: wp(3),
   },
   budgetInput: {
     backgroundColor: "transparent",
@@ -283,17 +283,13 @@ const styles = StyleSheet.create({
   },
   budgetText: {
     color: "#fff",
-    fontSize: wp(4),
-    fontFamily: "PlusJakartaSans-Medium",
+    fontSize: wp(3.5),
+    fontFamily: "PlusJakartaSans-Regular",
     textAlign: "center",
   },
-  nameText: {
-    color: "#fff",
-    fontSize: wp(4),
-    fontFamily: "PlusJakartaSans-Medium",
-    textAlign: "center",
+  addCategorySection: {
+    marginTop: hp(2),
   },
-  addCategorySection: {},
   addCategoryRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -307,7 +303,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     borderWidth: 1,
     borderColor: "#BCBCBC",
-    borderRadius: wp(4),
+    borderRadius: wp(2),
     paddingHorizontal: wp(3),
     paddingVertical: hp(1.5),
     color: "#fff",
@@ -315,6 +311,8 @@ const styles = StyleSheet.create({
     fontFamily: "PlusJakartaSans-Regular",
   },
   colorPickerButton: {
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: wp(2),
     padding: wp(2),
     alignItems: "center",
     justifyContent: "center",

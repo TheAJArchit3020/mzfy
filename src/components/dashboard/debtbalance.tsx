@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
     section_card: {
         width: '48%',
         height: 168,
+        borderWidth: 0.5
     },
     section_card_text: {
         color: '#fff',
@@ -73,6 +74,6 @@ const styles = StyleSheet.create({
     section_card_inner_content_item3: {
         flexDirection: "row",
         alignItems: "center",
-        gap: '10%'
+        gap: '4%'
     }
 })
