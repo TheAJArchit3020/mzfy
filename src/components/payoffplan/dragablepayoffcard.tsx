@@ -13,6 +13,7 @@ interface payoffProps {
     showicon?: any
     showcustom?: any
     onDataChange?: (newData: any[]) => void
+    onDragStatusChange?: (isDragging: boolean) => void;
 }
 
 const DraggablePayoffcard: FC<payoffProps> = ({
@@ -22,7 +23,8 @@ const DraggablePayoffcard: FC<payoffProps> = ({
     cardcontainerstyle,
     showicon = true,
     showcustom = false,
-    onDataChange
+    onDataChange,
+    onDragStatusChange
 }) => {
     const [localData, setLocalData] = useState(data);
 
@@ -31,7 +33,10 @@ const DraggablePayoffcard: FC<payoffProps> = ({
     const renderItem = ({ item, drag, isActive }: any) => {
         return (
             <View style={[styles.cardcontainer_inner, isActive && styles.activeItem]}>
-                <TouchableOpacity onPressIn={drag} style={styles.dragHandle}>
+                <TouchableOpacity onPressIn={() => {
+                    onDragStatusChange?.(true);
+                    drag();
+                }} style={styles.dragHandle}>
                     <Image source={require('@images/payoffplan/drag.png')} style={styles.dragimage} />
                 </TouchableOpacity>
                 <Card style={[styles.section_card, cardstyle]} cardStyle={styles.section_card_inner}>
@@ -67,6 +72,7 @@ const DraggablePayoffcard: FC<payoffProps> = ({
 
     const handleDragEnd = ({ data: newData }: { data: any[] }) => {
         setLocalData(newData);
+        onDragStatusChange?.(false);
         if (onDataChange) {
             onDataChange(newData);
         }
@@ -83,6 +89,8 @@ const DraggablePayoffcard: FC<payoffProps> = ({
                     onDragEnd={handleDragEnd}
                     containerStyle={styles.flatListContainer}
                     contentContainerStyle={styles.flatListContent}
+                    dragItemOverflow={true}
+
                 />
                 {/* </NestableScrollContainer> */}
             </GestureHandlerRootView>

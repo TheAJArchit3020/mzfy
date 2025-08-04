@@ -42,6 +42,8 @@ const Createcustomplan: FC = () => {
         { id: 2, name: 'House Loan', minamt: 500, apr: '9.5%', payoffprogress: 25.5, time: 'Completes on Jul 2 2026 (9 month 1 days)' },
         { id: 3, name: 'Bike Loan', minamt: 500, apr: '10.5%', payoffprogress: 45.5, time: 'Completes on Jul 2 2026 (9 month 1 days)' },
     ]);
+    const [scrollEnabled, setScrollEnabled] = useState(true);
+
 
     const showsetPopup = () => {
         setShow(true);
@@ -72,10 +74,10 @@ const Createcustomplan: FC = () => {
             end={{ x: 0, y: 1 }}
         >
             <Header title='Create Custom Plan' />
-            {/* <ScrollView showsVerticalScrollIndicator={false}> */}
+            <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={scrollEnabled}>
 
                 <View style={styles.container}>
-                    {/* <View style={styles.cardcontainer}>
+                    <View style={styles.cardcontainer}>
                         <View style={styles.cardgroup}  >
                             <TextCard2 text1={'Estimated payoff'} text2={'Mar'} text3={'2027'} text1style={styles.text1} text2style={styles.text2_1} text3style={styles.text2_2} cardStyle={styles.cardstyle}></TextCard2>
 
@@ -85,7 +87,7 @@ const Createcustomplan: FC = () => {
                             <TextCard text1={'Estimated payoff'} text2={'₹. 80,000/-'} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
                             <TextCard text1={'You save'} text2={'₹. 12,000/-'} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
                         </View>
-                    </View> */}
+                    </View>
 
                     <View style={styles.cardcontainer3}>
                         <View style={styles.cardcontainer3_content}>
@@ -109,6 +111,7 @@ const Createcustomplan: FC = () => {
                                 showicon={false}
                                 showcustom={true}
                                 onDataChange={handleDataChange}
+                                onDragStatusChange={(isDragging) => setScrollEnabled(!isDragging)}
                             />
                         </View>
                     </View>
@@ -123,7 +126,7 @@ const Createcustomplan: FC = () => {
                     </View>
                 </View>
 
-            {/* </ScrollView> */}
+            </ScrollView>
 
             {/* log payment popup */}
             <Popup
