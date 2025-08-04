@@ -33,7 +33,7 @@ const Routing: FC = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName="loginscreen"
+                initialRouteName="registrationlayoutscreen"
                 screenOptions={{
                     headerShown: false,
                 }}

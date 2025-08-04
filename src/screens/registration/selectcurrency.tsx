@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
-import Dropdown from '@components/reusable/dropdown'
+import { WheelPicker } from 'react-native-infinite-wheel-picker';
+import { widthToDP } from 'react-native-responsive-screens';
 
 const Selectcurrency = () => {
   interface CurrencyOption {
@@ -34,18 +35,37 @@ const Selectcurrency = () => {
     { id: 20, country: "New Zealand", label: "New Zealand (NZD $)", value: "NZD $", symbol: "$" },
   ];
 
-  const [selectedCurrency, setSelectedCurrency] = useState('')
+  const wheelData = currencyOptions.map(c => c.value); // array of labels
+
+  const [selectedCurrency, setSelectedCurrency] = useState<CurrencyOption | null>(null)
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const onChange = (index: number, value: string) => {
+    setSelectedIndex(index);
+    const option = currencyOptions[index];
+    setSelectedCurrency(option);
+    console.log('picked currency:', option);
+  };
 
   return (
     <View style={styles.container}>
-      <Dropdown
-        options={currencyOptions}
-        value={selectedCurrency}
-        onChange={(val) => setSelectedCurrency(val)}
-        placeholder='Select currency'
-        maxheight={300}
-        dropdownoptionstyle={styles.dropdownoptionstyle}
+      <WheelPicker
+        infiniteScroll={false}
+        initialSelectedIndex={0}
+        data={wheelData}
+        restElements={3}
+        elementHeight={50}
+        onChangeValue={onChange}
+        selectedIndex={selectedIndex}
+        containerStyle={styles.containerStyle}
+        selectedLayoutStyle={styles.selectedLayoutStyle}
+        elementTextStyle={styles.elementTextStyle}
       />
+      {/* {selectedCurrency && (
+        <Text style={{ marginTop: 12, color: '#fff' }}>
+          Selected: {selectedCurrency.country} — {selectedCurrency.value}
+        </Text>
+      )} */}
     </View>
   )
 }
@@ -54,9 +74,21 @@ export default Selectcurrency
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20
+    padding: 20,
+    alignItems:"center",
+    justifyContent:"center",
+    flex:1
   },
-  dropdownoptionstyle: {
-    backgroundColor: "none"
-  }
+  selectedLayoutStyle: {
+    backgroundColor: '#454545',
+    borderRadius: widthToDP(2),
+  },
+  containerStyle: {
+    width: 120
+  },
+  elementTextStyle: {
+    fontSize: 16,
+    color: "#fff",
+    fontFamily: "PlusJakartaSans-Bold"
+  },
 })
