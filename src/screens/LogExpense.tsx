@@ -79,68 +79,79 @@ const LogExpense = () => {
       end={{ x: 0, y: 1 }}
     >
       <Header title="Log expense" />
-      <View style={styles.container}>
-        {/* Spent Amount Input */}
-        <Input
-          label="Spent amount"
-          value={spentAmount}
-          onChangeContent={setSpentAmount}
-          type="number"
-          iconAbove={<Text style={styles.currencySymbol}>₹</Text>}
-          inputWrapperStyle={styles.inputWrapper}
-        />
-
-        {/* Date Input */}
-        <Input
-          label="Date"
-          editable={false}
-          value={selectedDate}
-          onChangeContent={setSelectedDate}
-          placeholder="Select date"
-          inputWrapperStyle={styles.inputWrapper}
-        >
-          <Button onPress={openDatePicker}>
-            <CalendarDaysIcon size={hp(3)} color="#e5e5f7" />
-          </Button>
-        </Input>
-
-        {showDatePicker && (
-          <DateTimePicker
-            value={currentDate}
-            mode="date"
-            display={Platform.OS === "ios" ? "spinner" : "default"}
-            onChange={handleDateChange}
-          />
-        )}
-
-        {/* Category Dropdown */}
-        <CustomDropdown
-          label="Category"
-          options={categories}
-          value={selectedCategory}
-          onChange={(value) => setSelectedCategory(value as string)}
-          style={styles.dropdownStyle}
-        />
-
-        {/* Note Input */}
-        <Input
-          label="Add a note...."
-          value={note}
-          onChangeContent={setNote}
-          multiline
-          numberOfLines={4}
-          textAlignVertical="top"
-          inputWrapperStyle={[styles.inputWrapper, styles.noteInputWrapper]}
-        />
-      </View>
-      {/* Log Expense Button */}
-      <TouchableOpacity
-        style={styles.logButton}
-        onPress={handleLogExpense}
-        activeOpacity={0.8}
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.logButtonText}>Log expense</Text>
-      </TouchableOpacity>
+        <View style={styles.container}>
+          {/* Spent Amount Input */}
+          <Input
+            label="Spent amount"
+            containerStyle={styles.inputContainer}
+            value={spentAmount}
+            style={styles.inputStyle}
+            onChangeContent={setSpentAmount}
+            type="number"
+            iconAbove={<Text style={styles.currencySymbol}>₹</Text>}
+            inputWrapperStyle={styles.inputWrapper}
+          />
+
+          {/* Date Input */}
+          <Input
+            label="Date"
+            editable={false}
+            containerStyle={styles.inputContainer}
+            value={selectedDate}
+            style={styles.inputStyle}
+            onChangeContent={setSelectedDate}
+            placeholder="Select date"
+            inputWrapperStyle={styles.inputWrapper}
+          >
+            <Button onPress={openDatePicker}>
+              <CalendarDaysIcon size={hp(3)} color="#e5e5f7" />
+            </Button>
+          </Input>
+
+          {showDatePicker && (
+            <DateTimePicker
+              value={currentDate}
+              mode="date"
+              display={Platform.OS === "ios" ? "spinner" : "default"}
+              onChange={handleDateChange}
+            />
+          )}
+
+          {/* Category Dropdown */}
+          <CustomDropdown
+            label="Category"
+            options={categories}
+            value={selectedCategory}
+            onChange={(value) => setSelectedCategory(value as string)}
+            style={styles.dropdownStyle}
+          />
+
+          {/* Note Input */}
+          <Input
+            label="Add a note...."
+            value={note}
+            onChangeContent={setNote}
+            style={styles.inputStyle}
+            multiline
+            numberOfLines={4}
+            textAlignVertical="top"
+            containerStyle={styles.inputContainer}
+            inputWrapperStyle={[styles.inputWrapper, styles.noteInputWrapper]}
+          />
+        </View>
+        {/* Log Expense Button */}
+        <TouchableOpacity
+          style={styles.logButton}
+          onPress={handleLogExpense}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.logButtonText}>Log expense</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </LinearGradient>
   );
 };
@@ -149,14 +160,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: wp(5),
+    gap: hp(2),
+  },
+  inputContainer: {
+    marginBottom: hp(0),
+  },
+  inputStyle: {
+    fontFamily: "PlusJakartaSans-Medium",
+    color: "#F7F7F7",
+    fontSize: wp(4.5),
   },
   scrollView: {
     flex: 1,
-  },
-  scrollContent: {
-    paddingHorizontal: wp(5),
-    paddingTop: hp(2),
-    paddingBottom: hp(5),
   },
   inputWrapper: {
     backgroundColor: "transparent",
@@ -174,9 +189,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   dropdownStyle: {
-    backgroundColor: "transparent",
-    borderWidth: 1,
-    borderColor: "#BCBCBC",
     borderRadius: wp(4),
     paddingHorizontal: wp(4),
     paddingVertical: hp(1.5),

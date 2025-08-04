@@ -34,7 +34,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   options,
   value,
   onChange,
-  placeholder = "Select...",
+  placeholder = "",
   style,
   label,
   maxHeight = 200,
@@ -80,7 +80,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   };
 
   return (
-    <View style={{ marginBottom: hp(2) }}>
+    <View style={styles.container}>
       {label && <Text style={styles.label}>{label}</Text>}
       <View style={styles.dropdownContainer}>
         <TouchableOpacity
@@ -123,26 +123,29 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
               style={styles.scrollView}
             >
               {options.map((item) => (
-                <TouchableOpacity
-                  key={String(item.value)}
-                  style={[
-                    styles.option,
-                    item.value === value && styles.selectedOption,
-                  ]}
-                  onPress={() => {
-                    onChange(item.value);
-                    setVisible(false);
-                  }}
-                >
-                  <Text
+                <>
+                  <TouchableOpacity
+                    key={String(item.value)}
                     style={[
-                      styles.optionText,
-                      item.value === value && styles.selectedOptionText,
+                      styles.option,
+                      item.value === value && styles.selectedOption,
                     ]}
+                    onPress={() => {
+                      onChange(item.value);
+                      setVisible(false);
+                    }}
                   >
-                    {item.label}
-                  </Text>
-                </TouchableOpacity>
+                    <Text
+                      style={[
+                        styles.optionText,
+                        item.value === value && styles.selectedOptionText,
+                      ]}
+                    >
+                      {item.label}
+                    </Text>
+                  </TouchableOpacity>
+                  <View style={styles.divider} />
+                </>
               ))}
             </ScrollView>
             {contentHeight > containerHeight && containerHeight > 0 && (
@@ -160,6 +163,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
 };
 
 const styles = StyleSheet.create({
+  container: {},
   dropdownContainer: {
     zIndex: 1000,
   },
@@ -187,18 +191,13 @@ const styles = StyleSheet.create({
     fontFamily: "PlusJakartaSans-Bold",
   },
   optionsContainer: {
-    position: "absolute",
-    top: "100%",
-    left: 0,
-    right: 0,
+    marginTop: hp(2),
     maxHeight: hp(25),
     backgroundColor: "#1a1a2e",
+    paddingVertical: hp(2),
     borderRadius: wp(4),
     borderWidth: 1,
     borderColor: "#BCBCBC",
-    borderTopWidth: 0,
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
     zIndex: 1001,
     elevation: 5,
     shadowColor: "#000",
@@ -210,22 +209,18 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
   },
   scrollView: {
-    flex:1,
     borderRadius: wp(4),
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
-
-    borderWidth:2,
-    borderColor:'#fff'
+    borderTopLeftRadius: wp(4),
+    borderTopRightRadius: wp(4),
   },
   option: {
-    paddingVertical: hp(1.5),
-    paddingHorizontal: wp(4),
-    borderBottomWidth: 1,
-    borderBottomColor: "#2a2a3e",
+    width: "85%",
+    paddingBottom: hp(1),
+    alignSelf: "center",
   },
   selectedOption: {
     backgroundColor: "#2a2a3e",
+    width: "100%",
   },
   optionText: {
     fontSize: wp(4.5),
@@ -235,15 +230,23 @@ const styles = StyleSheet.create({
   selectedOptionText: {
     color: "#fff",
     fontFamily: "PlusJakartaSans-Bold",
+    paddingLeft: wp(7),
+  },
+  divider: {
+    width: "85%",
+    height: 1,
+    backgroundColor: "#F7F7F7",
+    alignSelf: "center",
   },
   scrollIndicatorContainer: {
     position: "absolute",
-    right: wp(1),
-    top: wp(1),
-    bottom: wp(1),
-    width: wp(1.5),
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    right: wp(2.5),
+    top: wp(2),
+    bottom: wp(2),
+    width: wp(0.8),
+    backgroundColor: "#D9D9D9",
     borderRadius: wp(0.75),
+    overflow: "hidden",
   },
   scrollIndicator: {
     width: "100%",
