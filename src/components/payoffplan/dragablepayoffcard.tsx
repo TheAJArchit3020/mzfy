@@ -3,12 +3,7 @@ import React, { FC, useState } from 'react'
 import ProgressBar from '@components/reusable/progressbar'
 import Card from '@components/reusable/card'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import DraggableFlatList, {
-    NestableScrollContainer,
-    ScaleDecorator,
-    ShadowDecorator,
-    OpacityDecorator,
-} from "react-native-draggable-flatlist"
+import DraggableFlatList from "react-native-draggable-flatlist"
 
 interface payoffProps {
     data: any,
