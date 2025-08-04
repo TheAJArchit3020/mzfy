@@ -49,6 +49,7 @@ const Selectcurrency = () => {
 
   return (
     <View style={styles.container}>
+      
       <WheelPicker
         infiniteScroll={false}
         initialSelectedIndex={0}
