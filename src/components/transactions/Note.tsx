@@ -12,7 +12,7 @@ import {
 } from "react-native-responsive-screens";
 import { BookmarkIcon, PencilIcon } from "react-native-heroicons/solid";
 import LinearGradient from "react-native-linear-gradient";
-import Button from "@components/reusable/Button";
+import Button from "@components/reusable/button";
 
 interface NoteProps {
   onNoteChange?: (note: string) => void;

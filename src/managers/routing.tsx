@@ -10,7 +10,8 @@ import Transaction from "@screens/transaction";
 import Expenses from "@screens/Expenses";
 import LogExpense from "@screens/LogExpense";
 import catagoryManagement from "@screens/catagoryManagement";
-import IncomeDetails from "@screens/RegistartionScreens/income";
+import IncomeDetails from "@screens/registration/personalincome";
+import AddDebts from "@screens/registration/adddebts";
 
 import Layout from "@screens/layout";
 import Particulardebtdetail from "@screens/particulardebtdetail";
@@ -42,7 +43,7 @@ const Routing: FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="layoutscreen"
+        initialRouteName="registrationlayoutscreen"
         screenOptions={{
           headerShown: false,
         }}

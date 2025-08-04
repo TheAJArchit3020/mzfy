@@ -18,7 +18,7 @@ import CustomDropdown from "@components/reusable/CustomDropdown";
 import { CalendarDaysIcon } from "react-native-heroicons/solid";
 import LinearGradient from "react-native-linear-gradient";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import Button from "@components/reusable/Button";
+import Button from "@components/reusable/button";
 const LogExpense = () => {
   const [spentAmount, setSpentAmount] = useState("");
   const [selectedDate, setSelectedDate] = useState("");

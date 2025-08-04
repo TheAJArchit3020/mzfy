@@ -11,7 +11,7 @@ import {
   widthToDP as wp,
   heightToDP as hp,
 } from "react-native-responsive-screens";
-import Button from "@components/reusable/Button";
+import Button from "@components/reusable/button";
 import { paymentStatus } from "src/commonTypes";
 import { RootStackParams } from "@managers/routing";
 import { StackScreenProps } from "@react-navigation/stack";

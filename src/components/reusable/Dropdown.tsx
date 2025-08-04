@@ -1,4 +1,4 @@
-import React, { memo, useState, useRef, useEffect } from 'react';
+import React, { memo, useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -14,9 +14,9 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
   ScrollView,
-} from 'react-native';
-import { ChevronDownIcon, ChevronUpIcon } from 'react-native-heroicons/solid';
-import { widthToDP } from 'react-native-responsive-screens';
+} from "react-native";
+import { ChevronDownIcon, ChevronUpIcon } from "react-native-heroicons/solid";
+import { widthToDP } from "react-native-responsive-screens";
 
 interface Option {
   label: string;
@@ -31,23 +31,25 @@ interface DropdownProps {
   style?: any;
   label?: string;
   maxheight?: any;
-  dropdownoptionstyle?: any
+  dropdownoptionstyle?: any;
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
   options = [],
   value,
   onChange,
-  placeholder = 'Select',
+  placeholder = "Select",
   style,
   label,
   maxheight = 130,
-  dropdownoptionstyle
+  dropdownoptionstyle,
 }) => {
   const [visible, setVisible] = useState(false);
-  const [triggerLayout, setTriggerLayout] = useState<LayoutRectangle | null>(null);
+  const [triggerLayout, setTriggerLayout] = useState<LayoutRectangle | null>(
+    null
+  );
   const triggerRef = useRef<any>(null);
-  const selected = options.find(opt => opt.value === value);
+  const selected = options.find((opt) => opt.value === value);
 
   // measure after layout when opening
   const measureTrigger = () => {
@@ -73,7 +75,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   // calculate dropdown position
   const dropdownStyle: any = {};
   if (triggerLayout) {
-    dropdownStyle.position = 'absolute';
+    dropdownStyle.position = "absolute";
     dropdownStyle.left = Math.max(16, triggerLayout.x); // some padding
     dropdownStyle.width = triggerLayout.width;
     dropdownStyle.top = triggerLayout.y + triggerLayout.height + 4; // gap of 4
@@ -85,27 +87,25 @@ const Dropdown: React.FC<DropdownProps> = ({
     dropdownStyle.marginTop = 8;
     dropdownStyle.marginHorizontal = 16;
   }
-  const [containerHeight, setContainerHeight] = useState(0)
-  const [contentHeight, setContentHeight] = useState(1)
-  const [scrollY, setScrollY] = useState(0)
+  const [containerHeight, setContainerHeight] = useState(0);
+  const [contentHeight, setContentHeight] = useState(1);
+  const [scrollY, setScrollY] = useState(0);
 
   const thumbHeight = Math.max(
-    (containerHeight / contentHeight) * 100,  // base thumb on 100px track
+    (containerHeight / contentHeight) * 100, // base thumb on 100px track
     20
-  )
-  const maxThumbPos = 100 - thumbHeight
-  const scrollableRange = Math.max(contentHeight - containerHeight, 1)
-  const thumbTop = (scrollY / scrollableRange) * maxThumbPos
+  );
+  const maxThumbPos = 100 - thumbHeight;
+  const scrollableRange = Math.max(contentHeight - containerHeight, 1);
+  const thumbTop = (scrollY / scrollableRange) * maxThumbPos;
 
   const onContainerLayout = (e: LayoutChangeEvent) =>
-    setContainerHeight(e.nativeEvent.layout.height)
+    setContainerHeight(e.nativeEvent.layout.height);
 
-  const onContentSizeChange = (_: number, h: number) =>
-    setContentHeight(h)
+  const onContentSizeChange = (_: number, h: number) => setContentHeight(h);
 
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) =>
-    setScrollY(e.nativeEvent.contentOffset.y)
-
+    setScrollY(e.nativeEvent.contentOffset.y);
 
   return (
     <View style={{ marginBottom: 16 }}>
@@ -117,17 +117,15 @@ const Dropdown: React.FC<DropdownProps> = ({
           style,
           visible && {
             borderBottomLeftRadius: 0,
-            borderBottomRightRadius: 0
-          }]}
+            borderBottomRightRadius: 0,
+          },
+        ]}
         onPress={() => setVisible(true)}
         activeOpacity={0.7}
       >
         <View style={styles.innerRow}>
           <Text
-            style={[
-              styles.selectedText,
-              { color: selected ? '#FFF' : '#FFF' },
-            ]}
+            style={[styles.selectedText, { color: selected ? "#FFF" : "#FFF" }]}
             numberOfLines={1}
           >
             {selected ? selected.label : placeholder}
@@ -151,7 +149,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         />
 
         {/* positioned list */}
-        <View style={[styles.modalContent, dropdownStyle, dropdownoptionstyle]}  >
+        <View style={[styles.modalContent, dropdownStyle, dropdownoptionstyle]}>
           <View onLayout={onContainerLayout}>
             <ScrollView
               onContentSizeChange={onContentSizeChange}
@@ -200,33 +198,32 @@ const Dropdown: React.FC<DropdownProps> = ({
 const styles = StyleSheet.create({
   dropdown: {
     borderWidth: 0.5,
-    borderColor: '#C0C0C0',
+    borderColor: "#C0C0C0",
     borderRadius: widthToDP(3),
     paddingHorizontal: 12,
     paddingVertical: 14,
-
   },
   label: {
     marginBottom: 4,
     fontSize: 14,
   },
   innerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   selectedText: {
     flex: 1,
     fontSize: 16,
-    color: '#fff',
-    fontFamily: 'PlusJakartaSans-Bold',
+    color: "#fff",
+    fontFamily: "PlusJakartaSans-Bold",
   },
   arrow: {
     marginLeft: 8,
   },
   capture: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   },
   modalContent: {
     borderTopWidth: 0,
@@ -234,38 +231,36 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingVertical: 4,
     borderWidth: 0.5,
-    borderColor: '#C0C0C0',
+    borderColor: "#C0C0C0",
     maxHeight: 80,
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
     marginTop: -10,
-
   },
   option: {
     marginHorizontal: 20,
     paddingVertical: 14,
     borderBottomWidth: 0.5,
-    borderBottomColor: '#FFFFFF',
+    borderBottomColor: "#FFFFFF",
     width: "90%",
-    
   },
   optionText: {
-    color: '#FFF',
+    color: "#FFF",
     fontSize: 12,
-    fontFamily: 'PlusJakartaSans-SemiBold',
+    fontFamily: "PlusJakartaSans-SemiBold",
   },
   scrollbarTrack: {
-    position: 'absolute',
+    position: "absolute",
     right: 14,
     width: 2,
-    backgroundColor: '#D9D9D9',
+    backgroundColor: "#D9D9D9",
     borderRadius: 4,
   },
   scrollbarThumb: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     width: 2,
-    backgroundColor: '#006FFF',
+    backgroundColor: "#006FFF",
     borderRadius: 4,
   },
 });

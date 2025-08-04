@@ -1,5 +1,11 @@
-import React, {useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet,ViewStyle } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ViewStyle,
+} from "react-native";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -43,7 +49,7 @@ const DateNavigator: React.FC<DateNavigatorProps> = ({
   };
 
   return (
-    <View style={[styles.container,containerStyle]}>
+    <View style={[styles.container, containerStyle]}>
       <View style={styles.navigationBar}>
         <TouchableOpacity
           style={styles.arrowButton}
@@ -78,6 +84,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     borderRadius: wp(3),
     width: wp(100),
+    paddingHorizontal: wp(5),
   },
   arrowButton: {
     padding: wp(2),

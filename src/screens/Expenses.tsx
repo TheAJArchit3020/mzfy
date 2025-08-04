@@ -9,7 +9,7 @@ import {
   heightToDP as hp,
 } from "react-native-responsive-screens";
 import GraphComponent from "@components/reusable/graph";
-import Button from "@components/reusable/Button";
+import Button from "@components/reusable/button";
 import { PencilIcon, PlusIcon } from "react-native-heroicons/solid";
 import ExpenseByDateList from "@components/Expenses/ExpenseByDateList";
 import Legend from "@components/reusable/Legend";
@@ -126,7 +126,6 @@ const Expenses: FC<ExpensesProps> = ({}) => {
       >
         <View style={styles.container}>
           <DateNavigator
-            containerStyle={{ marginHorizontal: wp(5) }}
             onDateChange={handleDateChange}
             initialDate={selectedDate}
           />
@@ -262,7 +261,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     gap: hp(2),
-    paddingTop: hp(4),
   },
   cardsContainer: {
     paddingHorizontal: wp(5),

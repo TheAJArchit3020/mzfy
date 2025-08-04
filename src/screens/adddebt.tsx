@@ -11,12 +11,7 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Input from "../components/reusable/Input";
-<<<<<<< HEAD:src/screens/DebtAdd.tsx
-import Dropdown from "../components/reusable/dropdown";
-import Button from "@components/reusable/Button";
-=======
-import Button from "../components/reusable/button";
->>>>>>> 5980a1971813680518bd92b7bedabf4f08c99324:src/screens/adddebt.tsx
+import Button from "@components/reusable/button";
 import Header from "@components/reusable/header";
 import {
   widthToDP as wp,
