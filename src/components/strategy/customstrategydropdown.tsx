@@ -14,8 +14,9 @@ import {
     NativeSyntheticEvent,
     NativeScrollEvent,
     ScrollView,
+    Image,
 } from 'react-native';
-import { ChevronDownIcon, ChevronUpIcon } from 'react-native-heroicons/solid';
+import { ChevronDownIcon, ChevronUpIcon, PlusCircleIcon } from 'react-native-heroicons/solid';
 import LinearGradient from 'react-native-linear-gradient';
 import { widthToDP } from 'react-native-responsive-screens';
 
@@ -182,6 +183,17 @@ const CustomStrategyDropdown: React.FC<DropdownProps> = ({
                                         <Text style={styles.optionText}>{item.label}</Text>
                                     </TouchableOpacity>
                                 ))}
+                                <TouchableOpacity
+                                    key={9}
+                                    style={styles.buttonoption}
+                                    onPress={() => {
+                                        // setVisible(false);
+                                    }}
+                                    activeOpacity={0.7}
+                                >
+                                    <PlusCircleIcon color={'#fff'} size={13} />
+                                    <Text style={styles.optionText}>Create custom plan</Text>
+                                </TouchableOpacity>
                             </ScrollView>
                             <View
                                 style={[
@@ -283,6 +295,19 @@ const styles = StyleSheet.create({
         backgroundColor: '#006FFF',
         borderRadius: 4,
     },
+    buttonoption: {
+        backgroundColor: "#006FFF",
+        borderRadius: 100,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 5,
+        padding: 6,
+        width: "auto",
+        alignSelf: "flex-start",
+        paddingHorizontal: 10,
+        marginHorizontal: 20,
+        marginVertical: 10
+    }
 
 });
 

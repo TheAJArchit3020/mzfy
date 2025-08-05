@@ -22,7 +22,8 @@ export interface PopupProps {
     buttonText?: string
     color1?: string
     color2?: string
-    buttonTextStyle?:any
+    buttonTextStyle?: any
+    isDisable?: any
 }
 
 const Popup: React.FC<PopupProps> = ({
@@ -35,7 +36,8 @@ const Popup: React.FC<PopupProps> = ({
     buttonText = 'OK',
     color1 = '#B2FF59',
     color2 = '#00C853',
-    buttonTextStyle
+    buttonTextStyle,
+    isDisable = false
 }) => {
     return (
         <Modal
@@ -60,8 +62,8 @@ const Popup: React.FC<PopupProps> = ({
                         start={{ x: 1, y: 0 }}
                         end={{ x: 0, y: 1 }}
                     >
-                        <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-                            <Text style={[styles.closeButtonText , buttonTextStyle]}>{buttonText}</Text>
+                        <TouchableOpacity onPress={onClose} disabled={isDisable} style={[styles.closeButton, isDisable && { backgroundColor: "#666666" }]}>
+                            <Text style={[styles.closeButtonText, buttonTextStyle]}>{buttonText}</Text>
                         </TouchableOpacity>
                     </LinearGradient>
                 </View>

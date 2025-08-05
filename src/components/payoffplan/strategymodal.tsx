@@ -1,5 +1,6 @@
 // components/StrategyRadioCard.tsx
-import React from 'react';
+import Customstrategydropdown from '@components/strategy/customstrategydropdown';
+import React, { useState } from 'react';
 import {
     View,
     Text,
@@ -8,6 +9,7 @@ import {
     ViewStyle,
     TextStyle,
 } from 'react-native';
+
 
 export type StrategyOption = {
     title: string; // e.g., "Debt Avalanche"
@@ -40,8 +42,22 @@ const StrategyRadioCard: React.FC<Props> = ({
     infoLabelStyle,
     infoValueStyle,
 }) => {
+    const [customPlan, setCustomPlan] = useState('')
     const isSelected = selectedValue === option.value;
     const disabled = !!option.disabled;
+
+    interface CustomOption {
+        id: number;
+        label: string;
+        value: string;
+    }
+
+    const customOptions: CustomOption[] = [
+        { id: 1, label: "Custom plan 1", value: "Custom1" },
+        { id: 2, label: "Custom2", value: "Custom2" },
+
+
+    ];
 
     return (
         <Pressable
@@ -71,11 +87,22 @@ const StrategyRadioCard: React.FC<Props> = ({
                     </Text>
                     {option.subtitle ? (
                         <Text style={[styles.subtitle, subtitleStyle]} numberOfLines={1}>
-                           ({option.subtitle})
+                            ({option.subtitle})
                         </Text>
                     ) : null}
                 </View>
             </View>
+
+            {option.value === 'custom' && (
+                <Customstrategydropdown
+                    style={styles.dropdown}
+                    options={customOptions}
+                    value={customPlan}
+                    onChange={(val: any) => setCustomPlan(val)}
+                    placeholder="custom plan"
+                    maxheight={140}
+                />
+            )}
 
 
             <View style={styles.infoRow}>
@@ -143,12 +170,12 @@ const styles = StyleSheet.create({
         height: RADIO_SIZE,
         borderRadius: RADIO_SIZE / 2,
         borderWidth: 2,
-        borderColor: '#ccc',
+        borderColor: '#fff',
         justifyContent: 'center',
         alignItems: 'center',
     },
     outerSelected: {
-        borderColor: '#4CB5F9',
+        borderColor: '#fff',
     },
     inner: {
         width: INNER_SIZE,
@@ -158,8 +185,8 @@ const styles = StyleSheet.create({
     },
     titleGroup: {
         flex: 1,
-        flexDirection:"row",
-        alignItems:"center",
+        flexDirection: "row",
+        alignItems: "center",
         gap: 5
     },
     title: {
@@ -195,4 +222,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#F7F7F7',
         marginTop: 18,
     },
+    dropdown: {
+        overflow: "hidden",
+        borderRadius: 10,
+        // borderWidth: 0,
+    }
 });

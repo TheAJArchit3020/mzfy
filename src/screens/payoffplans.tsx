@@ -9,16 +9,13 @@ import GraphComponent from '@components/reusable/graph';
 import TextCard2 from '@components/reusable/textcard2';
 import Popup from '@components/reusable/popup';
 import StrategyRadioCard from '@components/payoffplan/strategymodal';
-import DraggablePayoffcard from '@components/payoffplan/dragablepayoffcard';
 
 
 const PayoffplansScreen: FC = () => {
 
   const [show, setShow] = useState(false);
 
-  const strategypopupHandler = () => {
-    setShow(true);
-  };
+
 
   const strategies = [
     {
@@ -48,6 +45,12 @@ const PayoffplansScreen: FC = () => {
   ];
 
   const [choice, setChoice] = useState<string | null>(null);
+
+  const strategypopupHandler = () => setShow(true);
+  const applyStrategy = () => {
+    console.log('Chosen strategy:', choice);
+    setShow(false);
+  };
 
 
   const data = [
@@ -94,7 +97,7 @@ const PayoffplansScreen: FC = () => {
           <View style={styles.cardcontainer3}>
             <Text style={styles.cardcontainer3_title}>Order Wise Debt payoff</Text>
             <View style={styles.cardcontainer3_inner}>
-              <Payoffcard data={data} source={require('@images/payoffplan/rightarrowwhite.png')}  />
+              <Payoffcard data={data} source={require('@images/payoffplan/rightarrowwhite.png')} />
             </View>
           </View>
 
@@ -127,7 +130,35 @@ const PayoffplansScreen: FC = () => {
           </Button>
         </View>
       </ScrollView>
-    
+
+      {/* log payment popup */}
+
+      <Popup
+        visible={show}
+        onClose={() => setShow(false)}
+        containerStyle={styles.popupContainerStyle}
+        buttonText="Select strategy"
+        color1="#006FFF"
+        color2="#006FFF"
+        buttonTextStyle={styles.buttonTextStyle}
+        isDisable={choice === null && true}
+      >
+        {strategies.map(option => (
+          <StrategyRadioCard
+            key={option.value}
+            option={option}
+            selectedValue={choice}
+            onSelect={setChoice}
+            containerStyle={styles.containerStyle}
+            titleStyle={styles.inputgroup_text}
+            subtitleStyle={styles.subtitleStyle}
+            infoLabelStyle={styles.labelStyle}
+            infoValueStyle={styles.descriptionStyle}
+          />
+        ))}
+
+      </Popup>
+
     </>
   );
 };
@@ -257,6 +288,7 @@ const styles = StyleSheet.create({
   popupContainerStyle: {
     backgroundColor: "#2A2A2A",
     width: '90%',
+    height: 'auto'
   },
   popuptitle: {
     color: '#fff',
@@ -274,16 +306,21 @@ const styles = StyleSheet.create({
   },
   labelStyle: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 10,
     fontFamily: 'PlusJakartaSans-Bold',
 
+  },
+  subtitleStyle: {
+    color: '#fff',
+    fontSize: 10,
+    fontFamily: 'PlusJakartaSans-regular',
   },
   containerStyle: {
     paddingHorizontal: 20
   },
   descriptionStyle: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 10,
     fontFamily: 'PlusJakartaSans-Regular',
   },
   buttonTextStyle: {
@@ -309,8 +346,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 3
   },
-  payoffcard:{
-    overflow:"hidden"
+  payoffcard: {
+    overflow: "hidden"
   }
 
 });
