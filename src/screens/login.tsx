@@ -3,8 +3,23 @@ import React, { FC } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import Header from '@components/reusable/header'
 import Button from '@components/reusable/button'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RootStackParams } from '@managers/routing'
+import { useNavigation } from '@react-navigation/native'
+
+
+type navProps = NativeStackNavigationProp<RootStackParams>
 
 const Login: FC = () => {
+
+    const navigation = useNavigation<navProps>();
+
+    const navigationHandler = () => {
+        navigation.navigate('registrationlayoutscreen', {
+            index: 0
+        })
+    }
+
     return (
 
         <LinearGradient
@@ -24,12 +39,14 @@ const Login: FC = () => {
                     <Text style={styles.section1_text}>Moneezify</Text>
                 </View>
                 <View style={styles.section2} >
-                    <Button style={styles.button}>
+                    <Button style={styles.button} onPress={navigationHandler} >
                         <Image source={require('@images/login/google.png')} style={styles.loginimage} />
                         <Text style={styles.buttontext} >Signup with google</Text>
                     </Button>
+
                     <Text style={styles.buttontext}>Or</Text>
-                    <Button style={styles.button}>
+
+                    <Button style={styles.button} onPress={navigationHandler}>
                         <Image source={require('@images/login/apple.png')} style={styles.loginimage} />
                         <Text style={styles.buttontext}>Signup with apple</Text>
                     </Button>

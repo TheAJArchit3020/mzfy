@@ -13,10 +13,14 @@ import {
   heightToDP as hp,
 } from "react-native-responsive-screens";
 import { ChevronRightIcon } from "react-native-heroicons/outline";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParams } from "@managers/routing";
+import { useNavigation } from "@react-navigation/native";
 
-const { width } = Dimensions.get("window");
+type navProps = NativeStackNavigationProp<RootStackParams>
 
 const Intro = () => {
+  const navigation = useNavigation<navProps>();
   const [currentIndex, setCurrentIndex] = useState(0);
   const introData = [
     {
@@ -59,11 +63,13 @@ const Intro = () => {
       setCurrentIndex(nextIndex);
     } else {
       console.log("Intro completed");
+      navigation.navigate('loginscreen')
     }
   };
 
   const handleSkip = () => {
     console.log("Intro skipped");
+    navigation.navigate('loginscreen')
   };
 
   const currentSlide = introData[currentIndex];

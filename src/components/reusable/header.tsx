@@ -9,8 +9,10 @@ import { ArrowLeftIcon } from "react-native-heroicons/outline";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParams } from "@managers/routing";
 import { useNavigation } from "@react-navigation/native";
+
+
 interface headerProps {
-  title: string;
+  title?: string;
 }
 type navProp = NativeStackNavigationProp<RootStackParams>;
 
@@ -60,7 +62,7 @@ const styles = StyleSheet.create({
     fontFamily: "PlusJakartaSans-Bold",
     color: "#fff",
     fontSize: wp(5),
-    marginTop:Platform.OS ==='android' ? -5 : 0
+    marginTop: Platform.OS === 'android' ? -5 : 0
   },
 });
 

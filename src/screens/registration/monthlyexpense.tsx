@@ -118,7 +118,8 @@ const styles = StyleSheet.create({
     gap: 16
   },
   input: {
-    fontFamily: "PlusJakartaSans-Bold"
+    fontFamily: "PlusJakartaSans-Bold",
+    fontSize: widthToDP(3.5)
   }
 
 })

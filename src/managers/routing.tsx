@@ -12,18 +12,27 @@ import Selectstrategy from "@screens/selectstrategy";
 import Profile from "@screens/profile";
 import Login from "@screens/login";
 import Paywall from "@screens/paywall";
+import Splash from "@screens/splash";
+import Intro from "@screens/intro";
+import ExpensesOverView from "@screens/registration/expensesOverView";
 
 
 export type RootStackParams = {
+
+    splashscreen: undefined
+    introscreen: undefined
     layoutscreen: undefined
+    expensesoverviewscreen: undefined
     adddebtscreen: undefined
     particulardebtdetailscreen: undefined
     createcustomplanscreen: undefined
-    registrationlayoutscreen: undefined
+    registrationlayoutscreen: { index: number }
     selectstrategyscreen: undefined
     profilescreen: undefined
     loginscreen: undefined
     paywallscreen: undefined
+
+
 };
 
 const Stack = createNativeStackNavigator<RootStackParams>();
@@ -33,13 +42,18 @@ const Routing: FC = () => {
 
     return (
         <NavigationContainer>
+
             <Stack.Navigator
-                initialRouteName="layoutscreen"
+                initialRouteName="splashscreen"
                 screenOptions={{
                     headerShown: false,
                 }}
             >
+                <Stack.Screen name="splashscreen" component={Splash} />
+                <Stack.Screen name="introscreen" component={Intro} />
                 <Stack.Screen name="registrationlayoutscreen" component={Registrationlayout} />
+                <Stack.Screen name="expensesoverviewscreen" component={ExpensesOverView} />
+
                 <Stack.Screen name="layoutscreen" component={Layout} />
 
                 <Stack.Screen name="adddebtscreen" component={DebtAdd} />
@@ -51,6 +65,8 @@ const Routing: FC = () => {
                 <Stack.Screen name="paywallscreen" component={Paywall} />
 
             </Stack.Navigator>
+
+
         </NavigationContainer>
     );
 };

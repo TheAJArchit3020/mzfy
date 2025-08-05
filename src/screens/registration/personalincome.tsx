@@ -18,6 +18,7 @@ const IncomeDetails = () => {
         value={personalIncome}
         onChangeContent={setPersonalIncome}
         placeholder="Eg. ₹ 30,000"
+        placeholderTextColor={'#C6C6C6'}
         label="Personal income"
         type="number"
         style={styles.input}
@@ -54,6 +55,7 @@ const IncomeDetails = () => {
           value={TotalIncome}
           onChangeContent={setTotalIncome}
           placeholder="Eg. ₹ 30,000"
+          placeholderTextColor={'#C6C6C6'}
           label="Total income"
           type="number"
           containerStyle={styles.inputContainer}
@@ -73,6 +75,7 @@ const styles = StyleSheet.create({
   },
   input: {
     fontFamily: "PlusJakartaSans-Bold",
+    fontSize: wp(3.5)
   },
   inputWrapperStyle: {
     paddingVertical: hp(1),
