@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         overflow: "hidden",
         borderWidth: 0,
-        height: 160
+        height: 175
     },
     section_card_inner: {
         padding: 0,
