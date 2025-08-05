@@ -1,7 +1,6 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
 import React, { FC, useEffect } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
-import Header from '@components/reusable/header'
 import Button from '@components/reusable/button'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParams } from '@managers/routing'
@@ -30,8 +29,8 @@ const Login: FC = () => {
         GoogleSignin.configure({
             webClientId:
                 '300899465301-sedenisladme72hus6n9stvvg2ofkpl1.apps.googleusercontent.com',
-            // iosClientId:
-            //     '50935739709-psqo37bijd5t1r6bv0snu24pjagsushm.apps.googleusercontent.com',
+            iosClientId:
+                '300899465301-q4gh41im4l4r8irbn2gr0pumnk0g78jq.apps.googleusercontent.com',
             offlineAccess: true,
         });
     }, []);
