@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { FC } from 'react'
 import Card from '@components/reusable/card'
 import LinearGradient from 'react-native-linear-gradient'
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         overflow: "hidden",
         borderWidth: 0,
-        height: 175
+        height: Platform.OS ==='android' ? 175 : 155
     },
     section_card_inner: {
         padding: 0,
