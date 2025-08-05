@@ -11,6 +11,7 @@ const config = {
     alias: {
       'react-native-reanimated': require.resolve('react-native-reanimated'),
     },
+    sourceExts: ['js', 'jsx', 'ts', 'tsx', 'json', 'mjs'],
   },
 };
 
