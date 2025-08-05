@@ -13,6 +13,7 @@ import catagoryManagement from "@screens/catagoryManagement";
 import IncomeDetails from "@screens/registration/personalincome";
 import AddDebts from "@screens/registration/adddebts";
 
+import Feedback from "@screens/Feedback";
 import Layout from "@screens/layout";
 import Particulardebtdetail from "@screens/particulardebtdetail";
 import Createcustomeplan from "@screens/createcustomplan";
@@ -44,6 +45,7 @@ export type RootStackParams = {
   Splash: undefined;
   AddDebts: undefined;
   AllExpenses: undefined;
+  Feedback: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParams>();
@@ -52,7 +54,7 @@ const Routing: FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="AllExpenses"
+        initialRouteName="Feedback"
         screenOptions={{
           headerShown: false,
         }}
@@ -81,6 +83,7 @@ const Routing: FC = () => {
           component={catagoryManagement}
         />
         <Stack.Screen name="AllExpenses" component={AllExpenses} />
+        <Stack.Screen name="Feedback" component={Feedback} />
       </Stack.Navigator>
     </NavigationContainer>
   );

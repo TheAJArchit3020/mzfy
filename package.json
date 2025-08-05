@@ -29,6 +29,7 @@
     "react-native-infinite-wheel-picker": "^1.0.0",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-pie-chart": "^4.0.1",
+    "react-native-rating": "^2.0.4",
     "react-native-responsive-screens": "^1.0.1",
     "react-native-safe-area-context": "^5.5.2",
     "react-native-screens": "^4.13.1",
