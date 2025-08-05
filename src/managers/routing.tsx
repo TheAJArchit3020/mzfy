@@ -34,7 +34,7 @@ const Routing: FC = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName="createcustomplanscreen"
+                initialRouteName="layoutscreen"
                 screenOptions={{
                     headerShown: false,
                 }}

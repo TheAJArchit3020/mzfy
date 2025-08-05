@@ -59,10 +59,10 @@ const Particulardebtdetail = () => {
                     <View style={styles.section2}>
                         <View style={styles.section2_header_content}>
                             <Text style={styles.section2_header_content_title}>Transactions</Text>
-                            <Button style={styles.section2_header_content_button}>
+                            {/* <Button style={styles.section2_header_content_button}>
                                 <Image source={require('@images/payoffplan/edit.png')} style={styles.editimage} />
                                 <Text style={styles.section2_header_content_button_text}>Edit debt</Text>
-                            </Button>
+                            </Button> */}
                         </View>
                         <View style={styles.section2_body}>
                             <SegmentButton items={["Upcoming transactions", "Paid transactions"]}
@@ -95,7 +95,7 @@ const Particulardebtdetail = () => {
                 </View>
             </ScrollView>
             {/* log payment popup */}
-            {/* <Popup
+            <Popup
                 visible={show}
                 title="Paid amount"
                 onClose={() => setShow(false)}
@@ -107,7 +107,7 @@ const Particulardebtdetail = () => {
                     <TextInput style={styles.input} />
                     <Text style={styles.inputgroup_text}>/-</Text>
                 </View>
-            </Popup> */}
+            </Popup>
         </LinearGradient>
     )
 }
