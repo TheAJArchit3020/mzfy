@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, Platform, StyleSheet, Text, View } from 'react-native'
 import React, { FC, useEffect } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import Button from '@components/reusable/button'
@@ -9,7 +9,9 @@ import {
     GoogleSignin,
     statusCodes,
 } from '@react-native-google-signin/google-signin';
+import { AppleAuthProvider, getAuth, signInWithCredential } from '@react-native-firebase/auth';
 
+import { appleAuth } from '@invertase/react-native-apple-authentication';
 
 type navProps = NativeStackNavigationProp<RootStackParams>
 
@@ -49,7 +51,37 @@ const Login: FC = () => {
                 googleId: userInfo?.data?.user?.id,
             };
 
-            console.log("handleGoogleSignIn data : ",data)
+            console.log("handleGoogleSignIn data : ", data)
+        } catch (err) {
+            console.log(err)
+        }
+
+
+    };
+
+    // google sign in
+    const handleAppleSignIn = async () => {
+        console.log('handleGoogleSignIn clicked !!');
+        try {
+            // Start the sign-in request
+            const appleAuthRequestResponse = await appleAuth.performRequest({
+                requestedOperation: appleAuth.Operation.LOGIN,
+
+                requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
+            });
+
+            // Ensure Apple returned a user identityToken
+            if (!appleAuthRequestResponse.identityToken) {
+                throw new Error('Apple Sign-In failed - no identify token returned');
+            }
+            console.log('appleAuthRequestResponse', appleAuthRequestResponse);
+
+            // Create a Firebase credential from the response
+            const { identityToken, nonce } = appleAuthRequestResponse;
+            const appleCredential = AppleAuthProvider.credential(identityToken, nonce);
+
+            console.log('appleCredential', appleCredential);
+
         } catch (err) {
             console.log(err)
         }
@@ -81,12 +113,19 @@ const Login: FC = () => {
                         <Text style={styles.buttontext} >Signup with google</Text>
                     </Button>
 
-                    <Text style={styles.buttontext}>Or</Text>
+                    {
+                        Platform.OS === "ios" && (
+                            <>
+                                <Text style={styles.buttontext}>Or</Text>
 
-                    <Button style={styles.button} onPress={navigationHandler}>
-                        <Image source={require('@images/login/apple.png')} style={styles.loginimage} />
-                        <Text style={styles.buttontext}>Signup with apple</Text>
-                    </Button>
+                                <Button style={styles.button} onPress={handleAppleSignIn}>
+                                    <Image source={require('@images/login/apple.png')} style={styles.loginimage} />
+                                    <Text style={styles.buttontext}>Signup with apple</Text>
+                                </Button>
+                            </>
+                        )
+
+                    }
                 </View>
             </View>
         </LinearGradient>
