@@ -12,6 +12,8 @@ import ProgressBar from '@components/reusable/progressbar'
 import GraphComponent from '@components/reusable/graph'
 import TextCard from '@components/reusable/textcard'
 import Card from '@components/reusable/card'
+import Input from '@components/reusable/Input'
+import { widthToDP } from 'react-native-responsive-screens'
 
 const Particulardebtdetail = () => {
 
@@ -102,11 +104,27 @@ const Particulardebtdetail = () => {
                 titleStyle={styles.popuptitle}
                 containerStyle={styles.popupContainerStyle}
             >
-                <View style={styles.inputgroup}>
-                    <Text style={styles.inputgroup_text}>{"\u20B9"}</Text>
-                    <TextInput style={styles.input} />
-                    <Text style={styles.inputgroup_text}>/-</Text>
-                </View>
+                <Input
+                    value={''}
+                    onChangeContent={(val) =>
+                        console.log(val)
+                    }
+                    keyboardType="numeric"
+                    textHeader="₹"
+                    children={
+                        <Text
+                            style={{
+                                color: "#fff",
+                                fontSize: widthToDP(4.5),
+                                marginLeft: widthToDP(1),
+                            }}
+                        >
+                            /-
+                        </Text>
+                    }
+                    style={styles.popupinput}
+                    inputWrapperStyle={styles.inputWrapperStyle}
+                />
             </Popup>
         </LinearGradient>
     )
@@ -240,5 +258,25 @@ const styles = StyleSheet.create({
     balancegrp1: {
         flexDirection: "column",
         gap: 13
+    },
+    popuptitle: {
+        color: "#fff",
+        fontFamily: "PlusJakartaSans-Bold",
+        fontSize: 14,
+        paddingTop: 20,
+        paddingHorizontal: 20,
+    },
+    popupContainerStyle: {
+        backgroundColor: "#2A2A2A",
+    },
+
+    cardstyle1: {
+        overflow: "hidden"
+    },
+    popupinput: {
+        marginHorizontal: 5
+    },
+    inputWrapperStyle: {
+        marginHorizontal: 20
     }
 })
