@@ -44,7 +44,7 @@ const Routing: FC = () => {
         <NavigationContainer>
 
             <Stack.Navigator
-                initialRouteName="splashscreen"
+                initialRouteName="loginscreen"
                 screenOptions={{
                     headerShown: false,
                 }}

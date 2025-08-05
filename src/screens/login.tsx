@@ -1,11 +1,15 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import Header from '@components/reusable/header'
 import Button from '@components/reusable/button'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParams } from '@managers/routing'
 import { useNavigation } from '@react-navigation/native'
+import {
+    GoogleSignin,
+    statusCodes,
+} from '@react-native-google-signin/google-signin';
 
 
 type navProps = NativeStackNavigationProp<RootStackParams>
@@ -15,10 +19,44 @@ const Login: FC = () => {
     const navigation = useNavigation<navProps>();
 
     const navigationHandler = () => {
-        navigation.navigate('registrationlayoutscreen', {
-            index: 0
-        })
+        handleGoogleSignIn();
+        // navigation.navigate('registrationlayoutscreen', {
+        //     index: 0
+        // })
     }
+
+
+    useEffect(() => {
+        GoogleSignin.configure({
+            webClientId:
+                '300899465301-sedenisladme72hus6n9stvvg2ofkpl1.apps.googleusercontent.com',
+            // iosClientId:
+            //     '50935739709-psqo37bijd5t1r6bv0snu24pjagsushm.apps.googleusercontent.com',
+            offlineAccess: true,
+        });
+    }, []);
+
+
+    // google sign in
+    const handleGoogleSignIn = async () => {
+        console.log('handleGoogleSignIn clicked !!');
+        try {
+            await GoogleSignin.signOut();
+            await GoogleSignin.hasPlayServices();
+            const userInfo = await GoogleSignin.signIn();
+
+            const data = {
+                email: userInfo?.data?.user?.email,
+                googleId: userInfo?.data?.user?.id,
+            };
+
+            console.log("handleGoogleSignIn data : ",data)
+        } catch (err) {
+            console.log(err)
+        }
+
+
+    };
 
     return (
 
