@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Input from "../components/reusable/Input";
-import Button from "../components/reusable/button";
+import Button from "@components/reusable/button";
 import Header from "@components/reusable/header";
 import {
   widthToDP as wp,
@@ -19,7 +19,11 @@ import {
 } from "react-native-responsive-screens";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import ColorPicker from "react-native-wheel-color-picker";
-import { CalendarIcon, EyeDropperIcon } from "react-native-heroicons/outline";
+import {
+  CalendarDaysIcon,
+  EyeDropperIcon,
+  InformationCircleIcon,
+} from "react-native-heroicons/solid";
 import { Text } from "react-native";
 
 const initialState = {
@@ -53,6 +57,7 @@ const DebtAdd: FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const [showAprInfo, setShowAprInfo] = useState(false);
   const [enableKeyBoardAvoidingView, setenableKeyBoardAvoidingView] =
     useState(false);
 
@@ -99,6 +104,7 @@ const DebtAdd: FC = () => {
                   dispatch({ type: "SET_FIELD", field: "debtName", value: val })
                 }
                 placeholder="Eg.Education Loan"
+                placeholderTextColor={"#C6C6C6"}
               />
               <Input
                 label="Creditor Name"
@@ -111,6 +117,7 @@ const DebtAdd: FC = () => {
                   })
                 }
                 placeholder="Eg.Axis Bank"
+                placeholderTextColor={"#C6C6C6"}
               />
               <Input
                 label="Principal"
@@ -122,6 +129,7 @@ const DebtAdd: FC = () => {
                     value: val,
                   })
                 }
+                placeholderTextColor={"#C6C6C6"}
                 textHeader="₹"
               />
               <Input
@@ -135,6 +143,7 @@ const DebtAdd: FC = () => {
               <Input
                 label="Monthly Minimum (EMI)"
                 value={state.minPayment}
+                placeholderTextColor={"#C6C6C6"}
                 onChangeContent={(val) =>
                   dispatch({
                     type: "SET_FIELD",
@@ -144,35 +153,56 @@ const DebtAdd: FC = () => {
                 }
                 textHeader="₹"
               />
-              <Input
-                label="APR"
-                value={state.apr}
-                onChangeContent={(val) =>
-                  dispatch({ type: "SET_FIELD", field: "apr", value: val })
-                }
-                placeholder="Eg. 8"
-                keyboardType="numeric"
-                children={
-                  <Text
-                    style={{
-                      color: "#fff",
-                      fontSize: wp(4.5),
-                      marginLeft: wp(1),
-                    }}
-                  >
-                    %
-                  </Text>
-                }
-              />
+              <View style={styles.aprContainer}>
+                <Input
+                  label="APR"
+                  icon={
+                    <InformationCircleIcon
+                      size={hp(2)}
+                      color={"#fff"}
+                      style={{ marginBottom: hp(1.5) }}
+                    />
+                  }
+                  onIconPress={() => setShowAprInfo((prev) => !prev)}
+                  iconDisabled={false}
+                  value={state.apr}
+                  onChangeContent={(val) =>
+                    dispatch({ type: "SET_FIELD", field: "apr", value: val })
+                  }
+                  placeholder="Eg. 8"
+                  keyboardType="numeric"
+                  placeholderTextColor={"#C6C6C6"}
+                  children={
+                    <Text
+                      style={{
+                        color: "#fff",
+                        fontSize: wp(4.5),
+                        marginLeft: wp(1),
+                      }}
+                    >
+                      %
+                    </Text>
+                  }
+                />
+                {showAprInfo && (
+                  <View style={styles.aprInfoContainer}>
+                    <Text style={styles.aprInfoText}>
+                      APR (Annual Percentage Rate) shows the yearly cost of your
+                      loan, including interest and fees.
+                    </Text>
+                  </View>
+                )}
+              </View>
               <Input
                 label="Next due date"
                 value={state.nextDueDate}
-                onChangeContent={() => { }}
+                onChangeContent={() => {}}
                 placeholder="Eg.02/08/2025"
                 editable={false}
+                placeholderTextColor={"#C6C6C6"}
                 children={
                   <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                    <CalendarIcon
+                    <CalendarDaysIcon
                       color="#fff"
                       size={wp(5)}
                       style={{ marginLeft: wp(1) }}
@@ -206,8 +236,9 @@ const DebtAdd: FC = () => {
               <Input
                 label="Tag colour"
                 value={state.tagColor}
-                onChangeContent={() => { }}
+                onChangeContent={() => {}}
                 placeholder="Select a tag colour"
+                placeholderTextColor={"#C6C6C6"}
                 editable={false}
                 children={
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -255,10 +286,10 @@ const DebtAdd: FC = () => {
                   </View>
                 </View>
               </Modal>
-              <Button onPress={() => { }} style={styles.saveButton}>
+              <Button onPress={() => {}} style={styles.saveButton}>
                 <Text style={styles.buttonText}>Save</Text>
               </Button>
-              <Button onPress={() => { }} style={styles.cancelButton}>
+              <Button onPress={() => {}} style={styles.cancelButton}>
                 <Text style={styles.buttonText}>Cancel</Text>
               </Button>
             </View>
@@ -345,6 +376,23 @@ const styles = StyleSheet.create({
     height: wp(3),
     borderRadius: wp(1.5),
     marginRight: wp(1),
+  },
+  aprContainer: {},
+  aprInfoContainer: {
+    position: "absolute",
+    backgroundColor: "#2A2A2A",
+    paddingVertical: hp(1),
+    paddingHorizontal: wp(5),
+    borderRadius: wp(8),
+    borderWidth: 1,
+    borderColor: "#F7F7F7",
+    top: hp(-6.5),
+  },
+  aprInfoText: {
+    color: "#fff",
+    fontSize: wp(3),
+    fontFamily: "PlusJakartaSans-Bold",
+    textAlign: "left",
   },
 });
 

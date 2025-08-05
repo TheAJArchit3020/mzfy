@@ -5,6 +5,8 @@ import {
   TextInputProps,
   View,
   Text,
+  TouchableOpacity,
+  ViewStyle,
 } from "react-native";
 import {
   widthToDP as wp,
@@ -18,9 +20,13 @@ interface InputProps extends Omit<TextInputProps, "onChangeText" | "value"> {
   textHeader?: string;
   type?: "text" | "number";
   style?: any;
+  icon?: React.ReactNode;
+  containerStyle?: ViewStyle;
   inputWrapperStyle?: any;
   children?: React.ReactNode;
   iconAbove?: React.ReactNode;
+  onIconPress?: () => void; // <-- NEW Handler
+  iconDisabled?: boolean; // <-- NEW Disabled Prop
 }
 
 const Input: React.FC<InputProps> = ({
@@ -29,15 +35,30 @@ const Input: React.FC<InputProps> = ({
   label,
   textHeader,
   type = "text",
+  containerStyle,
   inputWrapperStyle,
+  icon,
   style,
   children,
   iconAbove,
+  onIconPress,
+  iconDisabled = true,
   ...rest
 }) => {
   return (
-    <View style={{ marginBottom: hp(2) }}>
-      {label && <Text style={styles.label}>{label}</Text>}
+    <View style={[styles.container, containerStyle]}>
+      <View style={styles.lableContainer}>
+        {label && <Text style={styles.label}>{label}</Text>}
+        {icon && (
+          <TouchableOpacity
+            disabled={iconDisabled}
+            onPress={onIconPress}
+            activeOpacity={iconDisabled ? 1 : 0.6}
+          >
+            {icon}
+          </TouchableOpacity>
+        )}
+      </View>
       <View style={[styles.inputWrapper, inputWrapperStyle]}>
         {iconAbove && (
           <View style={styles.iconAboveContainer}>{iconAbove}</View>
@@ -59,6 +80,9 @@ const Input: React.FC<InputProps> = ({
 };
 
 const styles = StyleSheet.create({
+  container: {
+    marginBottom: hp(2),
+  },
   inputWrapper: {
     backgroundColor: "transparent",
     borderWidth: 0.5,
@@ -69,6 +93,12 @@ const styles = StyleSheet.create({
     paddingVertical: hp(1.5),
     justifyContent: "center",
     marginTop: 0,
+  },
+  lableContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    gap: wp(1),
   },
   iconAboveContainer: {
     alignItems: "center",

@@ -1,4 +1,10 @@
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import React, { FC, useState } from "react";
 import Debtbalance from "@components/dashboard/debtbalance";
 import Debtpaid from "@components/dashboard/debtpaid";
@@ -11,8 +17,10 @@ import Input from "@components/reusable/Input";
 import { MagnifyingGlassIcon } from "react-native-heroicons/outline";
 import Payoffcard from "@components/payoffplan/payoffcard";
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParams } from "@managers/routing";
 
-
+type NavigationProp = NativeStackNavigationProp<RootStackParams, "DebtsScreen">;
 const inProgressDebts = [
   {
     name: "Car Loan",
@@ -42,14 +50,12 @@ const inProgressDebts = [
     apr: 12.5,
     payoffprogress: 70,
   },
-
-
 ];
 
 const completedDebts = [
   {
     name: "Credit Card Debt",
-     time: "Completes on Jul 2 2026 (9 month 1 days)",
+    time: "Completes on Jul 2 2026 (9 month 1 days)",
     minamt: 0,
     apr: 15.0,
     payoffprogress: 100,
@@ -63,7 +69,7 @@ const completedDebts = [
   },
   {
     name: "Motorcycle Loan",
-     time: "Completes on Jul 2 2026 (9 month 1 days)",
+    time: "Completes on Jul 2 2026 (9 month 1 days)",
     minamt: 0,
     apr: 9.5,
     payoffprogress: 100,
@@ -77,7 +83,7 @@ const completedDebts = [
   },
   {
     name: "Electronics Loan",
-     time: "Completes on Jul 2 2026 (9 month 1 days)",
+    time: "Completes on Jul 2 2026 (9 month 1 days)",
     minamt: 0,
     apr: 14.5,
     payoffprogress: 100,
@@ -91,7 +97,7 @@ const completedDebts = [
   },
   {
     name: "Emergency Loan",
-     time: "Completes on Jul 2 2026 (9 month 1 days)",
+    time: "Completes on Jul 2 2026 (9 month 1 days)",
     minamt: 0,
     apr: 16.2,
     payoffprogress: 100,
@@ -105,19 +111,15 @@ const completedDebts = [
   },
   {
     name: "Tax Loan",
-     time: "Completes on Jul 2 2026 (9 month 1 days)",
+    time: "Completes on Jul 2 2026 (9 month 1 days)",
     minamt: 0,
     apr: 13.5,
     payoffprogress: 100,
   },
-  
 ];
 
-
-
 const DebtsScreen: FC = () => {
-
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp>();
   const [searchKeyword, setSeacthKeyword] = useState("");
   const [selectedButton, setSelectedButton] = useState(0);
 
@@ -154,9 +156,13 @@ const DebtsScreen: FC = () => {
         />
         <ScrollView
           showsVerticalScrollIndicator={false}
-          style={{marginHorizontal: 10}}
+          style={{ marginHorizontal: 10 }}
         >
-          <Payoffcard data={selectedButton === 0 ? inProgressDebts : completedDebts} source={require("@assets/images/dashboard/rightarrow.png")} onPress={() => navigation.navigate('particulardebtdetailscreen')} />
+          <Payoffcard
+            data={selectedButton === 0 ? inProgressDebts : completedDebts}
+            source={require("@assets/images/dashboard/rightarrow.png")}
+            onPress={() => navigation.navigate("particulardebtdetailscreen")}
+          />
         </ScrollView>
       </View>
       <TouchableOpacity
@@ -178,12 +184,12 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     gap: 20,
-    marginBottom: hp(5)
+    marginBottom: hp(5),
   },
   debtInfoContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginHorizontal: wp(5)
+    marginHorizontal: wp(5),
   },
   debtsListContainer: {
     backgroundColor: "#1E2D5E",
@@ -193,25 +199,26 @@ const styles = StyleSheet.create({
     borderRadius: wp(5),
     borderWidth: 1,
     borderColor: "#C0C0C0",
-    marginHorizontal: wp(5)
+    marginHorizontal: wp(5),
   },
   toggleButtonContainer: {
-    width: 'auto',
+    width: "auto",
     padding: wp(2),
     marginTop: wp(1),
     alignSelf: "flex-start",
     marginHorizontal: wp(3),
-    paddingHorizontal:  wp(4),
+    paddingHorizontal: wp(4),
   },
   searchBar: {
+    marginHorizontal: wp(5),
     backgroundColor: "#C0C0C0",
     borderRadius: wp(10),
     // paddingHorizontal: wp(4),
     // paddingVertical: hp(0.3),
     gap: wp(1),
     alignItems: "center",
-    marginHorizontal: wp(4),
-    height: hp(4.5)
+    //marginHorizontal: wp(4),
+    height: hp(4.5),
   },
   searchInput: {
     fontSize: wp(2.5),

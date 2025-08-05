@@ -50,8 +50,8 @@ const styles = StyleSheet.create({
     paddingBottom: wp(2),
   },
   backButton: {
-    width: wp(10),
-    height: hp(5),
+    width: wp(7.5),
+    height: hp(4),
     borderRadius: wp(6.5),
     alignItems: "center",
     justifyContent: "center",

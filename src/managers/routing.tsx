@@ -1,7 +1,17 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { FC } from "react";
-
+import { paymentStatus } from "src/commonTypes";
 import { NavigationContainer } from "@react-navigation/native";
+import DashboardScreen from "@screens/dashboard";
+import DebtAdd from "@screens/adddebt";
+import Test from "@screens/Test";
+import DebtsScreen from "@screens/debts";
+import Transaction from "@screens/transaction";
+import Expenses from "@screens/Expenses";
+import LogExpense from "@screens/LogExpense";
+import catagoryManagement from "@screens/catagoryManagement";
+import IncomeDetails from "@screens/registration/personalincome";
+import AddDebts from "@screens/registration/adddebts";
 
 import Layout from "@screens/layout";
 import Particulardebtdetail from "@screens/particulardebtdetail";
@@ -13,6 +23,9 @@ import Profile from "@screens/profile";
 import Login from "@screens/login";
 import Paywall from "@screens/paywall";
 
+import Intro from "@screens/intro";
+import Splash from "@screens/splash";
+import TransactionScreen from "@screens/transaction";
 
 export type RootStackParams = {
     layoutscreen: undefined
