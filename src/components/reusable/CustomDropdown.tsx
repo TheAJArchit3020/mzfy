@@ -27,8 +27,42 @@ interface CustomDropdownProps {
   placeholder?: string;
   style?: any;
   label?: string;
+  showScrollIndicator?: boolean;
   maxHeight?: number;
 }
+
+export const CustomScrollIndicator: React.FC<{
+  scrollOffset: number;
+  contentHeight: number;
+  containerHeight: number;
+}> = ({ scrollOffset, contentHeight, containerHeight }) => {
+  const indicatorHeight = Math.max(
+    (containerHeight / contentHeight) * containerHeight,
+    20
+  );
+
+  const maxScrollDistance = contentHeight - containerHeight;
+  const maxIndicatorDistance = containerHeight - indicatorHeight;
+
+  const indicatorPosition =
+    maxScrollDistance > 0
+      ? (scrollOffset / maxScrollDistance) * maxIndicatorDistance
+      : 0;
+
+  return (
+    <View style={styles.scrollIndicatorContainer}>
+      <View
+        style={[
+          styles.scrollIndicator,
+          {
+            height: indicatorHeight,
+            transform: [{ translateY: indicatorPosition }],
+          },
+        ]}
+      />
+    </View>
+  );
+};
 
 const CustomDropdown: React.FC<CustomDropdownProps> = ({
   options,
@@ -37,6 +71,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   placeholder = "",
   style,
   label,
+  showScrollIndicator = true,
   maxHeight = 200,
 }) => {
   const [visible, setVisible] = useState(false);
@@ -45,39 +80,6 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   const [containerHeight, setContainerHeight] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
   const selected = options.find((opt) => opt.value === value);
-
-  const CustomScrollIndicator: React.FC<{
-    scrollOffset: number;
-    contentHeight: number;
-    containerHeight: number;
-  }> = ({ scrollOffset, contentHeight, containerHeight }) => {
-    const indicatorHeight = Math.max(
-      (containerHeight / contentHeight) * containerHeight,
-      20
-    );
-
-    const maxScrollDistance = contentHeight - containerHeight;
-    const maxIndicatorDistance = containerHeight - indicatorHeight;
-
-    const indicatorPosition =
-      maxScrollDistance > 0
-        ? (scrollOffset / maxScrollDistance) * maxIndicatorDistance
-        : 0;
-
-    return (
-      <View style={styles.scrollIndicatorContainer}>
-        <View
-          style={[
-            styles.scrollIndicator,
-            {
-              height: indicatorHeight,
-              transform: [{ translateY: indicatorPosition }],
-            },
-          ]}
-        />
-      </View>
-    );
-  };
 
   return (
     <View style={styles.container}>
@@ -148,13 +150,15 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
                 </>
               ))}
             </ScrollView>
-            {contentHeight > containerHeight && containerHeight > 0 && (
-              <CustomScrollIndicator
-                scrollOffset={scrollOffset}
-                contentHeight={contentHeight}
-                containerHeight={containerHeight}
-              />
-            )}
+            {contentHeight > containerHeight &&
+              containerHeight > 0 &&
+              showScrollIndicator && (
+                <CustomScrollIndicator
+                  scrollOffset={scrollOffset}
+                  contentHeight={contentHeight}
+                  containerHeight={containerHeight}
+                />
+              )}
           </View>
         )}
       </View>

@@ -19,7 +19,9 @@ import Payoffcard from "@components/payoffplan/payoffcard";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParams } from "@managers/routing";
-
+import { BlurView } from "@react-native-community/blur";
+import LottieView from "lottie-react-native";
+import Button from "@components/reusable/button";
 type NavigationProp = NativeStackNavigationProp<RootStackParams, "DebtsScreen">;
 const inProgressDebts = [
   {
@@ -124,56 +126,75 @@ const DebtsScreen: FC = () => {
   const [selectedButton, setSelectedButton] = useState(0);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.debtInfoContainer}>
-        <Debtbalance />
-        <Debtpaid />
-      </View>
+    <>
+      <View style={styles.container}>
+        <View style={styles.debtInfoContainer}>
+          <Debtbalance />
+          <Debtpaid />
+        </View>
 
-      <View style={styles.debtsListContainer}>
-        <SegmentButton
-          items={["InProgress (3)", "Completed (3)"]}
-          onChange={(idx) => {
-            setSelectedButton(idx);
-          }}
-          selectedIndex={selectedButton}
-          containerStyle={styles.toggleButtonContainer}
-        />
-        <Input
-          iconAbove={
-            <MagnifyingGlassIcon
-              size={wp(4)}
-              color={"#747474"}
-              style={{ marginTop: hp(0.8) }}
-            />
-          }
-          onChangeContent={(val) => setSeacthKeyword(val)}
-          value={searchKeyword}
-          placeholder="Search"
-          inputWrapperStyle={styles.searchBar}
-          style={styles.searchInput}
-          placeholderTextColor={"#747474"}
-        />
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={{ marginHorizontal: 10 }}
-        >
-          <Payoffcard
-            data={selectedButton === 0 ? inProgressDebts : completedDebts}
-            source={require("@assets/images/dashboard/rightarrow.png")}
-            onPress={() => navigation.navigate("particulardebtdetailscreen")}
+        <View style={styles.debtsListContainer}>
+          <SegmentButton
+            items={["InProgress (3)", "Completed (3)"]}
+            onChange={(idx) => {
+              setSelectedButton(idx);
+            }}
+            selectedIndex={selectedButton}
+            containerStyle={styles.toggleButtonContainer}
           />
-        </ScrollView>
+          <Input
+            iconAbove={
+              <MagnifyingGlassIcon
+                size={wp(4)}
+                color={"#747474"}
+                style={{ marginTop: hp(0.8) }}
+              />
+            }
+            onChangeContent={(val) => setSeacthKeyword(val)}
+            value={searchKeyword}
+            placeholder="Search"
+            inputWrapperStyle={styles.searchBar}
+            style={styles.searchInput}
+            placeholderTextColor={"#747474"}
+          />
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={{ marginHorizontal: 10 }}
+          >
+            <Payoffcard
+              data={selectedButton === 0 ? inProgressDebts : completedDebts}
+              source={require("@assets/images/dashboard/rightarrow.png")}
+              onPress={() => navigation.navigate("particulardebtdetailscreen")}
+            />
+          </ScrollView>
+        </View>
+        <TouchableOpacity
+          style={styles.section6}
+          onPress={() => {
+            navigation.navigate("adddebtscreen");
+          }}
+        >
+          <Text style={styles.section6_text}>+</Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        style={styles.section6}
-        onPress={() => {
-          navigation.navigate("adddebtscreen");
-        }}
-      >
-        <Text style={styles.section6_text}>+</Text>
-      </TouchableOpacity>
-    </View>
+      <BlurView blurAmount={5} blurType="dark" style={styles.blurView}>
+        <View style={styles.blurContent}>
+          <Text style={styles.blurViewText}>
+            Congratulations! You've successfully paid off your debt [Debt Name]
+            and saved ₹[Amount] in just [Number] days. Your dedication and smart
+            choices truly paid off!
+          </Text>
+          <Button
+            onPress={() => {
+              console.log("Continue");
+            }}
+            style={styles.ContinueButton}
+          >
+            <Text style={styles.blurViewText}>Continue</Text>
+          </Button>
+        </View>
+      </BlurView>
+    </>
   );
 };
 
@@ -243,5 +264,34 @@ const styles = StyleSheet.create({
     fontSize: 34,
     textAlign: "center",
     marginTop: -14,
+  },
+  blurView: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: "center",
+    gap: hp(10),
+    paddingHorizontal: wp(5),
+  },
+  blurContent: {
+    flex: 1,
+    justifyContent: "center",
+    paddingHorizontal: wp(5),
+    gap: hp(5),
+  },
+  blurViewText: {
+    color: "#F7F7F7",
+    fontSize: wp(4),
+    fontFamily: "PlusJakartaSans-Bold",
+    textAlign: "center",
+  },
+  ContinueButton: {
+    backgroundColor: "blue",
+    height: hp(5),
+    borderRadius: wp(10),
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  anim: {
+    width: wp(30),
+    height: hp(20),
   },
 });
