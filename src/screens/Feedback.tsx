@@ -1,10 +1,12 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Keyboard,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import {
@@ -19,7 +21,7 @@ import { Cog6ToothIcon, StarIcon } from "react-native-heroicons/solid";
 
 // Feedback form state interface
 interface FeedbackState {
-  challenges: string | null;
+  challenges: challengePayload;
   features: string[];
   trackingFrequency: string | null;
   mainGoal: string;
@@ -28,9 +30,13 @@ interface FeedbackState {
   additionalFeedback: string;
 }
 
+type challengePayload = {
+  payload: string;
+  isOtherSelected: boolean;
+};
 // Action types for useReducer
 type FeedbackAction =
-  | { type: "SET_CHALLENGES"; payload: string }
+  | { type: "SET_CHALLENGES"; payload: challengePayload }
   | { type: "SET_FEATURES"; payload: string[] }
   | { type: "SET_TRACKING_FREQUENCY"; payload: string }
   | { type: "SET_MAIN_GOAL"; payload: string }
@@ -41,7 +47,7 @@ type FeedbackAction =
 
 // Initial state
 const initialState: FeedbackState = {
-  challenges: null,
+  challenges: { payload: "", isOtherSelected: false },
   features: [],
   trackingFrequency: null,
   mainGoal: "",
@@ -57,7 +63,13 @@ const feedbackReducer = (
 ): FeedbackState => {
   switch (action.type) {
     case "SET_CHALLENGES":
-      return { ...state, challenges: action.payload };
+      return {
+        ...state,
+        challenges: {
+          payload: action.payload.payload,
+          isOtherSelected: action.payload.isOtherSelected,
+        },
+      };
     case "SET_FEATURES":
       return { ...state, features: action.payload };
     case "SET_TRACKING_FREQUENCY":
@@ -79,37 +91,35 @@ const feedbackReducer = (
 
 // Question options
 const challengeOptions = [
-  { label: "Wallet top-up", value: "wallet_topup" },
-  { label: "Debt management", value: "debt_management" },
+  { label: "Debt payoff", value: "debt_payoff" },
+  { label: "Sticking to a budget", value: "sticking_to_a_budget" },
   { label: "Tracking expenses", value: "tracking_expenses" },
-  { label: "Saving for a large goal", value: "saving_goal" },
-  { label: "Investment strategies", value: "investment_strategies" },
-  { label: "Something else (fill in)", value: "something_else" },
+  { label: "Saving for emergencies", value: "saving_for_emergencies" },
+  { label: "Insurance Management", value: "insurance_management" },
 ];
 
 const featureOptions = [
+  { label: "Expense Tracker", value: "expense_tracker" },
+  { label: "Progress Reminders & Alerts", value: "progress_reminders_alerts" },
   {
     label:
-      "Budgeting tools (e.g. daily/weekly/monthly spending limits, alerts for overspending, and insights into spending patterns)",
-    value: "budgeting_tools",
+      "AI Assistant - A personal assistant which can give you lot of insights on your financial goals and a debt free life",
+    value: "ai_assistant_financial_insights",
   },
-  { label: "Reporting feature", value: "reporting_feature" },
-  { label: "Progress tracking of goals", value: "progress_tracking" },
 ];
 
 const trackingFrequencyOptions = [
   { label: "Daily", value: "daily" },
   { label: "Weekly", value: "weekly" },
   { label: "Monthly", value: "monthly" },
-  { label: "Occasionally", value: "occasionally" },
-  { label: "Never", value: "never" },
+  { label: "I don’t track it", value: "i_dont_track_it" },
 ];
 
 const premiumFeatureOptions = [
   { label: "Yes", value: "yes" },
   { label: "No", value: "no" },
-  { label: "Maybe, I'd like to learn more", value: "maybe" },
-  { label: "I'm not sure/Prefer not to say", value: "not_sure" },
+  { label: "Maybe, depends on price", value: "maybe_depends_on_price" },
+  { label: "Lets Try it out first", value: "lets_try_it_out_first" },
 ];
 
 // Custom Star Rating Component
@@ -141,6 +151,21 @@ const StarRating = ({
 
 const Feedback = () => {
   const [state, dispatch] = useReducer(feedbackReducer, initialState);
+  const [keyboardEnabled, setKeyboardEnabled] = useState(false);
+  useEffect(() => {
+    const keyboardDidShow = Keyboard.addListener("keyboardDidShow", () => {
+      setKeyboardEnabled(true);
+    });
+
+    const keyboardDidHide = Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardEnabled(false);
+    });
+
+    return () => {
+      keyboardDidShow.remove();
+      keyboardDidHide.remove();
+    };
+  }, []);
 
   const handleFeatureToggle = (featureValue: string) => {
     const currentFeatures = state.features;
@@ -183,182 +208,215 @@ const Feedback = () => {
       end={{ x: 0, y: 1 }}
       style={styles.container}
     >
-      <Header title="Feedback" />
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
+      {/* Question 1: Challenges */}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior="padding"
+        enabled={keyboardEnabled}
       >
-        {/* Question 1: Challenges */}
-        <View style={styles.questionContainer}>
-          <Text style={styles.questionText}>
-            1.What’s your biggest money-related challenge right now? *
-          </Text>
-          <RadioInput
-            options={challengeOptions}
-            selectedValue={state.challenges}
-            onValueChange={(value) =>
-              dispatch({ type: "SET_CHALLENGES", payload: value })
-            }
-            containerStyle={styles.radioContainer}
-            optionStyle={styles.radioOption}
-            labelStyle={styles.radioLabel}
-          />
-          {state.challenges === "something_else" && (
+        <Header title="Feedback" />
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.questionContainer}>
+            <Text style={styles.questionText}>
+              1.What’s your biggest money-related challenge right now? *
+            </Text>
+            <RadioInput
+              options={challengeOptions}
+              selectedValue={state.challenges?.payload}
+              onValueChange={(value) =>
+                dispatch({
+                  type: "SET_CHALLENGES",
+                  payload: { payload: value, isOtherSelected: false },
+                })
+              }
+              containerStyle={styles.radioContainer}
+              optionStyle={styles.radioOption}
+              labelStyle={styles.radioLabel}
+              selectedOptionStyle={styles.selectedRadioOption}
+              labelSelectedStyle={styles.lableSelected}
+            />
             <Input
-              value={state.challenges === "something_else" ? "" : ""}
+              value={
+                state.challenges.isOtherSelected
+                  ? state.challenges?.payload
+                  : ""
+              }
               onChangeContent={(text) =>
-                dispatch({ type: "SET_CHALLENGES", payload: text })
+                dispatch({
+                  type: "SET_CHALLENGES",
+                  payload: { payload: text, isOtherSelected: true },
+                })
+              }
+              placeholder="Other (please specify)"
+              multiline
+              textAlignVertical="top"
+              style={styles.customInput}
+              containerStyle={styles.inputContainer2}
+              inputWrapperStyle={styles.inputWrapper}
+            />
+          </View>
+
+          {/* Question 2: Features */}
+          <View style={styles.questionContainer}>
+            <Text style={styles.questionText}>
+              2. Which feature would you like to see?
+              <Text style={styles.questionText2}>
+                (You can select multiple){" "}
+              </Text>
+              *
+            </Text>
+            {featureOptions.map((option) => (
+              <TouchableOpacity
+                key={option.value}
+                style={[
+                  styles.checkboxOption,
+                  state.features.includes(option.value) &&
+                    styles.checkboxOptionSelected,
+                ]}
+                onPress={() => handleFeatureToggle(option.value)}
+                activeOpacity={0.7}
+              >
+                <View
+                  style={[
+                    styles.checkbox,
+                    state.features.includes(option.value) &&
+                      styles.checkboxSelected,
+                  ]}
+                >
+                  {state.features.includes(option.value) && (
+                    <Text style={styles.checkmark}>✓</Text>
+                  )}
+                </View>
+                <Text
+                  style={[
+                    styles.checkboxLabel,
+                    state.features.includes(option.value) &&
+                      styles.lableSelected,
+                  ]}
+                >
+                  {option.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {/* Question 3: Tracking Frequency */}
+          <View style={styles.questionContainer}>
+            <Text style={styles.questionText}>
+              3. How often do you currently track your spending? *
+            </Text>
+            <RadioInput
+              options={trackingFrequencyOptions}
+              selectedValue={state.trackingFrequency}
+              onValueChange={(value) =>
+                dispatch({ type: "SET_TRACKING_FREQUENCY", payload: value })
+              }
+              containerStyle={styles.radioContainer}
+              optionStyle={styles.radioOption}
+              labelStyle={styles.radioLabel}
+              selectedOptionStyle={styles.selectedRadioOption}
+              labelSelectedStyle={styles.lableSelected}
+            />
+          </View>
+
+          {/* Question 4: Main Goal */}
+          <View style={styles.questionContainer}>
+            <Text style={styles.questionText}>
+              4. What's your main goal for using Moneezify? *
+            </Text>
+            <Input
+              value={state.mainGoal}
+              onChangeContent={(text) =>
+                dispatch({ type: "SET_MAIN_GOAL", payload: text })
+              }
+              placeholder="Describe your answer.."
+              multiline
+              textAlignVertical="top"
+              style={styles.customInput}
+              containerStyle={styles.inputContainer}
+              inputWrapperStyle={styles.inputWrapper}
+            />
+          </View>
+
+          {/* Question 5: Confidence Rating */}
+          <View style={styles.questionContainer}>
+            <Text style={styles.questionText}>
+              5. On a scale of 1-5, how confident are you in reaching your
+              financial debts? *
+            </Text>
+            <View style={styles.ratingContainer}>
+              <StarRating
+                rating={state.confidenceRating}
+                onRatingChange={(rating) =>
+                  dispatch({ type: "SET_CONFIDENCE_RATING", payload: rating })
+                }
+              />
+              <View style={styles.ratingLabels}>
+                <Text style={styles.ratingLabel}>Not confident</Text>
+                <Text style={styles.ratingLabel}>Very confident</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Question 6: Premium Feature */}
+          <View style={styles.questionContainer}>
+            <Text style={styles.questionText}>
+              6.Would you be open to premium features later (e.g. AI Debt free
+              plan Generator - Generate a plan which is personalized and changes
+              according to your expenses)?*
+            </Text>
+            <RadioInput
+              options={premiumFeatureOptions}
+              selectedValue={state.premiumFeature}
+              onValueChange={(value) =>
+                dispatch({ type: "SET_PREMIUM_FEATURE", payload: value })
+              }
+              containerStyle={styles.radioContainer}
+              optionStyle={styles.radioOption}
+              labelStyle={styles.radioLabel}
+              selectedOptionStyle={styles.selectedRadioOption}
+              labelSelectedStyle={styles.lableSelected}
+            />
+          </View>
+
+          {/* Question 7: Additional Feedback */}
+          <View style={styles.questionContainer}>
+            <Text style={styles.questionText}>
+              7. Anything else you’d love to see in a Financial Companion app?*
+            </Text>
+            <Input
+              value={state.additionalFeedback}
+              onChangeContent={(text) =>
+                dispatch({ type: "SET_ADDITIONAL_FEEDBACK", payload: text })
               }
               placeholder="Describe your answer.."
               multiline
               numberOfLines={4}
               textAlignVertical="top"
               style={styles.customInput}
-              inputWrapperStyle={styles.customInputWrapper}
+              containerStyle={styles.inputContainer}
+              inputWrapperStyle={styles.inputWrapper}
             />
-          )}
-        </View>
-
-        {/* Question 2: Features */}
-        <View style={styles.questionContainer}>
-          <Text style={styles.questionText}>
-            2. Which feature would you like to see? (You can select multiple) *
-          </Text>
-          {featureOptions.map((option) => (
-            <TouchableOpacity
-              key={option.value}
-              style={[
-                styles.checkboxOption,
-                state.features.includes(option.value) &&
-                  styles.checkboxOptionSelected,
-              ]}
-              onPress={() => handleFeatureToggle(option.value)}
-              activeOpacity={0.7}
-            >
-              <View
-                style={[
-                  styles.checkbox,
-                  state.features.includes(option.value) &&
-                    styles.checkboxSelected,
-                ]}
-              >
-                {state.features.includes(option.value) && (
-                  <Text style={styles.checkmark}>✓</Text>
-                )}
-              </View>
-              <Text style={styles.checkboxLabel}>{option.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {/* Question 3: Tracking Frequency */}
-        <View style={styles.questionContainer}>
-          <Text style={styles.questionText}>
-            3. How often do you currently track your spending? *
-          </Text>
-          <RadioInput
-            options={trackingFrequencyOptions}
-            selectedValue={state.trackingFrequency}
-            onValueChange={(value) =>
-              dispatch({ type: "SET_TRACKING_FREQUENCY", payload: value })
-            }
-            containerStyle={styles.radioContainer}
-            optionStyle={styles.radioOption}
-            labelStyle={styles.radioLabel}
-          />
-        </View>
-
-        {/* Question 4: Main Goal */}
-        <View style={styles.questionContainer}>
-          <Text style={styles.questionText}>
-            4. What's your main goal for using Moneezify? *
-          </Text>
-          <Input
-            value={state.mainGoal}
-            onChangeContent={(text) =>
-              dispatch({ type: "SET_MAIN_GOAL", payload: text })
-            }
-            placeholder="Describe your answer.."
-            multiline
-            numberOfLines={4}
-            textAlignVertical="top"
-            style={styles.customInput}
-            inputWrapperStyle={styles.customInputWrapper}
-          />
-        </View>
-
-        {/* Question 5: Confidence Rating */}
-        <View style={styles.questionContainer}>
-          <Text style={styles.questionText}>
-            5. On a scale of 1-5, how confident are you in reaching your
-            financial debts? *
-          </Text>
-          <View style={styles.ratingContainer}>
-            <StarRating
-              rating={state.confidenceRating}
-              onRatingChange={(rating) =>
-                dispatch({ type: "SET_CONFIDENCE_RATING", payload: rating })
-              }
-            />
-            <View style={styles.ratingLabels}>
-              <Text style={styles.ratingLabel}>Not confident</Text>
-              <Text style={styles.ratingLabel}>Very confident</Text>
-            </View>
           </View>
-        </View>
 
-        {/* Question 6: Premium Feature */}
-        <View style={styles.questionContainer}>
-          <Text style={styles.questionText}>
-            6.Would you be open to premium features later (e.g. AI Debt free
-            plan Generator - Generate a plan which is personalized and changes
-            according to your expenses)?*
-          </Text>
-          <RadioInput
-            options={premiumFeatureOptions}
-            selectedValue={state.premiumFeature}
-            onValueChange={(value) =>
-              dispatch({ type: "SET_PREMIUM_FEATURE", payload: value })
-            }
-            containerStyle={styles.radioContainer}
-            optionStyle={styles.radioOption}
-            labelStyle={styles.radioLabel}
-          />
-        </View>
-
-        {/* Question 7: Additional Feedback */}
-        <View style={styles.questionContainer}>
-          <Text style={styles.questionText}>
-            7. Anything else you’d love to see in a Financial Companion app?*
-          </Text>
-          <Input
-            value={state.additionalFeedback}
-            onChangeContent={(text) =>
-              dispatch({ type: "SET_ADDITIONAL_FEEDBACK", payload: text })
-            }
-            placeholder="Describe your answer.."
-            multiline
-            numberOfLines={4}
-            textAlignVertical="top"
-            style={styles.customInput}
-            inputWrapperStyle={styles.customInputWrapper}
-          />
-        </View>
-
-        {/* Submit Button */}
-        <View style={styles.submitContainer}>
-          <Button
-            onPress={handleSubmit}
-            style={[
-              styles.submitButton,
-              !isFormValid() && styles.submitButtonDisabled,
-            ]}
-            disabled={!isFormValid()}
-          >
-            <Text style={styles.submitButtonText}>Submit</Text>
-          </Button>
-        </View>
-      </ScrollView>
+          {/* Submit Button */}
+          <View style={styles.submitContainer}>
+            <Button
+              onPress={handleSubmit}
+              style={[
+                styles.submitButton,
+                !isFormValid() && styles.submitButtonDisabled,
+              ]}
+              disabled={!isFormValid()}
+            >
+              <Text style={styles.submitButtonText}>Submit</Text>
+            </Button>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </LinearGradient>
   );
 };
@@ -381,8 +439,12 @@ const styles = StyleSheet.create({
     marginBottom: hp(2),
     lineHeight: wp(5),
   },
+  questionText2: {
+    fontSize: hp(1.5),
+    fontFamily: "PlusJakartaSans-Regular",
+  },
   radioContainer: {
-    gap: hp(1),
+    gap: hp(2),
   },
   radioOption: {
     borderRadius: wp(2),
@@ -396,6 +458,12 @@ const styles = StyleSheet.create({
     fontSize: wp(3.5),
     fontFamily: "PlusJakartaSans-Medium",
   },
+  selectedRadioOption: {
+    backgroundColor: "rgba(247, 247, 247, 0.2)",
+  },
+  lableSelected: {
+    fontFamily: "PlusJakartaSans-Bold",
+  },
   checkboxOption: {
     flexDirection: "row",
     alignItems: "center",
@@ -404,11 +472,10 @@ const styles = StyleSheet.create({
     borderColor: "#C0C0C0",
     paddingVertical: hp(1.5),
     paddingHorizontal: wp(3),
-    marginBottom: hp(1),
+    marginBottom: hp(2),
   },
   checkboxOptionSelected: {
     backgroundColor: "rgba(247, 247, 247, 0.2)",
-    borderColor: "#3A7BFF",
   },
   checkbox: {
     width: wp(4),
@@ -421,8 +488,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   checkboxSelected: {
-    backgroundColor: "rgba(247, 247, 247, 0.2)",
-    borderColor: "#3A7BFF",
+    backgroundColor: "#3A7BFF",
+    borderWidth: 0,
+    borderRadius: wp(1),
   },
   checkmark: {
     color: "#fff",
@@ -442,13 +510,20 @@ const styles = StyleSheet.create({
     height: hp(15),
     paddingTop: hp(2),
   },
-  customInputWrapper: {
-    borderRadius: wp(2),
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
-    paddingHorizontal: wp(3),
+  inputContainer: {
+    borderWidth: 1,
+    borderColor: "#C0C0C0",
+    borderRadius: wp(2.5),
+  },
+  inputContainer2: {
+    marginTop: hp(2),
+    borderWidth: 1,
+    borderColor: "#C0C0C0",
+    borderRadius: wp(2.5),
+  },
+  inputWrapper: {
+    paddingVertical: hp(0),
+    borderWidth: 0,
   },
   ratingContainer: {
     alignItems: "center",
@@ -457,7 +532,8 @@ const styles = StyleSheet.create({
   starContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: wp(1),
+    justifyContent: "space-between",
+    width: wp(90),
   },
   star: {
     marginHorizontal: wp(0.5),
@@ -471,7 +547,7 @@ const styles = StyleSheet.create({
   ratingLabel: {
     color: "#fff",
     fontSize: wp(3),
-    fontFamily: "PlusJakartaSans-Medium",
+    fontFamily: "PlusJakartaSans-Regular",
   },
   submitContainer: {
     paddingVertical: hp(4),
