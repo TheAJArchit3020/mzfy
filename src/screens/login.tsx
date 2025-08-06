@@ -154,9 +154,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#D9D9D9",
         borderRadius: 100,
         padding: 1,
-        // justifyContent: "center",
-        // alignItems: "center",
-        // flexDirection: "row",
         width: 25,
         height: 25,
     },
@@ -169,13 +166,12 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontFamily: "PlusJakartaSans-Bold",
         fontSize: 20,
-        marginTop: -5
+        marginTop: Platform.OS === 'android' ? -5 : 0
     },
     section2: {
         flexDirection: "column",
         gap: 32,
         alignItems: "center",
-        // backgroundColor:"#fff",
         width: '100%'
     },
     button: {
@@ -193,7 +189,7 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontFamily: "PlusJakartaSans-Regular",
         fontSize: 16,
-        marginTop: -5
+        marginTop: Platform.OS === 'android' ? -5 : 0
     },
     loginimage: {
         width: 20,

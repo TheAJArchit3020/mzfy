@@ -10,8 +10,7 @@ import Selectcurrency from "./registration/selectcurrency";
 import Monthlyexpense from "./registration/monthlyexpense";
 
 import Adddebts from "./registration/adddebts";
-import Addnewdebt from "./registration/addnewdebt";
-import ExpensesOverView from "./registration/expensesOverView";
+
 import IncomeDetails from "./registration/personalincome";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParams } from "@managers/routing";
@@ -25,9 +24,6 @@ type routeProps = RouteProp<RootStackParams, 'registrationlayoutscreen'>
 const Registrationlayout: FC = () => {
 
   const route = useRoute<routeProps>();
-
-  const { index } = route?.params
-
 
   const navigation = useNavigation<navProps>();
 
@@ -62,15 +58,9 @@ const Registrationlayout: FC = () => {
     },
     { id: 7, name: "loading", page: <Adddebts />, title: "Add your debts" },
 
-    // {
-    //   id: 10,
-    //   name: "premiumpage",
-    //   page: <Premiumpage />,
-    //   title: "Select your strategy",
-    // },
   ];
 
-  const [selectedIndex, setSelectedIndex] = useState(index || 0);
+  const [selectedIndex, setSelectedIndex] = useState(route?.params?.index || 0);
   const current = PAGES[selectedIndex];
 
   const goNext = () => {
