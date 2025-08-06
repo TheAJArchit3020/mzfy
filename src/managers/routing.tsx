@@ -12,7 +12,6 @@ import LogExpense from "@screens/LogExpense";
 import catagoryManagement from "@screens/catagoryManagement";
 import IncomeDetails from "@screens/registration/personalincome";
 import AddDebts from "@screens/registration/adddebts";
-
 import Feedback from "@screens/Feedback";
 import Layout from "@screens/layout";
 import Particulardebtdetail from "@screens/particulardebtdetail";
