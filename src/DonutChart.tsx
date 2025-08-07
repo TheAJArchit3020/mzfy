@@ -9,15 +9,7 @@ import Svg, {
   TSpan,
 } from "react-native-svg";
 import { pie, arc, PieArcDatum, Arc as ArcGenerator } from "d3-shape";
-
-export interface DonutDataItem {
-  value: number;
-  color: string;
-  label: string;
-  line1: string;
-  line2: string;
-  emoji: string;
-}
+import { DonutDataItem } from "./commonTypes";
 
 export interface DonutChartProps {
   data: DonutDataItem[];
@@ -35,6 +27,7 @@ export interface DonutChartProps {
   centerTextColor?: string;
   fontFamily?: string;
   arcCornerRadius?: number;
+  showLabel?: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -54,6 +47,7 @@ const DonutChart: FC<DonutChartProps> = ({
   centerTextColor = "#fff",
   fontFamily,
   arcCornerRadius = 4,
+  showLabel = true,
   style,
 }) => {
   type ArcDatum = PieArcDatum<DonutDataItem>;
@@ -108,35 +102,37 @@ const DonutChart: FC<DonutChartProps> = ({
             return (
               <G key={i}>
                 <Path d={arcGen(slice) || undefined} fill={data[i].color} />
-
-                <Polyline
-                  points={[
-                    [x0, y0],
-                    [x1, y1],
-                    [x2, y2],
-                  ]
-                    .map((p) => p.join(","))
-                    .join(" ")}
-                  fill="none"
-                  stroke={lineColor}
-                  strokeWidth={lineStroke}
-                />
-
-                <SvgText
-                  x={x2 + (isRight ? 4 : -4)}
-                  y={y2}
-                  fontSize={labelFontSize}
-                  fill={labelFontColor}
-                  textAnchor={isRight ? "start" : "end"}
-                  alignmentBaseline="middle"
-                >
-                  <TSpan x={x2 + (isRight ? 4 : -4)} dy="0">
-                    {line1}
-                  </TSpan>
-                  <TSpan x={x2 + (isRight ? 4 : -4)} dy={labelFontSize}>
-                    {line2}
-                  </TSpan>
-                </SvgText>
+                {showLabel && (
+                  <>
+                    <Polyline
+                      points={[
+                        [x0, y0],
+                        [x1, y1],
+                        [x2, y2],
+                      ]
+                        .map((p) => p.join(","))
+                        .join(" ")}
+                      fill="none"
+                      stroke={lineColor}
+                      strokeWidth={lineStroke}
+                    />
+                    <SvgText
+                      x={x2 + (isRight ? 4 : -4)}
+                      y={y2}
+                      fontSize={labelFontSize}
+                      fill={labelFontColor}
+                      textAnchor={isRight ? "start" : "end"}
+                      alignmentBaseline="middle"
+                    >
+                      <TSpan x={x2 + (isRight ? 4 : -4)} dy="0">
+                        {line1}
+                      </TSpan>
+                      <TSpan x={x2 + (isRight ? 4 : -4)} dy={labelFontSize}>
+                        {line2}
+                      </TSpan>
+                    </SvgText>
+                  </>
+                )}
               </G>
             );
           })}

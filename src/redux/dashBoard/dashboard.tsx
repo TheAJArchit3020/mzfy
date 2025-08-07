@@ -2,51 +2,67 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { dashboard } from "@managers/apis";
 
-// ✅ Define the expected response type
-interface DashboardData {
-  totalBudget: number;
-  totalSpent: number;
-  byCategory: any[];
-  recentExpenses: any[];
+// ✅ Response type
+interface BalanceByDebt {
+  balance: string;
+  debtName: string;
+  color: string;
+  _id: string;
 }
 
-// ✅ Define the argument type for the thunk
-interface FetchArgs {
-  year: string;
-  month: string;
+interface UpcomingTransaction {
+  debtTransaction: string;
+  debtName: string;
+  amount: number;
+  dueDate: string;
+  _id: string;
 }
 
-// ✅ Async thunk to fetch dashboard data
-export const fetchDashboardData = createAsyncThunk<DashboardData, FetchArgs>(
-  "dashboard/fetchDashboardData",
-  async ({ year, month }, { rejectWithValue }) => {
+interface DashboardSummary {
+  _id: string;
+  user: string;
+  __v: number;
+  balanceByDebt: BalanceByDebt[];
+  createdAt: string;
+  debtFreeDate: string;
+  payoffPct: number;
+  totalBalance: number;
+  totalDebtPaid: number;
+  upcomingTransactions: UpcomingTransaction[];
+  updatedAt: string;
+}
+
+// ✅ Async thunk
+export const fetchDashboardSummary = createAsyncThunk<DashboardSummary>(
+  "dashboard/fetchDashboardSummary",
+  async (_, { rejectWithValue }) => {
     try {
       const token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODkzNTg0OWU5YzQ4YzFmY2U5MDgwZTAiLCJpYXQiOjE3NTQ0ODY4NTcsImV4cCI6MTc1NzA3ODg1N30.ClKTYxCT_WT3kfiw7Hl20q9xjyXs730h_CeIff6Fhak";
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODk0NmVmOTZjNGNmM2FiMzEwNzYwOGMiLCJpYXQiOjE3NTQ1NjMwMjAsImV4cCI6MTc1NzE1NTAyMH0.u001fyX4xgn0OlhB8WREJbIbAxwcUeH_9e9jzPJYO40";
 
-      const response = await axios.get<DashboardData>(
-        `${dashboard}?year=${year}&month=${month}`,
-        {
-          headers: {
-            Authorization: token ?? "",
-          },
-        }
-      );
+      console.log("dashBoard",dashboard);
+      const response = await axios.get(dashboard, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("response", response);
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response) {
         return rejectWithValue(error.response.data.message);
       }
+        console.log("response",error);
       return rejectWithValue("Something went wrong");
     }
   }
 );
 
-// ✅ State type
+// ✅ State
 interface DashboardState {
   loading: boolean;
   error: string | null;
-  data: DashboardData | null;
+  data: DashboardSummary | null;
 }
 
 // ✅ Initial state
@@ -56,25 +72,26 @@ const initialState: DashboardState = {
   data: null,
 };
 
+// ✅ Slice
 const dashboardSlice = createSlice({
   name: "dashboard",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchDashboardData.pending, (state) => {
+      .addCase(fetchDashboardSummary.pending, (state) => {
         state.loading = true;
         state.error = null;
         state.data = null;
       })
       .addCase(
-        fetchDashboardData.fulfilled,
-        (state, action: PayloadAction<DashboardData>) => {
+        fetchDashboardSummary.fulfilled,
+        (state, action: PayloadAction<DashboardSummary>) => {
           state.loading = false;
           state.data = action.payload;
         }
       )
-      .addCase(fetchDashboardData.rejected, (state, action) => {
+      .addCase(fetchDashboardSummary.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });
@@ -82,4 +99,3 @@ const dashboardSlice = createSlice({
 });
 
 export default dashboardSlice.reducer;
-
