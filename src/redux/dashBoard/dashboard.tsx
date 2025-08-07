@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
+import { dashboard } from "@managers/apis";
 
 // ✅ Define the expected response type
 interface DashboardData {
@@ -20,10 +21,11 @@ export const fetchDashboardData = createAsyncThunk<DashboardData, FetchArgs>(
   "dashboard/fetchDashboardData",
   async ({ year, month }, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("token");
+      const token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODkzNTg0OWU5YzQ4YzFmY2U5MDgwZTAiLCJpYXQiOjE3NTQ0ODY4NTcsImV4cCI6MTc1NzA3ODg1N30.ClKTYxCT_WT3kfiw7Hl20q9xjyXs730h_CeIff6Fhak";
 
       const response = await axios.get<DashboardData>(
-        `https://api.moneezify.com/api/expenses/dashboard?year=${year}&month=${month}`,
+        `${dashboard}?year=${year}&month=${month}`,
         {
           headers: {
             Authorization: token ?? "",
@@ -80,3 +82,4 @@ const dashboardSlice = createSlice({
 });
 
 export default dashboardSlice.reducer;
+

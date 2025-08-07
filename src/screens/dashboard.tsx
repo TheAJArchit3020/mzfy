@@ -5,8 +5,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { FC, useState } from "react";
-
+import React, { FC, useEffect, useState } from "react";
+import { useDispatch, UseDispatch,useSelector } from "react-redux";
+import { fetchDashboardData } from "@redux/dashBoard/dashboard";
+import { AppDispatch } from "@redux/store";
 import Debtcountdown from "@components/dashboard/debtcountdown";
 import Debtbalance from "@components/dashboard/debtbalance";
 import Debtpaid from "@components/dashboard/debtpaid";
@@ -18,13 +20,19 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import UpcomingDebtsWithScrollbar from "@components/dashboard/upcommingdebts";
 import Input from "@components/reusable/Input";
 import { widthToDP } from "react-native-responsive-screens";
+import Debtprogress from "@components/dashboard/debtprogress";
 
 type navprops = NativeStackNavigationProp<RootStackParams>;
 
 const DashboardScreen: FC = () => {
 
+  const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<navprops>();
   const [show, setShow] = useState(false);
+
+  useEffect(()=>{
+     dispatch(fetchDashboardData( ))
+  },[])
 
   const logpopupHandler = () => {
     setShow(true);
@@ -82,7 +90,7 @@ const DashboardScreen: FC = () => {
           <Debtcountdown />
         </View>
 
-        <View style={styles.section3}>{/* <Debtprogress />*/}</View>
+        <View style={styles.section3}>{ <Debtprogress />}</View>
 
         <View style={styles.section4}>
           <Debtbalance />
