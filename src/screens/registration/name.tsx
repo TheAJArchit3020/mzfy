@@ -2,48 +2,27 @@ import { StyleSheet, Text, View } from 'react-native'
 import React, { useReducer } from 'react'
 import Input from '@components/reusable/Input'
 import { widthToDP } from 'react-native-responsive-screens';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'src/redux/store';
+import { setField } from '@redux/user/userSlice';
 
 
 
-const initialState = {
-  name: "",
-
-};
-
-type State = typeof initialState;
-type Action =
-  | { type: "SET_FIELD"; field: keyof State; value: any }
-  | { type: "RESET" };
-
-function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case "SET_FIELD":
-      return { ...state, [action.field]: action.value };
-    case "RESET":
-      return initialState;
-    default:
-      return state;
-  }
-}
 
 const Name = () => {
 
 
-  const [state, dispatch] = useReducer(reducer, initialState);
-
+  const dispatch = useDispatch()
+  const name = useSelector((state: RootState) => state.user.current.name)
 
   return (
     <View style={styles.container}>
       <View style={styles.form}>
         <Text style={styles.formlabel}>Your Name</Text>
         <Input
-          value={state.name}
-          onChangeContent={(val) =>
-            dispatch({
-              type: "SET_FIELD",
-              field: "name",
-              value: val,
-            })
+          value={name}
+          onChangeContent={(val: string) =>
+            dispatch(setField({ field: 'name', value: val }))
           }
         />
       </View>
@@ -54,7 +33,7 @@ const Name = () => {
 export default Name
 
 const styles = StyleSheet.create({
-  container:{
+  container: {
     padding: widthToDP(5)
   },
   formlabel: {

@@ -25,36 +25,67 @@ import {
   InformationCircleIcon,
 } from "react-native-heroicons/solid";
 import { Text } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@redux/store";
+import { setField } from "@redux/user/userSlice";
+import { useNavigation } from "@react-navigation/native";
 
-const initialState = {
-  debtName: "",
+type DebtForm = {
+  name: string;
+  creditorName: string;
+  principal: number;
+  balance: number;
+  minPaymentAmount: number;
+  apr: number;
+  nextDueDate: string;
+  tagColor: string;
+};
+
+const initialForm: DebtForm = {
+  name: "",
   creditorName: "",
-  principal: "",
-  balance: "",
-  minPayment: "",
-  apr: "",
+  principal: 0,
+  balance: 0,
+  minPaymentAmount: 0,
+  apr: 0,
   nextDueDate: "",
   tagColor: "",
 };
 
-type State = typeof initialState;
 type Action =
-  | { type: "SET_FIELD"; field: keyof State; value: any }
+  | {
+    type: "SET_FIELD";
+    field: keyof DebtForm;
+    value: string | number;
+  }
   | { type: "RESET" };
 
-function reducer(state: State, action: Action): State {
+function reducer(state: DebtForm, action: Action): DebtForm {
   switch (action.type) {
     case "SET_FIELD":
-      return { ...state, [action.field]: action.value };
+      return {
+        ...state,
+        [action.field]: action.value as any,
+      };
     case "RESET":
-      return initialState;
+      return initialForm;
     default:
       return state;
   }
 }
 
+
 const DebtAdd: FC = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const navigation = useNavigation();
+
+  const dispatch = useDispatch();
+  const debtArray = useSelector((s: RootState) => s.user.current.debts) ?? [];
+
+  // local form state
+  const [form, formDispatch] = useReducer(reducer, initialForm);
+
+
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showAprInfo, setShowAprInfo] = useState(false);
@@ -75,6 +106,34 @@ const DebtAdd: FC = () => {
       KeyBoardDisabeled.remove();
     };
   }, []);
+
+
+  const handleSave = () => {
+    // build new array
+    const newDebts = [
+      ...debtArray,
+      {
+        name: form.name,
+        creditorName: form.creditorName,
+        principal: form.principal,
+        balance: form.balance,
+        minPaymentAmount: form.minPaymentAmount,
+        apr: form.apr,
+        nextDueDate: form.nextDueDate,
+        tagColor: form.tagColor,
+      },
+    ];
+
+    // write back into Redux
+    dispatch(setField({ field: "debts", value: newDebts }));
+    // clear the form
+    formDispatch({ type: "RESET" });
+
+    navigation.goBack()
+
+    // optionally navigate away or give feedback…
+  };
+
 
   return (
     <LinearGradient
@@ -99,18 +158,18 @@ const DebtAdd: FC = () => {
             <View style={styles.inputContainer}>
               <Input
                 label="Debt name"
-                value={state.debtName}
+                value={form.name}
                 onChangeContent={(val) =>
-                  dispatch({ type: "SET_FIELD", field: "debtName", value: val })
+                  formDispatch({ type: "SET_FIELD", field: "name", value: val })
                 }
                 placeholder="Eg.Education Loan"
                 placeholderTextColor={"#C6C6C6"}
               />
               <Input
                 label="Creditor Name"
-                value={state.creditorName}
+                value={form.creditorName}
                 onChangeContent={(val) =>
-                  dispatch({
+                  formDispatch({
                     type: "SET_FIELD",
                     field: "creditorName",
                     value: val,
@@ -121,12 +180,12 @@ const DebtAdd: FC = () => {
               />
               <Input
                 label="Principal"
-                value={state.principal}
+                value={form.principal}
                 onChangeContent={(val) =>
-                  dispatch({
+                  formDispatch({
                     type: "SET_FIELD",
                     field: "principal",
-                    value: val,
+                    value: val === "" ? 0 : parseFloat(val),
                   })
                 }
                 placeholderTextColor={"#C6C6C6"}
@@ -134,21 +193,21 @@ const DebtAdd: FC = () => {
               />
               <Input
                 label="Balance"
-                value={state.balance}
+                value={form.balance}
                 onChangeContent={(val) =>
-                  dispatch({ type: "SET_FIELD", field: "balance", value: val })
+                  formDispatch({ type: "SET_FIELD", field: "balance", value: val === "" ? 0 : parseFloat(val) })
                 }
                 textHeader="₹"
               />
               <Input
                 label="Monthly Minimum (EMI)"
-                value={state.minPayment}
+                value={form.minPaymentAmount}
                 placeholderTextColor={"#C6C6C6"}
                 onChangeContent={(val) =>
-                  dispatch({
+                  formDispatch({
                     type: "SET_FIELD",
-                    field: "minPayment",
-                    value: val,
+                    field: "minPaymentAmount",
+                    value: val === "" ? 0 : parseFloat(val),
                   })
                 }
                 textHeader="₹"
@@ -165,9 +224,9 @@ const DebtAdd: FC = () => {
                   }
                   onIconPress={() => setShowAprInfo((prev) => !prev)}
                   iconDisabled={false}
-                  value={state.apr}
+                  value={form.apr}
                   onChangeContent={(val) =>
-                    dispatch({ type: "SET_FIELD", field: "apr", value: val })
+                    formDispatch({ type: "SET_FIELD", field: "apr", value: val === "" ? 0 : parseFloat(val) })
                   }
                   placeholder="Eg. 8"
                   keyboardType="numeric"
@@ -195,8 +254,8 @@ const DebtAdd: FC = () => {
               </View>
               <Input
                 label="Next due date"
-                value={state.nextDueDate}
-                onChangeContent={() => {}}
+                value={form.nextDueDate}
+                onChangeContent={() => { }}
                 placeholder="Eg.02/08/2025"
                 editable={false}
                 placeholderTextColor={"#C6C6C6"}
@@ -210,43 +269,67 @@ const DebtAdd: FC = () => {
                   </TouchableOpacity>
                 }
               />
-              <Modal visible={showDatePicker} transparent animationType="fade">
-                <View style={styles.modalBg}>
-                  <DateTimePicker
-                    value={
-                      state.nextDueDate
-                        ? new Date(state.nextDueDate)
-                        : new Date()
+              {showDatePicker && Platform.OS === "android" && (
+                <DateTimePicker
+                  value={form.nextDueDate ? new Date(form.nextDueDate) : new Date()}
+                  mode="date"
+                  display="calendar"
+                  onChange={(_, date) => {
+                    setShowDatePicker(false);
+                    if (date) {
+                      formDispatch({
+                        type: "SET_FIELD",
+                        field: "nextDueDate",
+                        value: date.toISOString().split("T")[0],
+                      });
                     }
-                    mode="date"
-                    display="default"
-                    onChange={(event, date) => {
-                      setShowDatePicker(false);
-                      if (date) {
-                        dispatch({
-                          type: "SET_FIELD",
-                          field: "nextDueDate",
-                          value: date.toISOString().split("T")[0],
-                        });
-                      }
-                    }}
-                  />
-                </View>
-              </Modal>
+                  }}
+                />
+              )}
+              {Platform.OS === "ios" && (
+                <Modal
+                  visible={showDatePicker}
+                  transparent
+                  animationType="slide"
+                  onRequestClose={() => setShowDatePicker(false)}
+                >
+                  <View style={styles.modalBg}>
+                    {/* <View style={styles.pickerWrapper}> */}
+                      <DateTimePicker
+                        value={form.nextDueDate ? new Date(form.nextDueDate) : new Date()}
+                        mode="date"
+                        display="spinner"
+                        onChange={(_, date) => {
+                          if (date) {
+                            formDispatch({
+                              type: "SET_FIELD",
+                              field: "nextDueDate",
+                              value: date.toISOString().split("T")[0],
+                            });
+                          }
+                        }}
+                      />
+                      <Button onPress={() => setShowDatePicker(false)} style={styles.confirmButton}>
+                        <Text style={styles.buttonText}>Done</Text>
+                      </Button>
+                    {/* </View> */}
+                  </View>
+                </Modal>
+              )}
               <Input
                 label="Tag colour"
-                value={state.tagColor}
-                onChangeContent={() => {}}
+                value={form.tagColor}
+                onChangeContent={() => { }}
                 placeholder="Select a tag colour"
                 placeholderTextColor={"#C6C6C6"}
                 editable={false}
                 children={
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    {state.tagColor && (
+                    {form.tagColor && (
                       <View
                         style={[
                           styles.colorIndicator,
-                          { backgroundColor: state.tagColor },
+                          { backgroundColor: form.tagColor },
                         ]}
                       />
                     )}
@@ -265,7 +348,7 @@ const DebtAdd: FC = () => {
                   <View style={styles.colorPickerContainer}>
                     <ColorPicker
                       onColorChange={(color) => {
-                        dispatch({
+                        formDispatch({
                           type: "SET_FIELD",
                           field: "tagColor",
                           value: color,
@@ -286,10 +369,10 @@ const DebtAdd: FC = () => {
                   </View>
                 </View>
               </Modal>
-              <Button onPress={() => {}} style={styles.saveButton}>
+              <Button onPress={handleSave} style={styles.saveButton}>
                 <Text style={styles.buttonText}>Save</Text>
               </Button>
-              <Button onPress={() => {}} style={styles.cancelButton}>
+              <Button onPress={() => formDispatch({ type: "RESET" })} style={styles.cancelButton}>
                 <Text style={styles.buttonText}>Cancel</Text>
               </Button>
             </View>
@@ -315,10 +398,11 @@ const styles = StyleSheet.create({
     paddingBottom: hp(5),
   },
   modalBg: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
-    alignItems: "center",
+    // flex: 1,
+    // backgroundColor: "rgba(0,0,0,0.5)",
+    // justifyContent: "center",
+    // alignItems: "center",
+    // zIndex: 0
   },
   saveButton: {
     backgroundColor: "#006FFF",

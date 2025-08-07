@@ -1,8 +1,14 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { FC, useState } from 'react'
 import { widthToDP } from 'react-native-responsive-screens';
+import { useDispatch, useSelector } from 'react-redux';
+import { setField } from '@redux/user/userSlice';
+import { RootState } from '@redux/store';
 
 const Profession: FC = () => {
+
+  const dispatch = useDispatch()
+  const selectedprofession = useSelector((state: RootState) => state.user.current.profession)
 
   const option = [
     { id: 1, label: "Government Employee", value: "Government Employee" },
@@ -15,11 +21,10 @@ const Profession: FC = () => {
   ]
 
 
-  const [selectedValue, setSelectedValue] = useState<string | null>(null);
 
   const handleSelect = (val: string) => {
-    setSelectedValue(val);
     console.log('Selected profession:', val);
+    dispatch(setField({ field: 'profession', value: val }))
   };
 
   return (
@@ -28,7 +33,7 @@ const Profession: FC = () => {
     <View style={styles.container}>
       <View style={styles.containerWrapper} >
         {option.map(opt => {
-          const isSelected = selectedValue === opt.value;
+          const isSelected = selectedprofession === opt.value;
           return (
             <TouchableOpacity
               key={opt.id}

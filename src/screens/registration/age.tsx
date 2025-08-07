@@ -2,6 +2,9 @@ import { StyleSheet, Text, View } from 'react-native'
 import React, { FC, useState } from 'react'
 import { WheelPicker } from 'react-native-infinite-wheel-picker';
 import { widthToDP } from 'react-native-responsive-screens';
+import { useDispatch, useSelector } from 'react-redux';
+import { setField } from '@redux/user/userSlice';
+import { RootState } from '@redux/store';
 
 
 const Age: FC = () => {
@@ -9,6 +12,10 @@ const Age: FC = () => {
   const initialData: number[] = Array.from({ length: 100 }, (_, i) => i + 1);
 
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const dispatch = useDispatch()
+  const age = useSelector((state: RootState) => state.user.current.age)
+
+  
 
   return (
     <View style={styles.container}>
@@ -19,7 +26,8 @@ const Age: FC = () => {
         restElements={2}
         elementHeight={50}
         onChangeValue={(index, value) => {
-          console.log(value);
+          console.log(value)
+          dispatch(setField({ field: 'age', value: value }))
           setSelectedIndex(index);
         }}
         selectedIndex={selectedIndex}

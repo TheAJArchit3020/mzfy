@@ -1,22 +1,31 @@
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import {
   widthToDP as wp,
   heightToDP as hp,
 } from "react-native-responsive-screens";
 import Input from "@components/reusable/Input";
+import { useDispatch, useSelector } from "react-redux";
+import { setField } from "@redux/user/userSlice";
+import { RootState } from "@redux/store";
 
-const IncomeDetails = () => {
-  const [personalIncome, setPersonalIncome] = useState<string>("");
+const IncomeDetails: FC = () => {
+
+  const dispatch = useDispatch()
+  const income = useSelector((state: RootState) => state.user.current.personalIncome)
+  const totalincome = useSelector((state: RootState) => state.user.current.totalHouseholdIncome)
+
   const [selectedOption, setSelectedOption] = useState<string>("");
-  const [TotalIncome, setTotalIncome] = useState<string>("");
+
   const OPTIONS = ["Yes", "No"];
 
   return (
     <View style={styles.container}>
       <Input
-        value={personalIncome}
-        onChangeContent={setPersonalIncome}
+        value={income}
+        onChangeContent={(val: any) =>
+          dispatch(setField({ field: 'personalIncome', value: val }))
+        }
         placeholder="Eg. ₹ 30,000"
         placeholderTextColor={'#C6C6C6'}
         label="Personal income"
@@ -52,8 +61,10 @@ const IncomeDetails = () => {
 
       {selectedOption === "No" && (
         <Input
-          value={TotalIncome}
-          onChangeContent={setTotalIncome}
+          value={totalincome}
+          onChangeContent={(val: any) =>
+            dispatch(setField({ field: 'totalHouseholdIncome', value: val }))
+          }
           placeholder="Eg. ₹ 30,000"
           placeholderTextColor={'#C6C6C6'}
           label="Total income"

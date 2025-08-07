@@ -1,4 +1,4 @@
-package com.moneezify
+package com.kineticscapestudios.moneezify
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
