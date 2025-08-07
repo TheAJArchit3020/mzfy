@@ -120,10 +120,10 @@ const Selectstrategy: FC = () => {
             end={{ x: 1, y: 1 }}
             style={styles.gradient}
         >
-            <Header title='Select Strategy' />
+            <Header title='Select your debt pay off strategy' showBackButton={false} />
 
             <View style={styles.container}>
-                
+
                 <Card cardStyle={styles.innercardstyle}>
                     {STRATEGIES.map((strategy, idx) => {
                         const selected = selectedStrategy === strategy.key
@@ -184,7 +184,7 @@ const Selectstrategy: FC = () => {
                 </Card>
 
                 <View style={styles.buttonWrapper}>
-                    <Button style={styles.button} onPress={()=> navigation.navigate('layoutscreen')} >
+                    <Button style={styles.button} onPress={() => navigation.navigate('layoutscreen')} >
                         <Text style={styles.buttonText}>Select strategy</Text>
                     </Button>
                 </View>

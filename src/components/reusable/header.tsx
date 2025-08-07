@@ -13,22 +13,23 @@ import { useNavigation } from "@react-navigation/native";
 
 interface headerProps {
   title?: string;
+  showBackButton?: boolean;
 }
 type navProp = NativeStackNavigationProp<RootStackParams>;
 
-const Header: FC<headerProps> = ({ title }) => {
+const Header: FC<headerProps> = ({ title, showBackButton = true }) => {
   const navigation = useNavigation();
   const backHandler = (): void => {
     navigation.goBack();
   };
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={backHandler}>
+      {showBackButton && <TouchableOpacity onPress={backHandler}>
         <Image
           style={{ width: 40, height: 40 }}
           source={require("../../assets/images/backButton/arrow.png")}
         />
-      </TouchableOpacity>
+      </TouchableOpacity>}
       {/* <Button onPress={backHandler}>
         <View style={styles.backButton}>
           <Image
