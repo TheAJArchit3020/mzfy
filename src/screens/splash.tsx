@@ -5,8 +5,16 @@ import {
   heightToDP as hp,
 } from "react-native-responsive-screens";
 import LinearGradient from "react-native-linear-gradient";
+import { useNavigation } from "@react-navigation/native";
+import { RootStackParams } from "@managers/routing";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+type navProps = NativeStackNavigationProp<RootStackParams>
 
 const Splash = () => {
+
+
+  const navigation = useNavigation<navProps>();
   const containerAnim = useRef(new Animated.Value(-hp(50))).current;
   const circleAnim = useRef(new Animated.Value(hp(100))).current;
   const textAnim = useRef(new Animated.Value(hp(100))).current;
@@ -67,7 +75,9 @@ const Splash = () => {
             easing: Easing.in(Easing.ease),
           }),
         ]).start();
+        navigation.navigate('introscreen')
       }, 1500);
+
     };
 
     startAnimations();

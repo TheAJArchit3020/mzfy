@@ -8,14 +8,10 @@ const path = require("path")
  */
 const config = {
   resolver: {
-    // Add extra extensions (if needed)
-    sourceExts: ["jsx", "js", "ts", "tsx", "json", "cjs"],
-
-    // Add extra node modules alias (optional)
-    extraNodeModules: {
-      "@components": path.resolve(__dirname, "src/components"),
-      "@utils": path.resolve(__dirname, "src/utils"),
+    alias: {
+      'react-native-reanimated': require.resolve('react-native-reanimated'),
     },
+    sourceExts: ['js', 'jsx', 'ts', 'tsx', 'json', 'mjs'],
   },
 };
 

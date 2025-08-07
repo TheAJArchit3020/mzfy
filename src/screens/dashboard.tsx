@@ -2,7 +2,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -11,13 +10,14 @@ import React, { FC, useState } from "react";
 import Debtcountdown from "@components/dashboard/debtcountdown";
 import Debtbalance from "@components/dashboard/debtbalance";
 import Debtpaid from "@components/dashboard/debtpaid";
-import Upcommingdebts from "@components/dashboard/upcommingdebts";
 import Nextduedate from "@components/dashboard/nextduedate";
 import Popup from "@components/reusable/popup";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParams } from "@managers/routing";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import UpcomingDebtsWithScrollbar from "@components/dashboard/upcommingdebts";
+import Input from "@components/reusable/Input";
+import { widthToDP } from "react-native-responsive-screens";
 
 type navprops = NativeStackNavigationProp<RootStackParams>;
 
@@ -114,11 +114,27 @@ const DashboardScreen: FC = () => {
         titleStyle={styles.popuptitle}
         containerStyle={styles.popupContainerStyle}
       >
-        <View style={styles.inputgroup}>
-          <Text style={styles.inputgroup_text}>{"\u20B9"}</Text>
-          <TextInput style={styles.input} />
-          <Text style={styles.inputgroup_text}>/-</Text>
-        </View>
+          <Input
+            value={''}
+            onChangeContent={(val) =>
+              console.log(val)
+            }
+            keyboardType="numeric"
+             textHeader="₹"
+            children={
+              <Text
+                style={{
+                  color: "#fff",
+                  fontSize: widthToDP(4.5),
+                  marginLeft: widthToDP(1),
+                }}
+              >
+                /-
+              </Text>
+            }
+            style={styles.popupinput}
+            inputWrapperStyle={styles.inputWrapperStyle}
+          />
       </Popup>
     </View>
   );
@@ -215,22 +231,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginBottom: 20,
   },
-  inputgroup: {
-    borderWidth: 1,
-    borderColor: "#2A2A2A",
-    borderRadius: 12,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 10,
-    gap: 10,
-    paddingHorizontal: 20,
-  },
-  input: {
-    backgroundColor: "red",
-    flex: 1,
-    padding: 10,
-  },
+ 
   inputgroup_text: {
     color: "#fff",
     fontFamily: "PlusJakartaSans-Bold",
@@ -250,5 +251,11 @@ const styles = StyleSheet.create({
   cardstyle1: {
     overflow: "hidden"
   },
+  popupinput:{
+    marginHorizontal: 5
+  },
+  inputWrapperStyle:{
+    marginHorizontal: 20
+  }
 
 });

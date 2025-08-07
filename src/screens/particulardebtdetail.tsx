@@ -12,6 +12,8 @@ import ProgressBar from '@components/reusable/progressbar'
 import GraphComponent from '@components/reusable/graph'
 import TextCard from '@components/reusable/textcard'
 import Card from '@components/reusable/card'
+import Input from '@components/reusable/Input'
+import { widthToDP } from 'react-native-responsive-screens'
 
 const Particulardebtdetail = () => {
 
@@ -59,10 +61,10 @@ const Particulardebtdetail = () => {
                     <View style={styles.section2}>
                         <View style={styles.section2_header_content}>
                             <Text style={styles.section2_header_content_title}>Transactions</Text>
-                            <Button style={styles.section2_header_content_button}>
+                            {/* <Button style={styles.section2_header_content_button}>
                                 <Image source={require('@images/payoffplan/edit.png')} style={styles.editimage} />
                                 <Text style={styles.section2_header_content_button_text}>Edit debt</Text>
-                            </Button>
+                            </Button> */}
                         </View>
                         <View style={styles.section2_body}>
                             <SegmentButton items={["Upcoming transactions", "Paid transactions"]}
@@ -95,19 +97,35 @@ const Particulardebtdetail = () => {
                 </View>
             </ScrollView>
             {/* log payment popup */}
-            {/* <Popup
+            <Popup
                 visible={show}
                 title="Paid amount"
                 onClose={() => setShow(false)}
                 titleStyle={styles.popuptitle}
                 containerStyle={styles.popupContainerStyle}
             >
-                <View style={styles.inputgroup}>
-                    <Text style={styles.inputgroup_text}>{"\u20B9"}</Text>
-                    <TextInput style={styles.input} />
-                    <Text style={styles.inputgroup_text}>/-</Text>
-                </View>
-            </Popup> */}
+                <Input
+                    value={''}
+                    onChangeContent={(val) =>
+                        console.log(val)
+                    }
+                    keyboardType="numeric"
+                    textHeader="₹"
+                    children={
+                        <Text
+                            style={{
+                                color: "#fff",
+                                fontSize: widthToDP(4.5),
+                                marginLeft: widthToDP(1),
+                            }}
+                        >
+                            /-
+                        </Text>
+                    }
+                    style={styles.popupinput}
+                    inputWrapperStyle={styles.inputWrapperStyle}
+                />
+            </Popup>
         </LinearGradient>
     )
 }
@@ -240,5 +258,25 @@ const styles = StyleSheet.create({
     balancegrp1: {
         flexDirection: "column",
         gap: 13
+    },
+    popuptitle: {
+        color: "#fff",
+        fontFamily: "PlusJakartaSans-Bold",
+        fontSize: 14,
+        paddingTop: 20,
+        paddingHorizontal: 20,
+    },
+    popupContainerStyle: {
+        backgroundColor: "#2A2A2A",
+    },
+
+    cardstyle1: {
+        overflow: "hidden"
+    },
+    popupinput: {
+        marginHorizontal: 5
+    },
+    inputWrapperStyle: {
+        marginHorizontal: 20
     }
 })

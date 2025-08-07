@@ -7,6 +7,9 @@ import Card from '@components/reusable/card'
 import { heightToDP, widthToDP } from 'react-native-responsive-screens'
 import Dropdown from '@components/reusable/dropdown'
 import Customstrategydropdown from '@components/strategy/customstrategydropdown'
+import Button from '@components/reusable/button'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RootStackParams } from '@managers/routing'
 
 
 interface CustomOption {
@@ -16,7 +19,7 @@ interface CustomOption {
 }
 
 const customOptions: CustomOption[] = [
-    { id: 1, label: "Custom1", value: "Custom1" },
+    { id: 1, label: "Custom plan 1", value: "Custom1" },
     { id: 2, label: "Custom2", value: "Custom2" },
     { id: 3, label: "Custom3", value: "Custom3" },
     { id: 4, label: "Custom4", value: "Custom4" },
@@ -41,15 +44,18 @@ const CustomDropdown: FC<{
 }> = ({ customPlan, setCustomPlan }) => {
     return (
 
-            <Customstrategydropdown style={styles.dropdown}
-                options={customOptions}
-                value={customPlan}
-                onChange={(val: any) => setCustomPlan(val)}
-                placeholder="Select currency"
-                maxheight={140}
-            />
+        <Customstrategydropdown
+            style={styles.dropdown}
+            options={customOptions}
+            value={customPlan}
+            onChange={(val: any) => setCustomPlan(val)}
+            placeholder="custom plan"
+            maxheight={140}
+        />
     )
 }
+
+type navProps = NativeStackNavigationProp<RootStackParams>
 
 
 
@@ -58,7 +64,8 @@ const CustomDropdown: FC<{
 
 const Selectstrategy: FC = () => {
 
-    const navigation = useNavigation()
+    const navigation = useNavigation<navProps>();
+
     const [selectedStrategy, setSelectedStrategy] = useState('')
     const [customPlan, setCustomPlan] = useState('')
 
@@ -116,6 +123,7 @@ const Selectstrategy: FC = () => {
             <Header title='Select Strategy' />
 
             <View style={styles.container}>
+                
                 <Card cardStyle={styles.innercardstyle}>
                     {STRATEGIES.map((strategy, idx) => {
                         const selected = selectedStrategy === strategy.key
@@ -169,11 +177,17 @@ const Selectstrategy: FC = () => {
                                 </View>
 
                                 {/* replicate your original divider placement */}
-                                {idx === 1 || idx === 2 ? <View style={styles.divider} /> : null}
+                                {idx === 0 || idx === 1 || idx === 2 ? <View style={styles.divider} /> : null}
                             </View>
                         )
                     })}
                 </Card>
+
+                <View style={styles.buttonWrapper}>
+                    <Button style={styles.button} onPress={()=> navigation.navigate('layoutscreen')} >
+                        <Text style={styles.buttonText}>Select strategy</Text>
+                    </Button>
+                </View>
             </View>
         </LinearGradient>
     )
@@ -184,14 +198,15 @@ export default Selectstrategy
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: widthToDP(6)
+        padding: widthToDP(6),
+        flexDirection: "column",
     },
     gradient: {
         flex: 1
     },
     innercardstyle: {
         flexDirection: "column",
-        gap: 24
+        gap: 24,
     },
     optionRow: {
         flexDirection: 'row',
@@ -263,10 +278,29 @@ const styles = StyleSheet.create({
         fontFamily: "PlusJakartaSans-Regular",
         fontSize: 9
     },
-    
+
     dropdown: {
         overflow: "hidden",
-        borderRadius: 0,
-        borderWidth: 0,
+        borderRadius: 10,
+        // borderWidth: 0,
+    },
+    buttonText: {
+        color: "#F7F7F7",
+        fontSize: 16,
+        fontFamily: "PlusJakartaSans-Bold",
+        textAlign: "center",
+    },
+    button: {
+        backgroundColor: "#006FFF",
+        paddingHorizontal: 20,
+        width: "100%",
+        alignSelf: "center",
+        borderRadius: widthToDP(50),
+        padding: widthToDP(2.5),
+        marginBottom: heightToDP(1),
+    },
+    buttonWrapper: {
+        flex: 1,
+        justifyContent: "flex-end"
     }
 })

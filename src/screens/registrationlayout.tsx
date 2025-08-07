@@ -8,13 +8,27 @@ import { heightToDP, widthToDP } from "react-native-responsive-screens";
 import Profession from "./registration/profession";
 import Selectcurrency from "./registration/selectcurrency";
 import Monthlyexpense from "./registration/monthlyexpense";
-import Monthlyexpensesummary from "./registration/monthlyexpensesummary";
+
 import Adddebts from "./registration/adddebts";
-import Addnewdebt from "./registration/addnewdebt";
-import ExpensesOverView from "./registration/expensesOverView";
+
 import IncomeDetails from "./registration/personalincome";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParams } from "@managers/routing";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+
+type navProps = NativeStackNavigationProp<RootStackParams>
+
+type routeProps = RouteProp<RootStackParams, 'registrationlayoutscreen'>
+
 
 const Registrationlayout: FC = () => {
+
+  const route = useRoute<routeProps>();
+
+  const navigation = useNavigation<navProps>();
+
+
+
   const PAGES = [
     { id: 1, name: "name", page: <Name />, title: "What's your name?" },
     { id: 2, name: "age", page: <Age />, title: "What is your age?" },
@@ -42,25 +56,28 @@ const Registrationlayout: FC = () => {
       page: <Monthlyexpense />,
       title: "What is your monthly expenses?",
     },
-    { id: 7, name: "loading", page: <ExpensesOverView />, title: "" },
-    { id: 8, name: "adddebts", page: <Adddebts />, title: "Add your debts" },
+    { id: 7, name: "loading", page: <Adddebts />, title: "Add your debts" },
 
-    // {
-    //   id: 10,
-    //   name: "premiumpage",
-    //   page: <Premiumpage />,
-    //   title: "Select your strategy",
-    // },
   ];
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(route?.params?.index || 0);
   const current = PAGES[selectedIndex];
 
   const goNext = () => {
-    if (selectedIndex < PAGES.length - 1) {
-      setSelectedIndex((i) => i + 1);
+
+    console.log("current : ", current?.id)
+
+    if (current?.id === 6) {
+      navigation.navigate('expensesoverviewscreen')
     } else {
-      console.log("Completed all pages");
+
+      if (selectedIndex < PAGES.length - 1) {
+        setSelectedIndex((i) => i + 1);
+      } else {
+        console.log("Completed all pages");
+        navigation.navigate('selectstrategyscreen')
+
+      }
     }
   };
   const goBack = () => {
@@ -89,7 +106,7 @@ const Registrationlayout: FC = () => {
               />
             </TouchableOpacity>
             <Text style={styles.headercontainer_content1_text}>
-              {current.title}
+              {current?.title}
             </Text>
           </View>
           <View style={styles.headercontainer_content2}>
@@ -99,12 +116,12 @@ const Registrationlayout: FC = () => {
           </View>
         </View>
 
-        <View style={styles.pageContainer}>{current.page}</View>
+        <View style={styles.pageContainer}>{current?.page}</View>
 
         <View style={styles.buttonWrapper}>
           <Button onPress={goNext} style={styles.button}>
             <Text style={styles.buttonText}>
-              {selectedIndex < PAGES.length - 1 ? "Next" : "Finish"}
+              {selectedIndex < PAGES.length - 1 ? "Next" : "Done"}
             </Text>
           </Button>
         </View>

@@ -14,8 +14,9 @@ import {
     NativeSyntheticEvent,
     NativeScrollEvent,
     ScrollView,
+    Image,
 } from 'react-native';
-import { ChevronDownIcon, ChevronUpIcon } from 'react-native-heroicons/solid';
+import { ChevronDownIcon, ChevronUpIcon, PlusCircleIcon } from 'react-native-heroicons/solid';
 import LinearGradient from 'react-native-linear-gradient';
 import { widthToDP } from 'react-native-responsive-screens';
 
@@ -107,106 +108,126 @@ const CustomStrategyDropdown: React.FC<DropdownProps> = ({
 
 
     return (
-        // <View style={{ marginBottom: 16 }}>
-        <LinearGradient
-            colors={['#636363', '#2F2C4A']} // subtle horizontal shift; or keep same if solid
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 1, y: 0.5 }}
-            style={style.gradient}
-        >
-            <TouchableOpacity
-                ref={triggerRef}
-                style={[
-                    styles.dropdown,
-                    style,
-                    visible && {
-                        borderBottomLeftRadius: 0,
-                        borderBottomRightRadius: 0
-                    }]}
-                onPress={() => setVisible(true)}
-                activeOpacity={0.7}
+        <View style={visible ? {
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
+            borderTopRightRadius: 6,
+            borderTopLeftRadius: 6, overflow: "hidden"
+        } : { borderRadius: 6, overflow: "hidden" }}>
+            <LinearGradient
+                colors={['#636363', '#2F2C4A']} // subtle horizontal shift; or keep same if solid
+                start={{ x: 0, y: 0.5 }}
+                end={{ x: 1, y: 0.5 }}
+                style={style.gradient}
             >
-                <View style={styles.innerRow}>
-                    <Text
-                        style={[
-                            styles.selectedText,
-                            { color: selected ? '#FFF' : '#FFF' },
-                        ]}
-                        numberOfLines={1}
-                    >
-                        {selected ? selected.label : placeholder}
-                    </Text>
-                    <View style={styles.arrow}>
-                        {visible ? (
-                            <ChevronUpIcon size={widthToDP(5)} color="#fff" />
-                        ) : (
-                            <ChevronDownIcon size={widthToDP(5)} color="#fff" />
-                        )}
-                    </View>
-                </View>
-            </TouchableOpacity>
-
-            <Modal visible={visible} transparent animationType="none">
-                {/* outside tap catcher */}
                 <TouchableOpacity
-                    style={styles.capture}
-                    activeOpacity={1}
-                    onPress={() => setVisible(false)}
-                />
-
-                {/* positioned list */}
-                <View style={[styles.modalContent, dropdownStyle]}  >
-                    <View onLayout={onContainerLayout}>
-                        <ScrollView
-                            onContentSizeChange={onContentSizeChange}
-                            onScroll={onScroll}
-                            scrollEventThrottle={16}
-                            showsVerticalScrollIndicator={false}
-                            contentContainerStyle={{ paddingRight: 24 }} // leave space for scrollbar
+                    ref={triggerRef}
+                    style={[
+                        styles.dropdown,
+                        style,
+                        visible && {
+                            borderBottomLeftRadius: 0,
+                            borderBottomRightRadius: 0
+                        }]}
+                    onPress={() => setVisible(true)}
+                    activeOpacity={0.7}
+                >
+                    <View style={styles.innerRow}>
+                        <Text
+                            style={[
+                                styles.selectedText,
+                                { color: selected ? '#FFF' : '#FFF' },
+                            ]}
+                            numberOfLines={1}
                         >
-                            {options.map((item, index) => (
+                            {selected ? selected.label : placeholder}
+                        </Text>
+                        <View style={styles.arrow}>
+                            {visible ? (
+                                <ChevronUpIcon size={widthToDP(5)} color="#fff" />
+                            ) : (
+                                <ChevronDownIcon size={widthToDP(5)} color="#fff" />
+                            )}
+                        </View>
+                    </View>
+                </TouchableOpacity>
+
+                <Modal visible={visible} transparent animationType="none">
+                    {/* outside tap catcher */}
+                    <TouchableOpacity
+                        style={styles.capture}
+                        activeOpacity={1}
+                        onPress={() => setVisible(false)}
+                    />
+
+                    {/* positioned list */}
+                    <View style={[styles.modalContent, dropdownStyle]}  >
+                        <View onLayout={onContainerLayout}>
+                            <ScrollView
+                                onContentSizeChange={onContentSizeChange}
+                                onScroll={onScroll}
+                                scrollEventThrottle={16}
+                                showsVerticalScrollIndicator={false}
+                                contentContainerStyle={{ paddingRight: 24 }} // leave space for scrollbar
+                            >
+                                {options.map((item, index) => (
+                                    <TouchableOpacity
+                                        key={`${String(item.value)}-${index}`}
+                                        style={styles.option}
+                                        onPress={() => {
+                                            onChange && onChange(item.value);
+                                            setVisible(false);
+                                        }}
+                                        activeOpacity={0.7}
+                                    >
+                                        <Text style={styles.optionText}>{item.label}</Text>
+                                    </TouchableOpacity>
+                                ))}
                                 <TouchableOpacity
-                                    key={`${String(item.value)}-${index}`}
-                                    style={styles.option}
+                                    key={9}
+                                    style={styles.buttonoption}
                                     onPress={() => {
-                                        onChange && onChange(item.value);
-                                        setVisible(false);
+                                        // setVisible(false);
                                     }}
                                     activeOpacity={0.7}
                                 >
-                                    <Text style={styles.optionText}>{item.label}</Text>
+                                    <PlusCircleIcon color={'#fff'} size={13} />
+                                    <Text style={styles.optionText}>Create custom plan</Text>
                                 </TouchableOpacity>
-                            ))}
-                        </ScrollView>
-                        <View
-                            style={[
-                                styles.scrollbarTrack,
-                                {
-                                    height: 100,
-                                    top: (containerHeight - 100) / 2,
-                                },
-                            ]}
-                        >
+                            </ScrollView>
                             <View
                                 style={[
-                                    styles.scrollbarThumb,
-                                    { height: thumbHeight, top: thumbTop },
+                                    styles.scrollbarTrack,
+                                    {
+                                        height: 100,
+                                        top: (containerHeight - 100) / 2,
+                                    },
                                 ]}
-                            />
+                            >
+                                <View
+                                    style={[
+                                        styles.scrollbarThumb,
+                                        { height: thumbHeight, top: thumbTop },
+                                    ]}
+                                />
+                            </View>
                         </View>
                     </View>
-                </View>
-            </Modal>
-        </LinearGradient>
+                </Modal>
+            </LinearGradient>
 
-        // </View>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
+    gradient: {
+        flex: 1,
+        borderRadius: 10
+    },
     dropdown: {
-        borderWidth: 0.5,
-        borderColor: '#C0C0C0',
+        // borderWidth: 0.5,
+        // borderColor: '#C0C0C0',
         borderRadius: widthToDP(3),
         paddingHorizontal: 12,
         paddingVertical: 10,
@@ -274,10 +295,20 @@ const styles = StyleSheet.create({
         backgroundColor: '#006FFF',
         borderRadius: 4,
     },
-    gradient:{
-        flex:1,
-        borderRadius: 10
+    buttonoption: {
+        backgroundColor: "#006FFF",
+        borderRadius: 100,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 5,
+        padding: 6,
+        width: "auto",
+        alignSelf: "flex-start",
+        paddingHorizontal: 10,
+        marginHorizontal: 20,
+        marginVertical: 10
     }
+
 });
 
 export default memo(CustomStrategyDropdown);

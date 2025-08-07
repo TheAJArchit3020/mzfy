@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "300899465301",
+    "project_id": "moneezify-41ae5",
+    "storage_bucket": "moneezify-41ae5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:300899465301:android:5d5363ce229743a0d67cdc",
+        "android_client_info": {
+          "package_name": "com.moneezify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "300899465301-2hmifh308rjdmmdr808rsndclj1qv277.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moneezify",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "300899465301-sedenisladme72hus6n9stvvg2ofkpl1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwRWvSoEZvUwpTZsAMCKfExH1MaX3fB24"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "300899465301-sedenisladme72hus6n9stvvg2ofkpl1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

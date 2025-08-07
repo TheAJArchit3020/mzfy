@@ -1,8 +1,9 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import ProgressBar from '@components/reusable/progressbar'
 import Card from '@components/reusable/card'
-
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import DraggableFlatList from "react-native-draggable-flatlist"
 
 interface payoffProps {
     data: any,
@@ -11,58 +12,109 @@ interface payoffProps {
     cardcontainerstyle?: any
     showicon?: any
     showcustom?: any
+    onDataChange?: (newData: any[]) => void
+    onDragStatusChange?: (isDragging: boolean) => void;
 }
 
+const DraggablePayoffcard: FC<payoffProps> = ({
+    data,
+    source,
+    cardstyle,
+    cardcontainerstyle,
+    showicon = true,
+    showcustom = false,
+    onDataChange,
+    onDragStatusChange
+}) => {
+    const [localData, setLocalData] = useState(data);
 
-const DraggablePayoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainerstyle, showicon = true, showcustom = false }) => {
-    return (
-        <>
-            <View style={styles.cardcontainer}>
-                {data?.map((item: any, idx: any) => {
-                    return (
-                        <View style={styles.cardcontainer_inner} key={idx}>
-                            <Image source={require('@images/payoffplan/drag.png')} style={styles.dragimage} />
-                            <Card style={[styles.section_card, cardstyle]} cardStyle={styles.section_card_inner} key={idx}>
-                                <View style={styles.groupsection}>
-                                    <Text style={styles.groupsection_text1}>{item.name}</Text>
-                                    <Text style={styles.groupsection_text2}>{item.time}</Text>
-                                    {showicon && <TouchableOpacity style={styles.button}>
-                                        <Image source={source} style={styles.editimage} />
-                                    </TouchableOpacity>}
-                                </View>
-                                <View style={styles.groupsection2}>
-                                    {showcustom ? (<Text style={styles.groupsection_text1}>Monthly Minimum (EMI): {item.minamt} {'\u20B9'}</Text>) : (<Text style={styles.groupsection_text1}>Minimun: {item.minamt} {'\u20B9'}</Text>)}
-                                    <Text style={styles.groupsection_text1}>APR: {item.apr}</Text>
+    const keyExtractor = (item: any) => item.id?.toString() || item.name;
 
-                                </View>
-                                <View style={styles.groupsection3}>
-                                    <Text style={styles.groupsection_text1}>Payoff Progress</Text>
-                                    <ProgressBar progress={item?.payoffprogress} tooltipLabel={`Balance 20,000 ${'\u20B9'}`} showTooltip={true} style={styles.progressbar} />
-                                    <Text style={styles.groupsection_text1}>{item.payoffprogress} %</Text>
-
-                                </View>
-
-                            </Card>
-                        </View>
-
-                    )
-                })}
+    const renderItem = ({ item, drag, isActive }: any) => {
+        return (
+            <View style={[styles.cardcontainer_inner, isActive && styles.activeItem]}>
+                <TouchableOpacity onPressIn={() => {
+                    onDragStatusChange?.(true);
+                    drag();
+                }} style={styles.dragHandle}>
+                    <Image source={require('@images/payoffplan/drag.png')} style={styles.dragimage} />
+                </TouchableOpacity>
+                <Card style={[styles.section_card, cardstyle]} cardStyle={styles.section_card_inner}>
+                    <View style={styles.groupsection}>
+                        <Text style={styles.groupsection_text1}>{item.name}</Text>
+                        <Text style={styles.groupsection_text2}>{item.time}</Text>
+                        {showicon && <TouchableOpacity style={styles.button}>
+                            <Image source={source} style={styles.editimage} />
+                        </TouchableOpacity>}
+                    </View>
+                    <View style={styles.groupsection2}>
+                        {showcustom ? (
+                            <Text style={styles.groupsection_text1}>Monthly Minimum (EMI): {item.minamt} {'\u20B9'}</Text>
+                        ) : (
+                            <Text style={styles.groupsection_text1}>Minimun: {item.minamt} {'\u20B9'}</Text>
+                        )}
+                        <Text style={styles.groupsection_text1}>APR: {item.apr}</Text>
+                    </View>
+                    <View style={styles.groupsection3}>
+                        <Text style={styles.groupsection_text1}>Payoff Progress</Text>
+                        <ProgressBar
+                            progress={item?.payoffprogress}
+                            tooltipLabel={`Balance 20,000 ${'\u20B9'}`}
+                            showTooltip={true}
+                            style={styles.progressbar}
+                        />
+                        <Text style={styles.groupsection_text1}>{item.payoffprogress} %</Text>
+                    </View>
+                </Card>
             </View>
-        </>
+        )
+    };
 
+    const handleDragEnd = ({ data: newData }: { data: any[] }) => {
+        setLocalData(newData);
+        onDragStatusChange?.(false);
+        if (onDataChange) {
+            onDataChange(newData);
+        }
+    };
+
+    return (
+        <View style={styles.cardcontainer}>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+                {/* <NestableScrollContainer> */}
+                <DraggableFlatList
+                    data={localData}
+                    renderItem={renderItem}
+                    keyExtractor={keyExtractor}
+                    onDragEnd={handleDragEnd}
+                    containerStyle={styles.flatListContainer}
+                    contentContainerStyle={styles.flatListContent}
+                    dragItemOverflow={true}
+
+                />
+                {/* </NestableScrollContainer> */}
+            </GestureHandlerRootView>
+        </View>
     )
 }
+
 export default DraggablePayoffcard
 
 const styles = StyleSheet.create({
     cardcontainer: {
-        flexDirection: "column",
-        gap: 20
+        flex: 1,
+        minHeight: '100%',
+    },
+    flatListContainer: {
+        flex: 1,
+    },
+    flatListContent: {
+        gap: 20,
     },
     section_card: {
         backgroundColor: "rgba(51, 255, 0, 0.38)",
         borderWidth: 0,
-        width: '90%',
+        width: '88%',
         alignSelf: "center",
         paddingHorizontal: 10,
         borderRadius: 12
@@ -123,6 +175,14 @@ const styles = StyleSheet.create({
     cardcontainer_inner: {
         flexDirection: "row",
         alignItems: "center",
-        gap: 10
+        gap: 10,
+        paddingVertical: 5,
+    },
+    dragHandle: {
+        padding: 5,
+    },
+    activeItem: {
+        opacity: 0.8,
+        transform: [{ scale: 1.02 }],
     }
 })

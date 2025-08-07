@@ -37,15 +37,17 @@ const Createcustomplan: FC = () => {
 
     const [show, setShow] = useState(false);
     const [state, dispatch] = useReducer(reducer, initialState);
-    const showsetPopup = () => {
-        setShow(true);
-    };
-
-    const data = [
+    const [debtsData, setDebtsData] = useState([
         { id: 1, name: 'Car Loan', minamt: 500, apr: '2.5%', payoffprogress: 5.5, time: 'Completes on Jul 2 2026 (9 month 1 days)' },
         { id: 2, name: 'House Loan', minamt: 500, apr: '9.5%', payoffprogress: 25.5, time: 'Completes on Jul 2 2026 (9 month 1 days)' },
         { id: 3, name: 'Bike Loan', minamt: 500, apr: '10.5%', payoffprogress: 45.5, time: 'Completes on Jul 2 2026 (9 month 1 days)' },
-    ]
+    ]);
+    const [scrollEnabled, setScrollEnabled] = useState(true);
+
+
+    const showsetPopup = () => {
+        setShow(true);
+    };
 
     const debts = [
         { label: 'Debt name 1', value: 'debt1' },
@@ -56,8 +58,12 @@ const Createcustomplan: FC = () => {
         { label: 'Debt name 3', value: 'debt3' },
     ];
 
-    const [selectedDebt, setSelectedDebt] = useState(null);
+    const [selectedDebt, setSelectedDebt] = useState<string | null>(null);
 
+    const handleDataChange = (newData: any[]) => {
+        setDebtsData(newData);
+        console.log('Debts reordered:', newData);
+    };
 
     return (
         <LinearGradient
@@ -68,8 +74,7 @@ const Createcustomplan: FC = () => {
             end={{ x: 0, y: 1 }}
         >
             <Header title='Create Custom Plan' />
-
-            <ScrollView showsVerticalScrollIndicator={false} >
+            <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={scrollEnabled}>
 
                 <View style={styles.container}>
                     <View style={styles.cardcontainer}>
@@ -100,7 +105,14 @@ const Createcustomplan: FC = () => {
                             </Button>
                         </View>
                         <View style={styles.cardcontainer3_inner}>
-                            <DraggablePayoffcard data={data} source={require('@images/payoffplan/edit.png')} showicon={false} showcustom={true} />
+                            <DraggablePayoffcard
+                                data={debtsData}
+                                source={require('@images/payoffplan/edit.png')}
+                                showicon={false}
+                                showcustom={true}
+                                onDataChange={handleDataChange}
+                                onDragStatusChange={(isDragging) => setScrollEnabled(!isDragging)}
+                            />
                         </View>
                     </View>
 
@@ -134,7 +146,7 @@ const Createcustomplan: FC = () => {
                             value={selectedDebt}
                             placeholder="Debt name"
                             onChange={(val) => {
-                                setSelectedDebt(val);
+                                setSelectedDebt(val as string);
                                 // do anything else with the selection
                                 console.log('picked', val);
                             }}
@@ -174,6 +186,9 @@ const Createcustomplan: FC = () => {
 export default Createcustomplan
 
 const styles = StyleSheet.create({
+    mainContainer: {
+        flex: 1,
+    },
     container: {
         flex: 1,
         flexDirection: "column",
@@ -185,7 +200,10 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
         flexDirection: "column",
         gap: 25,
-        marginTop: 20
+        marginTop: 20,
+        // backgroundColor:"red",
+        flex: 1,
+        // overflow:"hidden"
     },
 
     cardcontainer3_inner: {
@@ -203,7 +221,8 @@ const styles = StyleSheet.create({
     },
     cardcontainer3_content: {
         flexDirection: "row",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        alignItems: "center"
     },
     info_text: {
         color: '#fff',
@@ -219,12 +238,12 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: "#006EFF",
-        borderRadius: 45,
+        borderRadius: 100,
         flexDirection: "row",
         alignItems: "center",
-        padding: 6,
+        padding: 10,
         paddingHorizontal: 12,
-        gap: 5
+        gap: 5,
     },
     button_text: {
         color: "#fff",
@@ -291,7 +310,7 @@ const styles = StyleSheet.create({
     buttongroup: {
         flexDirection: "column",
         gap: 16,
-        marginTop: 90
+        marginTop: 90,
     },
     button_save: {
         backgroundColor: "#006EFF",

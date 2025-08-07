@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { View, StyleSheet, Text, Image, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Text, Image, TouchableOpacity, Platform } from "react-native";
 import Button from "./button";
 import {
   widthToDP as wp,
@@ -9,8 +9,10 @@ import { ArrowLeftIcon } from "react-native-heroicons/outline";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParams } from "@managers/routing";
 import { useNavigation } from "@react-navigation/native";
+
+
 interface headerProps {
-  title: string;
+  title?: string;
 }
 type navProp = NativeStackNavigationProp<RootStackParams>;
 
@@ -42,8 +44,8 @@ const Header: FC<headerProps> = ({ title }) => {
 
 const styles = StyleSheet.create({
   container: {
-    
     flexDirection: "row",
+    alignItems: "center",
     gap: wp(4),
     paddingLeft: wp(5),
     paddingTop: wp(12),
@@ -60,7 +62,7 @@ const styles = StyleSheet.create({
     fontFamily: "PlusJakartaSans-Bold",
     color: "#fff",
     fontSize: wp(5),
-    marginBottom: wp(1.5),
+    marginTop: Platform.OS === 'android' ? -5 : 0
   },
 });
 
