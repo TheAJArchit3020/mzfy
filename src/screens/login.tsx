@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState, AppDispatch } from '@redux/store'
 import { checkUser } from '@redux/login/loginSlice'
 import { unwrapResult } from '@reduxjs/toolkit'
+import { setField } from '@redux/user/userSlice'
 
 type navProps = NativeStackNavigationProp<RootStackParams>
 
@@ -24,7 +25,9 @@ const Login: FC = () => {
     const navigation = useNavigation<navProps>();
     const dispatch = useDispatch<AppDispatch>();
 
-    const { loading, error } = useSelector((state: RootState) => state.loginuser)
+    //    const signindata = useSelector((state: RootState) => state.loginuser.items)
+
+    //         console.log("items : ",signindata[0].token)
 
     const navigationHandler = () => {
         handleGoogleSignIn();
@@ -37,7 +40,7 @@ const Login: FC = () => {
     useEffect(() => {
         GoogleSignin.configure({
             webClientId:
-                '300899465301-sedenisladme72hus6n9stvvg2ofkpl1.apps.googleusercontent.com',
+                '223306759572-fp0534lirc9tqm0btoho0ojsncs69jtc.apps.googleusercontent.com',
             iosClientId:
                 '300899465301-q4gh41im4l4r8irbn2gr0pumnk0g78jq.apps.googleusercontent.com',
             offlineAccess: true,
@@ -53,22 +56,28 @@ const Login: FC = () => {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
 
-            console.log("userInfo : ", userInfo)
+            dispatch(setField({ field: 'email', value: userInfo?.data?.user?.email }))
+            dispatch(setField({ field: 'googleId', value: userInfo?.data?.user?.id }))
 
             const payload = {
                 idToken: userInfo?.data?.idToken,
-                // email: userInfo?.data?.user?.email,
-                // googleId: userInfo?.data?.user?.id,
             };
 
             // dispatch the thunk:
             const resultAction = await dispatch(checkUser(payload));
-            const user = unwrapResult(resultAction);
 
+            console.log("first resultAction : ", resultAction.payload)
+            const payloadData = resultAction?.payload as { detailsExists?: boolean; token?: string; userId?: string };
+            const { detailsExists, token, userId } = payloadData;
+
+            if (detailsExists) {
+                navigation.navigate('layoutscreen');
+            } else {
+                navigation.navigate('registrationlayoutscreen', {
+                    index: 0,
+                });
+            }
             // on success navigate:
-            console.log('API returned:', user)
-
-            console.log("handleGoogleSignIn data : ", payload)
         } catch (err: any) {
             if (err?.status === 401) {
                 navigation.navigate('registrationlayoutscreen', {

@@ -1,4 +1,4 @@
-package com.moneezify
+package com.kineticscapestudios.moneezify
 
 import android.app.Application
 import com.facebook.react.PackageList

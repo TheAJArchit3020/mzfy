@@ -269,17 +269,12 @@ const DebtAdd: FC = () => {
                   </TouchableOpacity>
                 }
               />
-              <Modal visible={showDatePicker} transparent animationType="fade">
-                {/* <View style={styles.modalBg}> */}
+              {showDatePicker && Platform.OS === "android" && (
                 <DateTimePicker
-                  value={
-                    form.nextDueDate
-                      ? new Date(form.nextDueDate)
-                      : new Date()
-                  }
+                  value={form.nextDueDate ? new Date(form.nextDueDate) : new Date()}
                   mode="date"
-                  display="default"
-                  onChange={(event, date) => {
+                  display="calendar"
+                  onChange={(_, date) => {
                     setShowDatePicker(false);
                     if (date) {
                       formDispatch({
@@ -290,8 +285,37 @@ const DebtAdd: FC = () => {
                     }
                   }}
                 />
-                {/* </View> */}
-              </Modal>
+              )}
+              {Platform.OS === "ios" && (
+                <Modal
+                  visible={showDatePicker}
+                  transparent
+                  animationType="slide"
+                  onRequestClose={() => setShowDatePicker(false)}
+                >
+                  <View style={styles.modalBg}>
+                    {/* <View style={styles.pickerWrapper}> */}
+                      <DateTimePicker
+                        value={form.nextDueDate ? new Date(form.nextDueDate) : new Date()}
+                        mode="date"
+                        display="spinner"
+                        onChange={(_, date) => {
+                          if (date) {
+                            formDispatch({
+                              type: "SET_FIELD",
+                              field: "nextDueDate",
+                              value: date.toISOString().split("T")[0],
+                            });
+                          }
+                        }}
+                      />
+                      <Button onPress={() => setShowDatePicker(false)} style={styles.confirmButton}>
+                        <Text style={styles.buttonText}>Done</Text>
+                      </Button>
+                    {/* </View> */}
+                  </View>
+                </Modal>
+              )}
               <Input
                 label="Tag colour"
                 value={form.tagColor}

@@ -1,8 +1,12 @@
 import { registeruseruser } from '@managers/apis'
+import { RootState } from '@redux/store'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import axios from 'axios'
+import { useSelector } from 'react-redux'
 
 export interface User {
+    email: string
+    googleId: string
     name: any
     age: any
     profession: any
@@ -22,6 +26,8 @@ interface UserState {
 
 const initialState: UserState = {
     current: {
+        email: '',
+        googleId: '',
         name: '',
         age: '',
         profession: '',
@@ -41,20 +47,23 @@ type SetFieldPayload = {
     value: any
 }
 
-export const addUser = createAsyncThunk<User, User>(
+export const addUser = createAsyncThunk<User, User, { state: RootState; rejectValue: any }>(
     'user/addUser',
-    async (newUser, { rejectWithValue }) => {
+    async (newUser, { getState, rejectWithValue }) => {
+
+        const _token = (getState().loginuser.items[0].token)
+
         try {
             const resp = await axios.post<User>(
                 registeruseruser,
                 newUser,
                 {
                     headers: {
-                        // standard Bearer scheme; change if your API expects something else
-                        // Authorization: `Bearer ${token}`
+                        Authorization: `Bearer ${_token}`
                     }
                 }
             )
+            console.log("addUser resp : ", resp)
             return resp.data
         } catch (err: any) {
             return rejectWithValue(err.response?.data || err.message)
