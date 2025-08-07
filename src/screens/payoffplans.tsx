@@ -1,5 +1,5 @@
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
-import React, { FC, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import Strategycard from '@components/payoffplan/strategycard';
 import Payoffcard from '@components/payoffplan/payoffcard';
 import TextCard from '@components/reusable/textcard';
@@ -9,12 +9,38 @@ import GraphComponent from '@components/reusable/graph';
 import TextCard2 from '@components/reusable/textcard2';
 import Popup from '@components/reusable/popup';
 import StrategyRadioCard from '@components/payoffplan/strategymodal';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@redux/store';
+import { fetchPayoffPlan } from '@redux/payoffplans/payoffplanSlice';
+
 
 
 const PayoffplansScreen: FC = () => {
 
+  const dispatch = useDispatch<AppDispatch>();
+
   const [show, setShow] = useState(false);
 
+  useFocusEffect(
+    useCallback(() => {
+
+      const fetchPayoffPlans = async () => {
+        try {
+          await dispatch(fetchPayoffPlan()).unwrap();
+        } catch (error) {
+          console.error('Error fetching payoff plans:', error);
+        }
+      };
+
+      fetchPayoffPlans();
+
+    }, [])
+  );
+
+
+  const payoffplanArray = useSelector((state: RootState) => state.payoffplan.items[0]) ?? [];
+  console.log("payoffplanArray : ", payoffplanArray)
 
 
   const strategies = [

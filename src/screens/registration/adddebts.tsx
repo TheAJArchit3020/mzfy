@@ -30,9 +30,11 @@ const AddDebts: FC = () => {
 
   const handleAddDebt = () => {
 
-    navigation.navigate('adddebtscreen')
+    navigation.navigate('adddebtscreen', {
+      screen: 1
+    })
 
-    
+
   };
 
   return (

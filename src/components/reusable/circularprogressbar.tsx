@@ -1,121 +1,107 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useMemo } from 'react'
 import {
-    StyleSheet,
-    Text,
-    View,
-    Animated,
-    Easing,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native'
-import Svg, {
-    Circle,
-    Defs,
-    LinearGradient,
-    Stop,
-} from 'react-native-svg'
+import Svg, { Circle, G } from 'react-native-svg'
 
-const AnimatedCircle = Animated.createAnimatedComponent(Circle)
+interface Debt {
+  id: string
+  payoffPct: number
+  tagColor: string
+}
 
 interface Props {
-    progress?: number // 0–100
-    size?: number     // px
-    strokeWidth?: number
+  size?: number     // px
+  strokeWidth?: number
+  data?: {
+    totalBalance: number
+    inProgressDebts: Debt[]
+  }
 }
 
 const CircularProgressbar: React.FC<Props> = ({
-    progress = 65,
-    size = 120,
-    strokeWidth = 10,
+  size = 120,
+  strokeWidth = 10,
+  data
 }) => {
-    // two‑tone gradient colors
-    const gradientColors = ['#F4CF3B', '#8E7822']
+  const radius = (size - strokeWidth) / 2
+  const circumference = 2 * Math.PI * radius
 
-    // Circle math
-    const radius = (size - strokeWidth) / 2
-    const circumference = 2 * Math.PI * radius
-
-    // Animated value drives dash offset
-    const animatedValue = useRef(new Animated.Value(0)).current
-
-    const clamped = Math.min(Math.max(progress, 0), 100)
-    const dashOffset = animatedValue.interpolate({
-        inputRange: [0, 100],
-        outputRange: [circumference, 0],
+  // build an array of { color, length, offset } for each debt
+  const segments = useMemo(() => {
+    if (!data?.inProgressDebts?.length) return []
+    let cumulative = 0
+    return data.inProgressDebts.map((d) => {
+      // clamp 0–100
+      const pct = Math.max(0, Math.min(d.payoffPct, 100))
+      const length = (pct / 100) * circumference
+      // offset so each segment starts where the last one ended
+      const offset = circumference - cumulative - length
+      cumulative += length
+      return { color: d.tagColor, length, offset }
     })
+  }, [data, circumference])
 
-    useEffect(() => {
-        Animated.timing(animatedValue, {
-            toValue: clamped,
-            duration: 700,
-            easing: Easing.out(Easing.ease),
-            useNativeDriver: false,
-        }).start()
-    }, [clamped])
+  return (
+    <View style={styles.container}>
+      <Svg width={size} height={size}>
+        {/* rotate the group -90° so 0% starts at 12 o’clock */}
+        <G rotation="-90" origin={`${size/2}, ${size/2}`}>
+          {/* background ring */}
+          <Circle
+            cx={size/2}
+            cy={size/2}
+            r={radius}
+            stroke="#e6e6e6"
+            strokeWidth={strokeWidth}
+            fill="none"
+          />
 
-    return (
-        <View style={styles.container}>
-            <Svg width={size} height={size}>
-                {/* 1) Define your gradient */}
-                <Defs>
-                    <LinearGradient
-                        id="grad"
-                        x1="0%"
-                        y1="0%"
-                        x2="0%"
-                        y2="100%"
-                        gradientTransform={`rotate(-90 ${size / 2} ${size / 2})`}
-                    >
-                        <Stop offset="0%" stopColor={gradientColors[0]} />
-                        <Stop offset="100%" stopColor={gradientColors[1]} />
-                    </LinearGradient>
-                </Defs>
+          {/* each debt segment */}
+          {segments.map((seg, i) => (
+            <Circle
+              key={i}
+              cx={size/2}
+              cy={size/2}
+              r={radius}
+              stroke={seg.color}
+              strokeWidth={strokeWidth}
+              fill="none"
+              strokeLinecap="round"
+              strokeDasharray={`${seg.length}, ${circumference}`}
+              strokeDashoffset={seg.offset}
+            />
+          ))}
+        </G>
+      </Svg>
 
-                {/* 2) Background circle */}
-                <Circle
-                    cx={size / 2}
-                    cy={size / 2}
-                    r={radius}
-                    stroke="#e6e6e6"
-                    strokeWidth={strokeWidth}
-                    fill="none"
-                />
-
-                {/* 3) Animated foreground, using your gradient */}
-                <AnimatedCircle
-                    cx={size / 2}
-                    cy={size / 2}
-                    r={radius}
-                    stroke="url(#grad)"
-                    strokeWidth={strokeWidth}
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeDasharray={`${circumference}, ${circumference}`}
-                    strokeDashoffset={dashOffset}
-                />
-            </Svg>
-
-            {/* Center label */}
-            <View style={styles.label}>
-                <Text style={styles.percentText}>₹ 90,00,00</Text>
-            </View>
-        </View>
-    )
+      {/* center label */}
+      <View style={styles.label}>
+        <Text style={styles.percentText}>
+          ₹ {Number(data?.totalBalance ?? 0).toLocaleString('en-IN')}
+        </Text>
+      </View>
+    </View>
+  )
 }
 
 export default CircularProgressbar
 
 const styles = StyleSheet.create({
-    container: {
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    label: {
-        position: 'absolute',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    percentText: {
-        fontSize: 13,
-        color: '#E63A30',
-        fontFamily: 'PlusJakartaSans-Bold',
-    },
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  label: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  percentText: {
+    fontSize: 13,
+    color: '#E63A30',
+    fontFamily: 'PlusJakartaSans-Bold',
+  },
 })

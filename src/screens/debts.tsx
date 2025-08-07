@@ -5,7 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import React, { FC, useState } from "react";
+import React, { FC, useCallback, useState } from "react";
 import Debtbalance from "@components/dashboard/debtbalance";
 import Debtpaid from "@components/dashboard/debtpaid";
 import {
@@ -16,123 +16,67 @@ import SegmentButton from "@components/reusable/segmentbutton";
 import Input from "@components/reusable/Input";
 import { MagnifyingGlassIcon } from "react-native-heroicons/outline";
 import Payoffcard from "@components/payoffplan/payoffcard";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParams } from "@managers/routing";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@redux/store";
+import { fetchAllDebts } from "@redux/debts/debtsSlice";
 
-type NavigationProp = NativeStackNavigationProp<RootStackParams, "DebtsScreen">;
-const inProgressDebts = [
-  {
-    name: "Car Loan",
-    time: "Completes on Jul 2 2026 (9 month 1 days)",
-    minamt: 5000,
-    apr: 7.5,
-    payoffprogress: 40,
-  },
-  {
-    name: "Student Loan",
-    time: "Completes on Jul 2 2026 (9 month 1 days)",
-    minamt: 2000,
-    apr: 5.2,
-    payoffprogress: 60,
-  },
-  {
-    name: "Home Loan",
-    time: "Completes on Jul 2 2026 (9 month 1 days)",
-    minamt: 15000,
-    apr: 6.8,
-    payoffprogress: 25,
-  },
-  {
-    name: "Personal Loan",
-    time: "Completes on Jul 2 2026 (9 month 1 days)",
-    minamt: 3000,
-    apr: 12.5,
-    payoffprogress: 70,
-  },
-];
+type NavigationProp = NativeStackNavigationProp<RootStackParams>;
 
-const completedDebts = [
-  {
-    name: "Credit Card Debt",
-    time: "Completes on Jul 2 2026 (9 month 1 days)",
-    minamt: 0,
-    apr: 15.0,
-    payoffprogress: 100,
-  },
-  {
-    name: "Small Personal Loan",
-    time: "Paid off in 2022",
-    minamt: 0,
-    apr: 8.0,
-    payoffprogress: 100,
-  },
-  {
-    name: "Motorcycle Loan",
-    time: "Completes on Jul 2 2026 (9 month 1 days)",
-    minamt: 0,
-    apr: 9.5,
-    payoffprogress: 100,
-  },
-  {
-    name: "Furniture Loan",
-    time: "Paid off in 2022",
-    minamt: 0,
-    apr: 12.0,
-    payoffprogress: 100,
-  },
-  {
-    name: "Electronics Loan",
-    time: "Completes on Jul 2 2026 (9 month 1 days)",
-    minamt: 0,
-    apr: 14.5,
-    payoffprogress: 100,
-  },
-  {
-    name: "Vacation Loan",
-    time: "Paid off in 2022",
-    minamt: 0,
-    apr: 11.8,
-    payoffprogress: 100,
-  },
-  {
-    name: "Emergency Loan",
-    time: "Completes on Jul 2 2026 (9 month 1 days)",
-    minamt: 0,
-    apr: 16.2,
-    payoffprogress: 100,
-  },
-  {
-    name: "Investment Loan",
-    time: "Paid off in 2022",
-    minamt: 0,
-    apr: 7.8,
-    payoffprogress: 100,
-  },
-  {
-    name: "Tax Loan",
-    time: "Completes on Jul 2 2026 (9 month 1 days)",
-    minamt: 0,
-    apr: 13.5,
-    payoffprogress: 100,
-  },
-];
+
 
 const DebtsScreen: FC = () => {
+
+
   const navigation = useNavigation<NavigationProp>();
+  const dispatch = useDispatch<AppDispatch>();
   const [searchKeyword, setSeacthKeyword] = useState("");
   const [selectedButton, setSelectedButton] = useState(0);
+
+
+  useFocusEffect(
+    useCallback(() => {
+      getAllDebtDetails();
+    }, [])
+  );
+
+  const getAllDebtDetails = async () => {
+    try {
+      await dispatch(fetchAllDebts()).unwrap()
+    } catch (err: any) {
+      console.log("Error adding user:", err);
+    }
+
+  }
+
+
+  const FETCHALLDEBTS = (useSelector((state: RootState) => state.debts.alldebts[0])) ?? {
+    inProgressDebts: [],
+    completedDebts: []
+  };
+
+  const inProgressList = FETCHALLDEBTS.inProgressDebts;
+  const completedList = FETCHALLDEBTS.completedDebts;
+
+  // 4️⃣ build the two button labels
+  const buttonLabels = [
+    `In Progress (${inProgressList.length})`,
+    `Completed   (${completedList.length})`,
+  ]
+
 
   return (
     <View style={styles.container}>
       <View style={styles.debtInfoContainer}>
-        <Debtbalance />
-        <Debtpaid />
+        <Debtbalance data={FETCHALLDEBTS} />
+        <Debtpaid data={FETCHALLDEBTS} />
       </View>
 
       <View style={styles.debtsListContainer}>
         <SegmentButton
-          items={["InProgress (3)", "Completed (3)"]}
+          items={buttonLabels}
           onChange={(idx) => {
             setSelectedButton(idx);
           }}
@@ -159,7 +103,7 @@ const DebtsScreen: FC = () => {
           style={{ marginHorizontal: 10 }}
         >
           <Payoffcard
-            data={selectedButton === 0 ? inProgressDebts : completedDebts}
+            data={selectedButton === 0 ? inProgressList : completedList}
             source={require("@assets/images/dashboard/rightarrow.png")}
             onPress={() => navigation.navigate("particulardebtdetailscreen")}
           />
@@ -168,7 +112,9 @@ const DebtsScreen: FC = () => {
       <TouchableOpacity
         style={styles.section6}
         onPress={() => {
-          navigation.navigate("adddebtscreen");
+          navigation.navigate("adddebtscreen", {
+            screen: 2
+          });
         }}
       >
         <Text style={styles.section6_text}>+</Text>

@@ -23,7 +23,7 @@ export type RootStackParams = {
     introscreen: undefined
     layoutscreen: undefined
     expensesoverviewscreen: undefined
-    adddebtscreen: undefined
+    adddebtscreen: { screen: number }
     particulardebtdetailscreen: undefined
     createcustomplanscreen: undefined
     registrationlayoutscreen: { index: number }
@@ -31,7 +31,6 @@ export type RootStackParams = {
     profilescreen: undefined
     loginscreen: undefined
     paywallscreen: undefined
-
 
 };
 

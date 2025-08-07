@@ -1,8 +1,13 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { FC } from 'react'
 import Card from '@components/reusable/card'
 
-const Debtpaid = () => {
+interface DebtItemProps {
+    data: any
+}
+
+const Debtpaid: FC<DebtItemProps> = ({ data }) => {
+    
     return (
         <Card style={styles.section_card} cardStyle={styles.section_card_inner}>
             <View style={styles.section_card_inner_content}>
@@ -10,7 +15,7 @@ const Debtpaid = () => {
                     <Text style={styles.section_card_text}>Debt paid</Text>
                     <Text style={styles.section_card_text2}>{'\u20B9'}&nbsp;
                         <Text style={styles.section_card_span}>
-                            1,23,329
+                            {Number(data?.totalPaid ?? 0).toLocaleString('en-IN')}
                         </Text>
                     </Text>
                 </View>
