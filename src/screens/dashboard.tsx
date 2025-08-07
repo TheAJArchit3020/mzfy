@@ -81,9 +81,15 @@ const DashboardScreen: FC = () => {
             </Text>
             <Text style={styles.section1_1_text}>{getGreeting()}</Text>
           </View>
-          <View style={styles.section1_2}>
+          <TouchableOpacity style={styles.section1_2} onPress={() => {
+            navigation.navigate("profilescreen");
+          }}>
+            {/* <Image
+              source={require("@images/dashboard/rightarrow.png")}
+              style={{ width: 20, height: 20 }}
+            /> */}
             <Text style={styles.section1_2_text}>S</Text>
-          </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.section2}>
@@ -122,27 +128,27 @@ const DashboardScreen: FC = () => {
         titleStyle={styles.popuptitle}
         containerStyle={styles.popupContainerStyle}
       >
-          <Input
-            value={''}
-            onChangeContent={(val) =>
-              console.log(val)
-            }
-            keyboardType="numeric"
-             textHeader="₹"
-            children={
-              <Text
-                style={{
-                  color: "#fff",
-                  fontSize: widthToDP(4.5),
-                  marginLeft: widthToDP(1),
-                }}
-              >
-                /-
-              </Text>
-            }
-            style={styles.popupinput}
-            inputWrapperStyle={styles.inputWrapperStyle}
-          />
+        <Input
+          value={''}
+          onChangeContent={(val) =>
+            console.log(val)
+          }
+          keyboardType="numeric"
+          textHeader="₹"
+          children={
+            <Text
+              style={{
+                color: "#fff",
+                fontSize: widthToDP(4.5),
+                marginLeft: widthToDP(1),
+              }}
+            >
+              /-
+            </Text>
+          }
+          style={styles.popupinput}
+          inputWrapperStyle={styles.inputWrapperStyle}
+        />
       </Popup>
     </View>
   );
@@ -239,7 +245,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginBottom: 20,
   },
- 
+
   inputgroup_text: {
     color: "#fff",
     fontFamily: "PlusJakartaSans-Bold",
@@ -259,10 +265,10 @@ const styles = StyleSheet.create({
   cardstyle1: {
     overflow: "hidden"
   },
-  popupinput:{
+  popupinput: {
     marginHorizontal: 5
   },
-  inputWrapperStyle:{
+  inputWrapperStyle: {
     marginHorizontal: 20
   }
 

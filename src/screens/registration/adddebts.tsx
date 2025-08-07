@@ -25,23 +25,14 @@ const AddDebts: FC = () => {
   const debtArray = useSelector((s: RootState) => s.user.current.debts) ?? [];
 
   const navigation = useNavigation<navprops>()
-  const [debts, setDebts] = useState<any[]>([]);
 
 
-  console.log("debtArray : ", debtArray)
 
   const handleAddDebt = () => {
 
     navigation.navigate('adddebtscreen')
 
-    const newDebt = {
-      name: "Credit Card",
-      time: "Pay in 12 months",
-      minamt: "5000",
-      apr: "14%",
-      payoffprogress: 0,
-    };
-    setDebts((prevDebts) => [...prevDebts, newDebt]);
+    
   };
 
   return (

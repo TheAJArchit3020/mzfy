@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, FC } from "react";
 import {
   View,
   Text,
@@ -19,7 +19,7 @@ import { useNavigation } from "@react-navigation/native";
 
 type navProps = NativeStackNavigationProp<RootStackParams>
 
-const Intro = () => {
+const Intro:FC = () => {
   const navigation = useNavigation<navProps>();
   const [currentIndex, setCurrentIndex] = useState(0);
   const introData = [

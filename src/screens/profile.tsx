@@ -1,10 +1,24 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
-import React, { FC } from 'react'
+import React, { FC, useCallback } from 'react'
 import Header from '@components/reusable/header';
 import LinearGradient from 'react-native-linear-gradient';
 import Button from '@components/reusable/button';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParams } from '@managers/routing';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@redux/store';
+import { fetchUser } from '@redux/user/userSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
+type navProps = NativeStackNavigationProp<RootStackParams>
 
 const Profile: FC = () => {
+
+    const navigation = useNavigation<navProps>();
+    const dispatch = useDispatch<AppDispatch>();
+
 
     // ⏰ Get current hour
     const hour = new Date().getHours();
@@ -19,6 +33,34 @@ const Profile: FC = () => {
             return "Good Evening";
         }
     };
+
+    useFocusEffect(
+        useCallback(() => {
+            // Fetch user details when the screen is focused
+            getUserDetails();
+        }, [])
+    );
+
+    const getUserDetails = async () => {
+        try {
+            await dispatch(fetchUser()).unwrap()
+        } catch (err: any) {
+            console.log("Error adding user:", err);
+        }
+
+    }
+
+    const USERARRAY = useSelector((state: RootState) => state.user.items[0]) ?? [];
+
+    console.log("USERARRAY : ", USERARRAY)
+
+
+    const LogoutHandler = async () => {
+        await AsyncStorage.removeItem('token');
+        navigation.navigate('splashscreen');
+
+    }
+
 
 
     return (
@@ -37,12 +79,12 @@ const Profile: FC = () => {
                     <View style={styles.section1}>
                         <View>
                             <Text style={styles.section1_1_text}>
-                                Hey <Text style={styles.section1_1_span}>Sumit ,</Text>
+                                Hey <Text style={styles.section1_1_span}>{USERARRAY?.name} ,</Text>
                             </Text>
                             <Text style={styles.section1_1_text}>{getGreeting()}</Text>
                         </View>
                         <View style={styles.section1_2}>
-                            <Text style={styles.section1_2_text}>S</Text>
+                            <Text style={styles.section1_2_text}>{USERARRAY?.name?.charAt(0).toUpperCase()}</Text>
                         </View>
                     </View>
 
@@ -51,9 +93,10 @@ const Profile: FC = () => {
                             <Text style={styles.label} >Sign in method</Text>
                             <View style={styles.section2_content_item}>
                                 <Text style={styles.section2_content_item_title}>Email</Text>
-                                <Text style={styles.section2_content_item_value}>sumittest@gmail.com</Text>
+                                <Text style={styles.section2_content_item_value}>{USERARRAY?.email}</Text>
                             </View>
                         </View>
+
                         {/* <View style={styles.section2_content}>
                             <Text style={styles.label} >Plan</Text>
                             <View style={styles.section2_content_item}>
@@ -65,30 +108,31 @@ const Profile: FC = () => {
                         <View style={styles.section2_content}>
                             <Text style={styles.label} >Plan</Text>
                             <View style={styles.section2_content_item}>
-                                <Text style={styles.section2_content_item_title}>Free</Text>
-                               
+                                <Text style={styles.section2_content_item_title}>{USERARRAY?.currentStrategy}</Text>
+                                {USERARRAY?.currentStrategy === 'moneezify' && <Image source={require('@images/registration/crown.png')} style={styles.image} />}
                             </View>
                         </View>
+                        {USERARRAY?.currentStrategy !== 'moneezify' && (
+                            <View>
+                                <LinearGradient
+                                    colors={['#00C853', '#B2FF59']}
+                                    locations={[0, 1]}
+                                    start={{ x: 0, y: 1 }}
+                                    end={{ x: 1, y: 0 }}
+                                    style={styles.gradientbutton}
+                                >
+                                    <Button style={styles.upgradebutton}>
+                                        <Text style={styles.upgradetext}>Upgrade to Moneezify plan</Text>
+                                    </Button>
 
-                        <View>
-                            <LinearGradient
-                                colors={['#00C853', '#B2FF59']}
-                                locations={[0, 1]}
-                                start={{ x: 0, y: 1 }}
-                                end={{ x: 1, y: 0 }}
-                                style={styles.gradientbutton}
-                            >
-                                <Button style={styles.upgradebutton}>
-                                    <Text style={styles.upgradetext}>Upgrade to Moneezify plan</Text>
-                                </Button>
-
-                            </LinearGradient>
-                        </View>
+                                </LinearGradient>
+                            </View>
+                        )}
 
                     </View>
 
                     <View style={styles.buttonsection}>
-                        <Button style={styles.logoutbutton}>
+                        <Button style={styles.logoutbutton} onPress={LogoutHandler}>
                             <Image source={require('@images/profile/logout.png')} style={styles.buttonimage} />
                             <Text style={styles.buttontext}>Log out</Text>
                         </Button>
@@ -176,6 +220,7 @@ const styles = StyleSheet.create({
         fontFamily: "PlusJakartaSans-Bold",
         fontSize: 14,
         color: "#fff",
+        textTransform: "capitalize"
     },
     section2_content_item_value: {
         fontFamily: "PlusJakartaSans-Regular",

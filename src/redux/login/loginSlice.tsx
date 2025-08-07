@@ -1,4 +1,5 @@
 import { checkuser, registeruseruser } from '@managers/apis'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import axios from 'axios'
 
@@ -43,7 +44,9 @@ export const checkUser = createAsyncThunk<login_user, login_user>(
                 newUser
             )
 
-            console.log("checkUser resp : ", resp)
+            AsyncStorage.setItem('token', resp.data.token)
+
+            console.log("checkUser resp : ", resp.data.token)
             return resp.data
         } catch (err: any) {
             if (axios.isAxiosError(err)) {

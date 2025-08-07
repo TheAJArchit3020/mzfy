@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { FC, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, Animated, Easing } from "react-native";
 import {
   widthToDP as wp,
@@ -8,10 +8,13 @@ import LinearGradient from "react-native-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParams } from "@managers/routing";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useSelector } from "react-redux";
+import { RootState } from "@redux/store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type navProps = NativeStackNavigationProp<RootStackParams>
 
-const Splash = () => {
+const Splash:FC = () => {
 
 
   const navigation = useNavigation<navProps>();
@@ -19,6 +22,20 @@ const Splash = () => {
   const circleAnim = useRef(new Animated.Value(hp(100))).current;
   const textAnim = useRef(new Animated.Value(hp(100))).current;
   const fadeAnim = useRef(new Animated.Value(1)).current;
+
+
+  const GetToken = async () => {
+
+    const token = await AsyncStorage.getItem('token');
+    console.log("token : ", token)
+
+    if (token) {
+      navigation.navigate('layoutscreen')
+    } else {
+      navigation.navigate('introscreen')
+    }
+  }
+
 
   useEffect(() => {
     // Start animations
@@ -75,7 +92,9 @@ const Splash = () => {
             easing: Easing.in(Easing.ease),
           }),
         ]).start();
-        navigation.navigate('introscreen')
+
+
+        GetToken();
       }, 1500);
 
     };

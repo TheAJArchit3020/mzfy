@@ -1,5 +1,5 @@
 import { Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { FC, useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import Header from '@components/reusable/header'
 import Debtcountdown from '@components/dashboard/debtcountdown'
@@ -15,7 +15,7 @@ import Card from '@components/reusable/card'
 import Input from '@components/reusable/Input'
 import { widthToDP } from 'react-native-responsive-screens'
 
-const Particulardebtdetail = () => {
+const Particulardebtdetail: FC = () => {
 
     const [selectedButton, setSelectedButton] = useState(0);
     const [show, setShow] = useState(false);
