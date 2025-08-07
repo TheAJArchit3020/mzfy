@@ -1,5 +1,5 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { FC, useState } from "react";
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { FC, useReducer, useState } from "react";
 import LinearGradient from "react-native-linear-gradient";
 import Name from "./registration/name";
 import Age from "./registration/age";
@@ -15,6 +15,9 @@ import IncomeDetails from "./registration/personalincome";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParams } from "@managers/routing";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@redux/store";
+import { addUser } from "@redux/user/userSlice";
 
 type navProps = NativeStackNavigationProp<RootStackParams>
 
@@ -27,41 +30,34 @@ const Registrationlayout: FC = () => {
 
   const navigation = useNavigation<navProps>();
 
+  const dispatch = useDispatch<AppDispatch>();
 
+  const userData = useSelector((state: RootState) => state.user.current)
+
+  const submitFormHandler = async () => {
+
+    console.log("items : ", userData)
+    try {
+      await dispatch(addUser(userData)).unwrap()
+      navigation.navigate('selectstrategyscreen')
+    } catch (err: any) {
+      console.error("Error adding user:", err);
+    }
+  }
 
   const PAGES = [
-    { id: 1, name: "name", page: <Name />, title: "What's your name?" },
-    { id: 2, name: "age", page: <Age />, title: "What is your age?" },
-    {
-      id: 3,
-      name: "profession",
-      page: <Profession />,
-      title: "What is your profession?",
-    },
-    {
-      id: 4,
-      name: "selectcurrency",
-      page: <Selectcurrency />,
-      title: "Select currency",
-    },
-    {
-      id: 5,
-      name: "IncomeDetails",
-      page: <IncomeDetails />,
-      title: "What is your personal income?",
-    },
-    {
-      id: 6,
-      name: "monthlyexpense",
-      page: <Monthlyexpense />,
-      title: "What is your monthly expenses?",
-    },
-    { id: 7, name: "loading", page: <Adddebts />, title: "Add your debts" },
-
+    { id: 1, name: "name", Component: Name, title: "What's your name?" },
+    { id: 2, name: "age", Component: Age, title: "What is your age?" },
+    { id: 3, name: "profession", Component: Profession, title: "What is your profession?" },
+    { id: 4, name: "selectcurrency", Component: Selectcurrency, title: "Select currency" },
+    { id: 5, name: "IncomeDetails", Component: IncomeDetails, title: "What is your personal income?" },
+    { id: 6, name: "monthlyexpense", Component: Monthlyexpense, title: "What is your monthly expenses?" },
+    { id: 7, name: "loading", Component: Adddebts, title: "Add your debts" },
   ];
 
   const [selectedIndex, setSelectedIndex] = useState(route?.params?.index || 0);
   const current = PAGES[selectedIndex];
+  const CurrentPage = current.Component;
 
   const goNext = () => {
 
@@ -74,12 +70,13 @@ const Registrationlayout: FC = () => {
       if (selectedIndex < PAGES.length - 1) {
         setSelectedIndex((i) => i + 1);
       } else {
-        console.log("Completed all pages");
-        navigation.navigate('selectstrategyscreen')
+        submitFormHandler();
 
       }
     }
   };
+
+
   const goBack = () => {
     if (selectedIndex > 0) {
       setSelectedIndex((i) => i - 1);
@@ -116,7 +113,9 @@ const Registrationlayout: FC = () => {
           </View>
         </View>
 
-        <View style={styles.pageContainer}>{current?.page}</View>
+        <View style={styles.pageContainer}>
+          <CurrentPage />
+        </View>
 
         <View style={styles.buttonWrapper}>
           <Button onPress={goNext} style={styles.button}>
@@ -160,6 +159,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontFamily: "PlusJakartaSans-Bold",
+    marginTop: Platform.OS === 'android' ? -5 : 0
   },
   headercontainer_content2: {},
   headercontainer_content2_text: {

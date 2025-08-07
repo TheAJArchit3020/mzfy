@@ -12,12 +12,19 @@ import {
 import { AppleAuthProvider, getAuth, signInWithCredential } from '@react-native-firebase/auth';
 
 import { appleAuth } from '@invertase/react-native-apple-authentication';
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState, AppDispatch } from '@redux/store'
+import { checkUser } from '@redux/login/loginSlice'
+import { unwrapResult } from '@reduxjs/toolkit'
 
 type navProps = NativeStackNavigationProp<RootStackParams>
 
 const Login: FC = () => {
 
     const navigation = useNavigation<navProps>();
+    const dispatch = useDispatch<AppDispatch>();
+
+    const { loading, error } = useSelector((state: RootState) => state.loginuser)
 
     const navigationHandler = () => {
         handleGoogleSignIn();
@@ -46,14 +53,28 @@ const Login: FC = () => {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
 
-            const data = {
-                email: userInfo?.data?.user?.email,
-                googleId: userInfo?.data?.user?.id,
+            console.log("userInfo : ", userInfo)
+
+            const payload = {
+                idToken: userInfo?.data?.idToken,
+                // email: userInfo?.data?.user?.email,
+                // googleId: userInfo?.data?.user?.id,
             };
 
-            console.log("handleGoogleSignIn data : ", data)
-        } catch (err) {
-            console.log(err)
+            // dispatch the thunk:
+            const resultAction = await dispatch(checkUser(payload));
+            const user = unwrapResult(resultAction);
+
+            // on success navigate:
+            console.log('API returned:', user)
+
+            console.log("handleGoogleSignIn data : ", payload)
+        } catch (err: any) {
+            if (err?.status === 401) {
+                navigation.navigate('registrationlayoutscreen', {
+                    index: 0
+                })
+            }
         }
 
 

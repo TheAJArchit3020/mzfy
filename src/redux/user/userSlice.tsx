@@ -1,31 +1,79 @@
+import { registeruseruser } from '@managers/apis'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import axios from 'axios'
 
-
 export interface User {
-    id: number
-    name: string
-    age: number
+    name: any
+    age: any
+    profession: any
+    currency: any
+    personalIncome: any
+    totalHouseholdIncome: any
+    expenseByCategory: any
+    debts: any
 }
 
 interface UserState {
+    current: User
     items: User[]
     loading: boolean
     error: string | null
 }
 
 const initialState: UserState = {
+    current: {
+        name: '',
+        age: '',
+        profession: '',
+        currency: '',
+        personalIncome: '',
+        totalHouseholdIncome: '',
+        expenseByCategory: {},
+        debts: [],
+    },
     items: [],
     loading: false,
     error: null,
 }
 
+type SetFieldPayload = {
+    field: keyof User
+    value: any
+}
+
+export const addUser = createAsyncThunk<User, User>(
+    'user/addUser',
+    async (newUser, { rejectWithValue }) => {
+        try {
+            const resp = await axios.post<User>(
+                registeruseruser,
+                newUser,
+                {
+                    headers: {
+                        // standard Bearer scheme; change if your API expects something else
+                        // Authorization: `Bearer ${token}`
+                    }
+                }
+            )
+            return resp.data
+        } catch (err: any) {
+            return rejectWithValue(err.response?.data || err.message)
+        }
+    }
+)
+
 const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        addUserDetails(state, action: PayloadAction<User>) {
-            state.items.push(action.payload)
+        /** Generic setter for any User field */
+        setField(state, action: PayloadAction<SetFieldPayload>) {
+            const { field, value } = action.payload
+            state.current[field] = value
+        },
+        /** Reset the current form back to blank */
+        resetCurrent(state) {
+            state.current = initialState.current
         },
     },
     extraReducers: (builder) => {
@@ -37,6 +85,7 @@ const userSlice = createSlice({
             .addCase(addUser.fulfilled, (state, action) => {
                 state.loading = false
                 state.items.push(action.payload)
+                state.current = initialState.current
             })
             .addCase(addUser.rejected, (state, action) => {
                 state.loading = false
@@ -45,24 +94,5 @@ const userSlice = createSlice({
     },
 })
 
-
-// 2) Async thunk to POST a new user
-export const addUser = createAsyncThunk<
-    User
->(
-    'user/addUser',
-    async (newUser, { rejectWithValue }) => {
-        try {
-            const resp = await axios.post<User>(
-                'https://your.api.endpoint.com/users',
-                newUser
-            )
-            return resp.data
-        } catch (err: any) {
-            return rejectWithValue(err.response?.data || err.message)
-        }
-    }
-)
-
-export const { addUserDetails } = userSlice.actions
+export const { setField, resetCurrent } = userSlice.actions
 export default userSlice.reducer

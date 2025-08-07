@@ -14,10 +14,17 @@ interface payoffProps {
 
 
 const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainerstyle, onPress }) => {
+
     return (
         <>
             <View style={styles.cardcontainer}>
                 {data?.map((item: any, idx: any) => {
+
+                    const payoffProgressPercentInt = Math.round(
+                        ((item.principal - item.balance) / item.principal) * 100
+                    );
+
+
                     return (
                         <Card style={[styles.section_card, cardstyle]} cardStyle={styles.section_card_inner} key={idx}>
                             <View style={styles.groupsection}>
@@ -28,13 +35,13 @@ const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainersty
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.groupsection2}>
-                                <Text style={styles.groupsection_text1}>Minimun: {item.minamt} {'\u20B9'}</Text>
+                                <Text style={styles.groupsection_text1}>Minimun: {item.minPaymentAmount} {'\u20B9'}</Text>
                                 <Text style={styles.groupsection_text1}>APR: {item.apr}%</Text>
 
                             </View>
                             <View style={styles.groupsection3}>
                                 <Text style={styles.groupsection_text1}>Payoff Progress</Text>
-                                <ProgressBar progress={item?.payoffprogress} tooltipLabel={`Balance 20,000 ${'\u20B9'}`} showTooltip={true} style={styles.progressbar} />
+                                <ProgressBar progress={payoffProgressPercentInt} tooltipLabel={`Balance ${item.balance} ${'\u20B9'}`} showTooltip={true} style={styles.progressbar} />
                                 <Text style={styles.groupsection_text1}>{item.payoffprogress} %</Text>
 
                             </View>

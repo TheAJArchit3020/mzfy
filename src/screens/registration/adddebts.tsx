@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import {
   View,
   Text,
@@ -12,11 +12,28 @@ import {
   heightToDP as hp,
 } from "react-native-responsive-screens";
 import Payoffcard from "@components/payoffplan/payoffcard";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParams } from "@managers/routing";
+import { useSelector } from "react-redux";
+import { RootState } from "@redux/store";
 
-const AddDebts = () => {
+const AddDebts: FC = () => {
+
+  type navprops = NativeStackNavigationProp<RootStackParams>;
+
+  const debtArray = useSelector((s: RootState) => s.user.current.debts) ?? [];
+
+  const navigation = useNavigation<navprops>()
   const [debts, setDebts] = useState<any[]>([]);
 
+
+  console.log("debtArray : ", debtArray)
+
   const handleAddDebt = () => {
+
+    navigation.navigate('adddebtscreen')
+
     const newDebt = {
       name: "Credit Card",
       time: "Pay in 12 months",
@@ -73,10 +90,10 @@ const AddDebts = () => {
         </Text>
       </View>
 
-      {debts.length > 0 && (
+      {debtArray?.length > 0 && (
         <View style={styles.debtsContainer}>
           <FlatList
-            data={debts}
+            data={debtArray}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item, index }) => {

@@ -1,9 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { FC, useState } from 'react'
 import { WheelPicker } from 'react-native-infinite-wheel-picker';
 import { widthToDP } from 'react-native-responsive-screens';
+import { useDispatch } from 'react-redux';
+import { setField } from '@redux/user/userSlice';
 
-const Selectcurrency = () => {
+const Selectcurrency: FC = () => {
+
+
+
   interface CurrencyOption {
     id: number;
     country: string;
@@ -37,19 +42,19 @@ const Selectcurrency = () => {
 
   const wheelData = currencyOptions.map(c => c.value); // array of labels
 
-  const [selectedCurrency, setSelectedCurrency] = useState<CurrencyOption | null>(null)
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const dispatch = useDispatch()
 
-  const onChange = (index: number, value: string) => {
+  const onChange = (index: number) => {
     setSelectedIndex(index);
     const option = currencyOptions[index];
-    setSelectedCurrency(option);
     console.log('picked currency:', option);
+    dispatch(setField({ field: 'currency', value: option?.symbol }))
   };
 
   return (
     <View style={styles.container}>
-      
+
       <WheelPicker
         infiniteScroll={false}
         initialSelectedIndex={0}
@@ -76,9 +81,9 @@ export default Selectcurrency
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    alignItems:"center",
-    justifyContent:"center",
-    flex:1
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1
   },
   selectedLayoutStyle: {
     backgroundColor: '#454545',

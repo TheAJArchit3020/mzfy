@@ -15,8 +15,11 @@
       "@managers/*": [
         "src/managers/*"
       ],
-      "@images/*" :[
+      "@images/*": [
         "src/assets/images/*"
+      ],
+      "@redux/*": [
+        "src/redux/*"
       ]
     }
   }
