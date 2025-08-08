@@ -4,6 +4,7 @@ import userReducer from '../redux/user/userSlice'
 import loginUserReducer from "../redux/login/loginSlice"
 import debtsReducer from "../redux/debts/debtsSlice"
 import payoffPlanReducer from "../redux/payoffplans/payoffplanSlice"
+import strategyReducer from "../redux/strategies/strategySlice"
 
 
 export const store = configureStore({
@@ -11,7 +12,8 @@ export const store = configureStore({
         user: userReducer,
         loginuser: loginUserReducer,
         debts: debtsReducer,
-        payoffplan: payoffPlanReducer
+        payoffplan: payoffPlanReducer,
+        strategy: strategyReducer
     },
 })
 

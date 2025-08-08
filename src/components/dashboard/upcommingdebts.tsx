@@ -13,6 +13,7 @@ import {
 } from 'react-native'
 import Card from '@components/reusable/card'
 import { formatDDMMMyyyy } from '@components/reusable/formatdate'
+import { widthToDP } from 'react-native-responsive-screens'
 
 // export interface DebtItem {
 //     name: string
@@ -87,12 +88,13 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
                                             isLast && styles.noBorder,
                                         ]}
                                     >
-                                        <Text style={styles.text}>{formatDDMMMyyyy(item?.dueDate)}</Text>
+                                        <Text style={[styles.text, {textAlign:"left"}]}>{formatDDMMMyyyy(item?.dueDate)}</Text>
 
                                         <Text style={styles.text}>
                                             {'\u20B9'} {item.amount}
                                         </Text>
-                                        <Text style={styles.text}>{item.name}</Text>
+                                        <Text style={[styles.text, {textAlign:"right"}]}>
+                                            {item.name}</Text>
 
                                         {showicon && <TouchableOpacity>
                                             <Image source={require('@images/dashboard/rightarrow.png')} style={styles.image} />
@@ -106,7 +108,7 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
                                     >
                                         <Text style={styles.text}>{formatDDMMMyyyy(item?.dueDate)}</Text>
                                         <Text style={styles.text}></Text>
-                                        <Text style={styles.text}>
+                                        <Text style={[styles.text]}>
                                             {'\u20B9'} {item.amount} /-
                                         </Text>
                                         {showicon && <TouchableOpacity>
@@ -169,12 +171,13 @@ const styles = StyleSheet.create({
     },
     row: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        // justifyContent: 'space-between',
         borderBottomColor: '#C0C0C0',
         borderBottomWidth: 0.2,
         paddingTop: 25,
         paddingBottom: 12,
-        marginHorizontal: 30
+        marginHorizontal: 30,
+
     },
     noBorder: {
         borderBottomWidth: 0,
@@ -183,6 +186,8 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontFamily: 'PlusJakartaSans-Regular',
         fontSize: 14,
+        width: '33.33%',
+        textAlign:"center"
     },
     scrollbarTrack: {
         position: 'absolute',

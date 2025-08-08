@@ -7,3 +7,4 @@ export const registeruseruser = `${baseurl}/user/details`
 export const debts = `${baseurl}/debts/debt`
 export const debtpage = `${baseurl}/debts/debtpage`
 export const payoffplans = `${baseurl}/plan`
+export const selectstrategy = `${baseurl}/plan/select`

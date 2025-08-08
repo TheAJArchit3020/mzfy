@@ -4,8 +4,8 @@ import { RootState } from '@redux/store'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import axios from 'axios'
 
-export interface PayoffPlan {
-    id: string
+interface PayoffPlan {
+    [key: string]: unknown
 }
 
 interface PayoffPlanState {
@@ -26,7 +26,7 @@ const initialState: PayoffPlanState = {
 // fetch user....
 export const fetchPayoffPlan = createAsyncThunk<PayoffPlan, void, { state: RootState; rejectValue: any }>(
     'user/fetchUser',
-    async (newUser, { getState, rejectWithValue }) => {
+    async (_, { getState, rejectWithValue }) => {
 
         const _token = (getState().loginuser?.items[0]?.token)
         const storetoken = await AsyncStorage.getItem('token')

@@ -34,13 +34,11 @@ const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainersty
             <View style={styles.cardcontainer}>
                 {data?.map((item: any, idx: any) => {
 
-                    console.log("payoffcard : ", data)
-
                     return (
                         <Card style={[styles.section_card, cardstyle, { backgroundColor: `${item.tagColor}` }]} cardStyle={[styles.section_card_inner]} key={idx}>
                             <View style={styles.groupsection}>
                                 <Text style={styles.groupsection_text1}>{item.name}</Text>
-                                <Text style={styles.groupsection_text2}> Completes on {item.dueDate || formatDDMMMyyyy(item.completionDate)}</Text>
+                                <Text style={styles.groupsection_text2}> Completes on {item.dueDate || formatDDMMMyyyy(item.completionDate || item.estimatedDebtFreeDate)}</Text>
                                 <TouchableOpacity style={styles.button} onPress={() => navigateHandler(item.id)}>
                                     <Image source={source} style={styles.image} />
                                 </TouchableOpacity>
@@ -52,8 +50,8 @@ const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainersty
                             </View>
                             <View style={styles.groupsection3}>
                                 <Text style={styles.groupsection_text1}>Payoff Progress</Text>
-                                <ProgressBar progress={item.payoffPct} tooltipLabel={`Balance : ${item.balance} ${'\u20B9'}`} showTooltip={true} style={styles.progressbar} />
-                                <Text style={styles.groupsection_text1}>{item.payoffPct} %</Text>
+                                <ProgressBar progress={item.payoffPct || item.payoffProgress} tooltipLabel={`Balance : ${item.balance} ${'\u20B9'}`} showTooltip={true} style={styles.progressbar} />
+                                <Text style={styles.groupsection_text1}>{item.payoffPct || item.payoffProgress} %</Text>
 
                             </View>
 
