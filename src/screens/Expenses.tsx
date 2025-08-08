@@ -1,5 +1,5 @@
-import React, { FC, useState } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import React, { FC, useState, useEffect } from "react";
+import { View, Text, StyleSheet, ScrollView, Image } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import DateNavigator from "../components/reusable/DateNavigator";
 import SegmentButton from "../components/reusable/segmentbutton";
@@ -15,12 +15,39 @@ import ExpenseByDateList from "@components/Expenses/ExpenseByDateList";
 import Legend from "@components/reusable/Legend";
 import DonutChart from "../../src/DonutChart";
 import { BookOpenIcon } from "react-native-heroicons/solid";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchExpensesDashboard } from "@redux/expenseSlice/expenseSlice";
+import { AppDispatch, RootState } from "@redux/store";
+import { useNavigation } from "@react-navigation/native";
+import { RootStackParams } from "@managers/routing";
+import { StackNavigationProp } from "@react-navigation/stack";
+
+type ExpensesScreenNavigationProp = StackNavigationProp<RootStackParams>;
+
 interface ExpensesProps {}
 
 const Expenses: FC<ExpensesProps> = ({}) => {
+  const navigation = useNavigation<ExpensesScreenNavigationProp>();
+  const dispatch = useDispatch<AppDispatch>();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTab, setSelectedTab] = useState(0); // 0 for Expenses, 1 for Categories
-
+  const userData = useSelector((state: RootState) => state.expenses);
+  console.log("userData", userData);
+  const isDataAvailable = userData.totalSpent > 0;
+  useEffect(() => {
+    console.log(
+      "year : ",
+      selectedDate.getFullYear(),
+      " ",
+      selectedDate.getMonth() + 1
+    );
+    dispatch(
+      fetchExpensesDashboard({
+        year: selectedDate.getFullYear(),
+        month: selectedDate.getMonth() + 1,
+      })
+    );
+  }, [selectedDate]);
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
     console.log("Selected date:", date.toLocaleDateString());
@@ -53,6 +80,7 @@ const Expenses: FC<ExpensesProps> = ({}) => {
   const handleAddExpense = () => {
     console.log("Add expense pressed");
     // Add navigation or modal logic here
+    navigation.navigate("LogExpense");
   };
 
   // Sample expenses data with dates
@@ -134,132 +162,145 @@ const Expenses: FC<ExpensesProps> = ({}) => {
             onDateChange={handleDateChange}
             initialDate={selectedDate}
           />
+          {isDataAvailable ? (
+            <>
+              {/* Financial Cards */}
+              <View style={styles.cardsContainer}>
+                {/* Monthly Budget Card */}
+                <View style={styles.card}>
+                  <Text style={styles.cardLabel}>Monthly budget</Text>
+                  <Text style={styles.cardAmount}>₹50,000</Text>
+                </View>
 
-          {/* Financial Cards */}
-          <View style={styles.cardsContainer}>
-            {/* Monthly Budget Card */}
-            <View style={styles.card}>
-              <Text style={styles.cardLabel}>Monthly budget</Text>
-              <Text style={styles.cardAmount}>₹50,000</Text>
-            </View>
+                {/* Total Spent Card */}
+                <View style={styles.card}>
+                  <Text style={styles.cardLabel}>Total spent</Text>
+                  <Text style={styles.cardAmount}>₹32,000</Text>
+                </View>
+              </View>
 
-            {/* Total Spent Card */}
-            <View style={styles.card}>
-              <Text style={styles.cardLabel}>Total spent</Text>
-              <Text style={styles.cardAmount}>₹32,000</Text>
-            </View>
-          </View>
+              <View style={styles.expensesDataContainer}>
+                <SegmentButton
+                  items={segmentItems}
+                  selectedIndex={selectedTab}
+                  onChange={setSelectedTab}
+                  containerStyle={styles.segmentButtonContainer}
+                  segmentStyle={styles.segmentButton}
+                  activeSegmentStyle={styles.activeSegmentButton}
+                  textStyle={styles.segmentText}
+                  activeTextStyle={styles.activeSegmentText}
+                />
 
-          <View style={styles.expensesDataContainer}>
-            <SegmentButton
-              items={segmentItems}
-              selectedIndex={selectedTab}
-              onChange={setSelectedTab}
-              containerStyle={styles.segmentButtonContainer}
-              segmentStyle={styles.segmentButton}
-              activeSegmentStyle={styles.activeSegmentButton}
-              textStyle={styles.segmentText}
-              activeTextStyle={styles.activeSegmentText}
-            />
+                <View style={styles.chartContainer}>
+                  {selectedTab === 0 ? (
+                    // Expenses View
+                    <View style={styles.chartCard}>
+                      <View style={styles.chart}>
+                        <PieChartComponent
+                          containerStyle={{ width: "50%", marginLeft: wp(10) }}
+                          data={pieChartData}
+                          radius={wp(20)}
+                        />
+                        <Legend
+                          containerStyle={{
+                            gap: hp(2),
+                            width: "30%",
+                            alignItems: "flex-start",
+                          }}
+                          data={pieChartData}
+                          layout={"column"}
+                          gap={hp(0.5)}
+                        />
+                      </View>
+                      <View style={styles.balanceContainer}>
+                        <Text style={styles.balanceText}>Balance: ₹18,000</Text>
+                      </View>
+                    </View>
+                  ) : (
+                    // Categories View
+                    <View style={styles.graphContainer}>
+                      <DonutChart
+                        data={categoriesData}
+                        donutStrokeWidth={wp(3)}
+                        radius={wp(20)}
+                        arcCornerRadius={0}
+                        labelOffset={20}
+                        canvasHeight={wp(45)}
+                        canvasWidth={wp(40)}
+                        fontFamily="PlusJakartaSans-Bold"
+                        labelFontSize={wp(3)}
+                        lineStroke={wp(0.5)}
+                      />
+                    </View>
+                  )}
+                </View>
+              </View>
 
-            <View style={styles.chartContainer}>
-              {selectedTab === 0 ? (
-                // Expenses View
-                <View style={styles.chartCard}>
-                  <View style={styles.chart}>
-                    <PieChartComponent
-                      containerStyle={{ width: "50%", marginLeft: wp(10) }}
-                      data={pieChartData}
-                      radius={wp(20)}
-                    />
-                    <Legend
-                      containerStyle={{
-                        gap: hp(2),
-                        width: "30%",
-                        alignItems: "flex-start",
-                      }}
-                      data={pieChartData}
-                      layout={"column"}
-                      gap={hp(0.5)}
-                    />
+              {/* Recent Expenses Header */}
+              <View style={styles.recentExpensesHeader}>
+                <View style={styles.recentExpensesTitleContainer}>
+                  <Text style={styles.recentExpensesTitle}>
+                    Recent expenses
+                  </Text>
+                  <Button
+                    onPress={() => console.log("See all expenses")}
+                    style={styles.expensesButton}
+                  >
+                    <BookOpenIcon size={wp(5)} color="white" />
+                    <Text style={[styles.expensesText]}>All expenses</Text>
+                  </Button>
+                </View>
+                <View style={styles.financialOverview}>
+                  <View style={styles.financialItem}>
+                    <Text style={styles.financialLabel}>Budget</Text>
+                    <Text style={styles.financialAmount}>₹50,000</Text>
                   </View>
-                  <View style={styles.balanceContainer}>
-                    <Text style={styles.balanceText}>Balance: ₹18,000</Text>
+                  <View style={styles.financialItem}>
+                    <Text style={styles.financialLabel}>Exp.</Text>
+                    <Text style={styles.financialAmount}>₹32,000</Text>
+                  </View>
+                  <View style={styles.financialItem}>
+                    <Text style={styles.financialLabel}>Remaining</Text>
+                    <Text style={styles.financialAmount}>₹18,000</Text>
                   </View>
                 </View>
-              ) : (
-                // Categories View
+              </View>
+
+              {/* Expenses List */}
+              <View style={styles.expensesListContainer}>
+                <ExpenseByDateList data={expensesData} />
+              </View>
+
+              {/* Spending Trend Section */}
+              <View style={styles.spendingTrendContainer}>
+                <Text style={styles.sectionTitle}>Spending trend</Text>
                 <View style={styles.graphContainer}>
-                  <DonutChart
-                    data={categoriesData}
-                    donutStrokeWidth={wp(3)}
-                    radius={wp(20)}
-                    arcCornerRadius={0}
-                    labelOffset={20}
-                    canvasHeight={wp(45)}
-                    canvasWidth={wp(40)}
-                    fontFamily="PlusJakartaSans-Bold"
-                    labelFontSize={wp(3)}
-                    lineStroke={wp(0.5)}
-                  />
+                  <GraphComponent width={wp(80)} />
                 </View>
-              )}
-            </View>
-          </View>
-
-          {/* Recent Expenses Header */}
-          <View style={styles.recentExpensesHeader}>
-            <View style={styles.recentExpensesTitleContainer}>
-              <Text style={styles.recentExpensesTitle}>Recent expenses</Text>
-              <Button
-                onPress={() => console.log("See all expenses")}
-                style={styles.expensesButton}
-              >
-                <BookOpenIcon size={wp(5)} color="white" />
-                <Text style={[styles.expensesText]}>All expenses</Text>
-              </Button>
-            </View>
-            <View style={styles.financialOverview}>
-              <View style={styles.financialItem}>
-                <Text style={styles.financialLabel}>Budget</Text>
-                <Text style={styles.financialAmount}>₹50,000</Text>
               </View>
-              <View style={styles.financialItem}>
-                <Text style={styles.financialLabel}>Exp.</Text>
-                <Text style={styles.financialAmount}>₹32,000</Text>
+
+              {/* Category Management Button */}
+              <View style={styles.buttonContainer}>
+                <Button
+                  onPress={handleCategoryManagement}
+                  style={styles.categoryButton}
+                >
+                  <View style={styles.buttonContent}>
+                    <PencilIcon size={wp(4)} color="#fff" />
+                    <Text style={styles.buttonText}>Category management</Text>
+                  </View>
+                </Button>
               </View>
-              <View style={styles.financialItem}>
-                <Text style={styles.financialLabel}>Remaining</Text>
-                <Text style={styles.financialAmount}>₹18,000</Text>
-              </View>
+            </>
+          ) : (
+            <View style={styles.noDataContainer}>
+              <Image
+                source={require("../assets/images/Expenses/NoData.png")}
+                style={styles.noImage}
+              />
+              <Text style={styles.noDataText}>No data available</Text>
             </View>
-          </View>
-
-          {/* Expenses List */}
-          <View style={styles.expensesListContainer}>
-            <ExpenseByDateList data={expensesData} />
-          </View>
-
-          {/* Spending Trend Section */}
-          <View style={styles.spendingTrendContainer}>
-            <Text style={styles.sectionTitle}>Spending trend</Text>
-            <View style={styles.graphContainer}>
-              <GraphComponent width={wp(80)} />
-            </View>
-          </View>
-
-          {/* Category Management Button */}
-          <View style={styles.buttonContainer}>
-            <Button
-              onPress={handleCategoryManagement}
-              style={styles.categoryButton}
-            >
-              <View style={styles.buttonContent}>
-                <PencilIcon size={wp(4)} color="#fff" />
-                <Text style={styles.buttonText}>Category management</Text>
-              </View>
-            </Button>
-          </View>
+          )}
         </View>
       </ScrollView>
 
@@ -495,6 +536,21 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 8,
+  },
+  noDataContainer: {
+    flex: 1,
+    alignItems: "center",
+  },
+  noImage: {
+    height: hp(15),
+    width: wp(30),
+    resizeMode: "contain",
+    marginTop: hp(3),
+  },
+  noDataText: {
+    fontFamily: "PlusJakartaSans-Bold",
+    color: "#fff",
+    fontSize: wp(5),
   },
 });
 

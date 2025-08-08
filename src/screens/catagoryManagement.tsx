@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -18,46 +18,42 @@ import Header from "@components/reusable/header";
 import Input from "@components/reusable/Input";
 import ColorPicker from "react-native-wheel-color-picker";
 import { PlusCircleIcon, EyeDropperIcon } from "react-native-heroicons/solid";
-
-interface Category {
-  id: string;
-  name: string;
-  color: string;
-  budget: string;
-}
+import {
+  fetchExpenseCategories,
+  addCategoryAsync,
+} from "@redux/expenseSlice/expenseSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@redux/store";
+import { LogExpenseCategoryItem } from "src/commonTypes";
 
 const CategoryManagement = () => {
-  const [categories, setCategories] = useState<Category[]>([
-    {
-      id: "1",
-      name: "Food",
-      color: "#FF6B6B",
-      budget: "₹5,000",
-    },
-    {
-      id: "2",
-      name: "Investment",
-      color: "#4ECDC4",
-      budget: "₹5,000",
-    },
-    {
-      id: "3",
-      name: "Health",
-      color: "#45B7D1",
-      budget: "₹5,000",
-    },
-    {
-      id: "4",
-      name: "Miscellaneous",
-      color: "#96CEB4",
-      budget: "₹5,000",
-    },
-  ]);
+  const dispatch = useDispatch<AppDispatch>();
+  const [categories, setCategories] = useState<LogExpenseCategoryItem[]>([]);
 
   const [newCategoryName, setNewCategoryName] = useState("");
   const [newCategoryBudget, setNewCategoryBudget] = useState("");
   const [selectedColor, setSelectedColor] = useState("#FF6B6B");
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const catagoriesData = useSelector(
+    (state: RootState) => state.expenses.getCatogories
+  );
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    let result;
+    console.log("called");
+    if (catagoriesData.length <= 0) {
+      result = await dispatch(fetchExpenseCategories()).unwrap();
+      console.log("result", result);
+      setCategories(result || []);
+    } else {
+      result = catagoriesData;
+      setCategories(result || []);
+    }
+  };
 
   const CategoryIcon = ({ category }: { category: string }) => {
     let iconSource;
@@ -86,18 +82,42 @@ const CategoryManagement = () => {
     );
   };
 
-  const handleAddCategory = () => {
+  const handleAddCategory = async () => {
     if (newCategoryName.trim() && newCategoryBudget.trim()) {
-      const newCategory: Category = {
-        id: Date.now().toString(),
-        name: newCategoryName,
-        color: selectedColor,
-        budget: `₹${newCategoryBudget}`,
-      };
-      setCategories([...categories, newCategory]);
-      setNewCategoryName("");
-      setNewCategoryBudget("");
-      setSelectedColor("#FF6B6B");
+      try {
+        const categoryData = {
+          name: newCategoryName,
+          color: selectedColor,
+          budget: newCategoryBudget,
+        };
+
+        console.log("Adding category:", categoryData);
+        const result = await dispatch(addCategoryAsync(categoryData)).unwrap();
+        console.log("Category added successfully:", result);
+
+        // Add the newly created category to the local state
+        const newCategory: LogExpenseCategoryItem = {
+          _id: result._id || Date.now().toString(), // Use response ID or fallback
+          user: result.user || "",
+          name: result.name || newCategoryName,
+          color: result.color || selectedColor,
+          budget: result.budget || Number(newCategoryBudget),
+          isDefault: result.isDefault || false,
+          __v: result.__v || 0,
+          createdAt: result.createdAt || new Date().toISOString(),
+          updatedAt: result.updatedAt || new Date().toISOString(),
+        };
+
+        setCategories((prev) => [...prev, newCategory]);
+
+        // Clear form
+        setNewCategoryName("");
+        setNewCategoryBudget("");
+        setSelectedColor("#FF6B6B");
+      } catch (error) {
+        console.error("Failed to add category:", error);
+        // You can add error handling here (show alert, etc.)
+      }
     }
   };
 
@@ -134,15 +154,16 @@ const CategoryManagement = () => {
         {/* Existing Categories */}
         <View style={styles.categoriesContainer}>
           {categories.map((category) => {
+            console.log("categories", categories);
             const isPredefined = [
               "food",
               "investment",
               "health",
               "miscellaneous",
-            ].includes(category.name.toLowerCase());
+            ].includes(category?.name?.toLowerCase());
 
             return (
-              <View key={category.id} style={styles.categoryItem}>
+              <View key={category._id} style={styles.categoryItem}>
                 <View style={styles.categoryLeft}>
                   <View style={styles.categoryIconContainer}>
                     {isPredefined && <CategoryIcon category={category.name} />}

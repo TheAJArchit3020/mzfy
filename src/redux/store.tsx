@@ -3,12 +3,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "../redux/user/userSlice";
 import loginUserReducer from "../redux/login/loginSlice";
 import dashBoardReducer from "../redux/dashBoard/dashboard";
+import expensesReducer from "../redux/expenseSlice/expenseSlice";
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
     loginuser: loginUserReducer,
     dashBoard: dashBoardReducer,
+    expenses: expensesReducer,
   },
 });
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -19,38 +19,65 @@ import { CalendarDaysIcon } from "react-native-heroicons/solid";
 import LinearGradient from "react-native-linear-gradient";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Button from "@components/reusable/button";
+import { Dispatch } from "@reduxjs/toolkit";
+import { fetchExpenseCategories } from "@redux/expenseSlice/expenseSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@redux/store";
+import { LogExpenseCategoryItem } from "src/commonTypes";
+import { logExpense } from "@redux/expenseSlice/expenseSlice";
+import CategoryManagement from "./catagoryManagement";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParams } from "@managers/routing";
+
+type ExpensesScreenNavigationProp = StackNavigationProp<RootStackParams>;
+
 const LogExpense = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigation = useNavigation<ExpensesScreenNavigationProp>();
+  const catagories = useSelector(
+    (state: RootState) => state.expenses.getCatogories
+  );
+
   const [spentAmount, setSpentAmount] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
+  const [categories, setCategories] = useState<LogExpenseCategoryItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategoryID, setSelectedCategoryID] = useState<string | null>(
+    null
+  );
   const [note, setNote] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
 
-  // Sample categories for the dropdown
-  const categories = [
-    { label: "Food", value: "food" },
-    { label: "Miscellaneous", value: "miscellaneous" },
-    { label: "Health", value: "health" },
-    { label: "Investment", value: "investment" },
-    { label: "Entertainment", value: "entertainment" },
-    { label: "Transportation", value: "transport" },
-    { label: "Shopping", value: "shopping" },
-    { label: "Education", value: "education" },
-    { label: "Utilities", value: "utilities" },
-    { label: "Rent", value: "rent" },
-    { label: "Insurance", value: "insurance" },
-    { label: "Other", value: "other" },
-  ];
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-  const handleLogExpense = () => {
-    // Handle expense logging logic here
-    console.log("Logging expense:", {
+  const fetchData = async () => {
+    let result;
+    if (catagories.length <= 0) {
+      result = await dispatch(fetchExpenseCategories()).unwrap();
+      setCategories(result || []);
+    } else {
+      result = catagories;
+      setCategories(result || []);
+    }
+  };
+
+  const handleLogExpense = async () => {
+    const data = {
       amount: spentAmount,
       date: selectedDate,
-      category: selectedCategory,
-      note: note,
-    });
+      category: selectedCategoryID ?? "",
+      description: note,
+    };
+    // Handle expense logging logic here
+    console.log("Logging expense:", { data });
+    const result = await dispatch(logExpense(data)).unwrap();
+    if (result) {
+      navigation.goBack();
+    }
   };
 
   const handleDateChange = (event: any, date?: Date) => {
@@ -126,7 +153,10 @@ const LogExpense = () => {
             label="Category"
             options={categories}
             value={selectedCategory}
-            onChange={(value) => setSelectedCategory(value as string)}
+            onChange={(value) => {
+              setSelectedCategory(value.name);
+              setSelectedCategoryID(value._id);
+            }}
             style={styles.dropdownStyle}
           />
 
@@ -206,7 +236,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp(4),
     alignItems: "center",
     justifyContent: "center",
-    marginTop: hp(4),
+    marginTop: hp(25),
     marginBottom: hp(5),
     alignSelf: "center",
     width: "90%",

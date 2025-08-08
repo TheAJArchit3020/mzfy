@@ -14,16 +14,12 @@ import {
   heightToDP as hp,
 } from "react-native-responsive-screens";
 import { ChevronDownIcon, ChevronUpIcon } from "react-native-heroicons/outline";
-
-interface Option {
-  label: string;
-  value: string | number;
-}
+import { LogExpenseCategoryItem } from "src/commonTypes";
 
 interface CustomDropdownProps {
-  options: Option[];
+  options: LogExpenseCategoryItem[];
   value: string | number | null;
-  onChange: (value: string | number | null) => void;
+  onChange: (value: any) => void;
   placeholder?: string;
   style?: any;
   label?: string;
@@ -79,7 +75,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   const [contentHeight, setContentHeight] = useState(0);
   const [containerHeight, setContainerHeight] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
-  const selected = options.find((opt) => opt.value === value);
+  const selected = options.find((opt) => opt.name === value);
 
   return (
     <View style={styles.container}>
@@ -96,7 +92,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
               { color: selected ? "#e5e5f7" : "#888" },
             ]}
           >
-            {selected ? selected.label : placeholder}
+            {selected ? selected.name : placeholder}
           </Text>
           {visible ? (
             <ChevronUpIcon size={20} color="#e5e5f7" />
@@ -125,29 +121,28 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
               style={styles.scrollView}
             >
               {options.map((item) => (
-                <>
+                <View key={String(item.name)}>
                   <TouchableOpacity
-                    key={String(item.value)}
                     style={[
                       styles.option,
-                      item.value === value && styles.selectedOption,
+                      item.name === value && styles.selectedOption,
                     ]}
                     onPress={() => {
-                      onChange(item.value);
+                      onChange(item);
                       setVisible(false);
                     }}
                   >
                     <Text
                       style={[
                         styles.optionText,
-                        item.value === value && styles.selectedOptionText,
+                        item.name === value && styles.selectedOptionText,
                       ]}
                     >
-                      {item.label}
+                      {item.name}
                     </Text>
                   </TouchableOpacity>
                   <View style={styles.divider} />
-                </>
+                </View>
               ))}
             </ScrollView>
             {contentHeight > containerHeight &&

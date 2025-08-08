@@ -36,4 +36,16 @@ export type Transaction  = {
     line2?: string;
     emoji?: string;
   }
+
+  export type LogExpenseCategoryItem = {
+    _id?: string;
+    user?: string;
+    name: string;
+    color?: string;
+    budget?: number;
+    isDefault?: boolean;
+    __v?: number;
+    createdAt?: string;
+    updatedAt?: string;
+  };
   
