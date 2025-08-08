@@ -24,6 +24,8 @@ const AddDebts: FC = () => {
 
   const debtArray = useSelector((s: RootState) => s.user.current.debts) ?? [];
 
+  console.log("debtArray : ",debtArray)
+
   const navigation = useNavigation<navprops>()
 
 

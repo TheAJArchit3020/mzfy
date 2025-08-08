@@ -5,7 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, useCallback, useMemo, useState } from "react";
 import Debtbalance from "@components/dashboard/debtbalance";
 import Debtpaid from "@components/dashboard/debtpaid";
 import {
@@ -60,6 +60,32 @@ const DebtsScreen: FC = () => {
   const inProgressList = FETCHALLDEBTS.inProgressDebts;
   const completedList = FETCHALLDEBTS.completedDebts;
 
+  const lowerKeyword = searchKeyword.trim().toLowerCase();
+
+
+  // memoize filtered arrays
+  const filteredInProgress = useMemo(
+    () =>
+      inProgressList.filter((d: any) =>
+        d.name.toLowerCase().includes(lowerKeyword)
+      ),
+    [inProgressList, lowerKeyword]
+  );
+
+
+  const filteredCompleted = useMemo(
+    () =>
+      completedList.filter((d: any) =>
+        d.name.toLowerCase().includes(lowerKeyword)
+      ),
+    [completedList, lowerKeyword]
+  );
+
+
+    const visibleList =
+    selectedButton === 0 ? filteredInProgress : filteredCompleted;
+
+
   // 4️⃣ build the two button labels
   const buttonLabels = [
     `In Progress (${inProgressList.length})`,
@@ -103,9 +129,9 @@ const DebtsScreen: FC = () => {
           style={{ marginHorizontal: 10 }}
         >
           <Payoffcard
-            data={selectedButton === 0 ? inProgressList : completedList}
+            data={visibleList}
             source={require("@assets/images/dashboard/rightarrow.png")}
-            onPress={() => navigation.navigate("particulardebtdetailscreen")}
+            // onPress={() => navigation.navigate("particulardebtdetailscreen")}
           />
         </ScrollView>
       </View>

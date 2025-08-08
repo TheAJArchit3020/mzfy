@@ -1,9 +1,5 @@
 import React, { useMemo } from 'react'
-import {
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import Svg, { Circle, G } from 'react-native-svg'
 
 interface Debt {
@@ -29,15 +25,13 @@ const CircularProgressbar: React.FC<Props> = ({
   const radius = (size - strokeWidth) / 2
   const circumference = 2 * Math.PI * radius
 
-  // build an array of { color, length, offset } for each debt
+  // build segments for each debt slice
   const segments = useMemo(() => {
-    if (!data?.inProgressDebts?.length) return []
+    const debts = data?.inProgressDebts ?? []
     let cumulative = 0
-    return data.inProgressDebts.map((d) => {
-      // clamp 0–100
+    return debts.map(d => {
       const pct = Math.max(0, Math.min(d.payoffPct, 100))
       const length = (pct / 100) * circumference
-      // offset so each segment starts where the last one ended
       const offset = circumference - cumulative - length
       cumulative += length
       return { color: d.tagColor, length, offset }
@@ -47,8 +41,8 @@ const CircularProgressbar: React.FC<Props> = ({
   return (
     <View style={styles.container}>
       <Svg width={size} height={size}>
-        {/* rotate the group -90° so 0% starts at 12 o’clock */}
-        <G rotation="-90" origin={`${size/2}, ${size/2}`}>
+        {/* rotate so 0% is at top */}
+        <G rotation="-90" origin={`${size/2}, ${size/2}`}>  
           {/* background ring */}
           <Circle
             cx={size/2}
@@ -59,7 +53,7 @@ const CircularProgressbar: React.FC<Props> = ({
             fill="none"
           />
 
-          {/* each debt segment */}
+          {/* debt segments */}
           {segments.map((seg, i) => (
             <Circle
               key={i}
@@ -70,7 +64,7 @@ const CircularProgressbar: React.FC<Props> = ({
               strokeWidth={strokeWidth}
               fill="none"
               strokeLinecap="round"
-              strokeDasharray={`${seg.length}, ${circumference}`}
+              strokeDasharray={`${seg.length} ${circumference}`}
               strokeDashoffset={seg.offset}
             />
           ))}
@@ -103,5 +97,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#E63A30',
     fontFamily: 'PlusJakartaSans-Bold',
+    textAlign: 'center',
   },
 })

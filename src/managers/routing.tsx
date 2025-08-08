@@ -24,7 +24,7 @@ export type RootStackParams = {
     layoutscreen: undefined
     expensesoverviewscreen: undefined
     adddebtscreen: { screen: number }
-    particulardebtdetailscreen: undefined
+    particulardebtdetailscreen: { id: any }
     createcustomplanscreen: undefined
     registrationlayoutscreen: { index: number }
     selectstrategyscreen: undefined

@@ -69,7 +69,21 @@ export const addUser = createAsyncThunk<User, User, { state: RootState; rejectVa
             console.log("addUser resp : ", resp)
             return resp.data
         } catch (err: any) {
-            return rejectWithValue(err.response?.data || err.message)
+           if (axios.isAxiosError(err)) {
+
+                const statusCode = err.response?.status
+                const errorData = err.response?.data
+
+                return rejectWithValue({
+                    message: err.message,
+                    status: statusCode,
+                    data: errorData,
+                })
+            } else {
+                // Non-Axios error (e.g. coding bug, thrown manually)
+                console.log("Unexpected error:", err)
+                return rejectWithValue({ message: (err as Error).message })
+            }
         }
     }
 )
@@ -93,7 +107,21 @@ export const fetchUser = createAsyncThunk<User, void, { state: RootState; reject
             console.log("fetchUser resp : ", resp.data)
             return resp.data
         } catch (err: any) {
-            return rejectWithValue(err.response?.data || err.message)
+            if (axios.isAxiosError(err)) {
+
+                const statusCode = err.response?.status
+                const errorData = err.response?.data
+
+                return rejectWithValue({
+                    message: err.message,
+                    status: statusCode,
+                    data: errorData,
+                })
+            } else {
+                // Non-Axios error (e.g. coding bug, thrown manually)
+                console.log("Unexpected error:", err)
+                return rejectWithValue({ message: (err as Error).message })
+            }
         }
     }
 )

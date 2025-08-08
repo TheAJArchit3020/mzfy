@@ -6,28 +6,43 @@ import {
   widthToDP as wp,
 } from "react-native-responsive-screens";
 import { ChevronRightIcon, ChevronUpIcon } from "react-native-heroicons/solid";
+
+interface RawPoint {
+  amount: number;
+  dueDate: string; // ISO
+}
+
 interface GraphComponentProps {
   width?: number;
   height?: number;
-  data?: {
-    labels: string[];
-    datasets: Array<{
-      data: number[];
-    }>;
-  };
+  rawData: RawPoint[];
 }
 
-const defaultData = {
-  labels: ["Jan", "Feb", "Mar", "Ap", "May", "Jun", "Jul"],
-  datasets: [
-    {
-      data: [39, 45, 28, 80, 99, 43, 50],
-    },
-  ],
-};
+const monthNames = [
+  "Jan","Feb","Mar","Apr","May","Jun",
+  "Jul","Aug","Sep","Oct","Nov","Dec"
+];
 
 const GraphComponent: FC<GraphComponentProps> = memo(
-  ({ width = wp(90), height = hp(25), data = defaultData }) => {
+  ({ width = wp(90), height = hp(25), rawData }) => {
+    // 1️⃣ map your labels: "05 Sep 2025" etc.
+    const labels = rawData.map(pt => {
+      const d = new Date(pt.dueDate);
+      const day = String(d.getDate()).padStart(2, "0");
+      const month = monthNames[d.getMonth()];
+      const year = d.getFullYear();
+      return `${day} ${month} ${year}`;
+    });
+
+    // 2️⃣ map your data points
+    const dataPoints = rawData.map(pt => pt.amount);
+
+    // 3️⃣ build the chart-data shape
+    const data = {
+      labels,
+      datasets: [{ data: dataPoints }]
+    };
+
     return (
       <View style={styles.container}>
         <View style={styles.chartContainer}>
@@ -35,8 +50,8 @@ const GraphComponent: FC<GraphComponentProps> = memo(
             data={data}
             width={width}
             height={height}
-            yAxisLabel="$"
-            yAxisSuffix="k"
+            yAxisLabel="₹"
+            yAxisSuffix=""
             yAxisInterval={1}
             chartConfig={{
               backgroundColor: "#2a2a2a",
@@ -45,20 +60,15 @@ const GraphComponent: FC<GraphComponentProps> = memo(
               decimalPlaces: 2,
               color: (opacity = 1) => `rgba(59, 130, 246, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: {
-                borderRadius: 16,
-              },
-              propsForDots: {
-                r: "0",
-                strokeWidth: "0",
-              },
+              style: { borderRadius: 16 },
+              propsForDots: { r: "0", strokeWidth: "0" },
               fillShadowGradient: "#4C96F7",
               fillShadowGradientOpacity: 1,
             }}
-            renderDotContent={({ x, y, index, indexData }) => (
+            renderDotContent={({ x, y, index }) => (
               <Image
                 key={`dot-${index}`}
-                source={require("../../assets/images/graphcCompoennt/graphDot.png")}
+                source={require("@images/graphcCompoennt/graphDot.png")}
                 style={{
                   position: "absolute",
                   top: y - 10,
@@ -76,16 +86,18 @@ const GraphComponent: FC<GraphComponentProps> = memo(
               backgroundColor: "#2a2a2a",
             }}
           />
+
+          {/* axes lines & arrows, unchanged */}
           <View style={styles.horizontalLine} />
           <ChevronRightIcon
             size={wp(5)}
-            color={"#fff"}
+            color="#fff"
             style={styles.verticalArrowIcon}
           />
           <View style={styles.verticalLine} />
           <ChevronUpIcon
             size={wp(5)}
-            color={"#fff"}
+            color="#fff"
             style={styles.horizontalArrowIcon}
           />
         </View>
@@ -98,9 +110,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     borderRadius: 16,
-    overflow:"hidden",
-    borderWidth:0.5,
-    borderColor:"#C0C0C0",
+    overflow: "hidden",
+    borderWidth: 0.5,
+    borderColor: "#C0C0C0",
   },
   chartContainer: {
     backgroundColor: "#2a2a2a",
@@ -108,14 +120,10 @@ const styles = StyleSheet.create({
     paddingTop: hp(2),
     paddingHorizontal: wp(2),
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-   
   },
   horizontalLine: {
     borderWidth: 0.8,

@@ -145,7 +145,7 @@ const PayoffplansScreen: FC = () => {
           <View style={styles.cardcontainer4}>
             <Text style={styles.cardcontainer4_title}>Debt Reduction Timeline</Text>
             <View style={styles.cardcontainer4_inner}>
-              <GraphComponent />
+              {/* <GraphComponent /> */}
             </View>
           </View>
 

@@ -73,34 +73,62 @@ export const addDebts = createAsyncThunk<Debts, Debts, { state: RootState; rejec
                     }
                 }
             )
-            console.log("addDebts', resp : ", resp)
             return resp.data
         } catch (err: any) {
-            return rejectWithValue(err.response?.data || err.message)
+            if (axios.isAxiosError(err)) {
+
+                const statusCode = err.response?.status
+                const errorData = err.response?.data
+
+                return rejectWithValue({
+                    message: err.message,
+                    status: statusCode,
+                    data: errorData,
+                })
+            } else {
+                console.log("Unexpected error:", err)
+                return rejectWithValue({ message: (err as Error).message })
+            }
         }
     }
 )
+
+
 // fetch user....
-export const fetchDebts = createAsyncThunk<Debts, void, { state: RootState; rejectValue: any }>(
-    'debts/fetchDebts',
-    async (newUser, { getState, rejectWithValue }) => {
+export const fetchDebtsById = createAsyncThunk<Debts, string, { state: RootState; rejectValue: any }>(
+    'debts/fetchDebtsById',
+    async (id, { getState, rejectWithValue }) => {
 
         const _token = (getState().loginuser?.items[0]?.token)
         const storetoken = await AsyncStorage.getItem('token')
 
         try {
             const resp = await axios.get<Debts>(
-                debts,
+                `${debts}/${id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${_token ? _token : storetoken}`,
                     }
                 }
             )
-            console.log("fetchDebts resp : ", resp.data)
+            console.log("fetchDebtsById resp : ", resp.data)
             return resp.data
         } catch (err: any) {
-            return rejectWithValue(err.response?.data || err.message)
+            if (axios.isAxiosError(err)) {
+
+                const statusCode = err.response?.status
+                const errorData = err.response?.data
+
+                return rejectWithValue({
+                    message: err.message,
+                    status: statusCode,
+                    data: errorData,
+                })
+            } else {
+                // Non-Axios error (e.g. coding bug, thrown manually)
+                console.log("Unexpected error:", err)
+                return rejectWithValue({ message: (err as Error).message })
+            }
         }
     }
 )
@@ -124,7 +152,21 @@ export const fetchAllDebts = createAsyncThunk<AllDebts, void, { state: RootState
             console.log("fetchDebts resp : ", resp.data)
             return resp.data
         } catch (err: any) {
-            return rejectWithValue(err.response?.data || err.message)
+            if (axios.isAxiosError(err)) {
+
+                const statusCode = err.response?.status
+                const errorData = err.response?.data
+
+                return rejectWithValue({
+                    message: err.message,
+                    status: statusCode,
+                    data: errorData,
+                })
+            } else {
+                // Non-Axios error (e.g. coding bug, thrown manually)
+                console.log("Unexpected error:", err)
+                return rejectWithValue({ message: (err as Error).message })
+            }
         }
     }
 )
@@ -163,16 +205,16 @@ const debtSlice = createSlice({
 
         // fetch user data
         builder
-            .addCase(fetchDebts.pending, (state) => {
+            .addCase(fetchDebtsById.pending, (state) => {
                 state.loading = true
                 state.error = null
             })
-            .addCase(fetchDebts.fulfilled, (state, action) => {
+            .addCase(fetchDebtsById.fulfilled, (state, action) => {
                 state.loading = false
                 state.items = [action.payload]
                 state.current = initialState.current
             })
-            .addCase(fetchDebts.rejected, (state, action) => {
+            .addCase(fetchDebtsById.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.payload as string
             })

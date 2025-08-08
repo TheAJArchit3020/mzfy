@@ -2,6 +2,10 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { FC } from 'react'
 import ProgressBar from '@components/reusable/progressbar'
 import Card from '@components/reusable/card'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RootStackParams } from '@managers/routing'
+import { formatDDMMMyyyy } from '@components/reusable/formatdate'
 
 
 interface payoffProps {
@@ -12,39 +16,17 @@ interface payoffProps {
     onPress?: any
 }
 
+type NavigationProp = NativeStackNavigationProp<RootStackParams>;
 
 const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainerstyle, onPress }) => {
 
+    const navigation = useNavigation<NavigationProp>();
 
-    // month names for formatting
-    const monthNames = [
-        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-
-    // helper to compute months & days difference
-    const getMonthsAndDays = (from: Date, to: Date) => {
-        let yearsDiff = to.getFullYear() - from.getFullYear();
-        let monthsDiff = to.getMonth() - from.getMonth();
-        let months = yearsDiff * 12 + monthsDiff;
-        let days = to.getDate() - from.getDate();
-
-        if (days < 0) {
-            // borrow one month
-            months -= 1;
-            // days in the month *before* `to`
-            const prevMonthEnd = new Date(
-                to.getFullYear(),
-                to.getMonth(),
-                0
-            ).getDate();
-            days = prevMonthEnd - (from.getDate() - to.getDate());
-        }
-        return { months, days };
-    };
-
-    const today = new Date();
-
+    const navigateHandler = (value: any) => {
+        navigation.navigate('particulardebtdetailscreen', {
+            id: value
+        })
+    }
 
 
     return (
@@ -52,25 +34,14 @@ const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainersty
             <View style={styles.cardcontainer}>
                 {data?.map((item: any, idx: any) => {
 
-                    const completionDate = new Date(item.completionDate);
-
-                    // format "Jul 2 2026"
-                    const formattedDate = `${monthNames[completionDate.getMonth()]} ${completionDate.getDate()} ${completionDate.getFullYear()}`;
-
-                    // compute diff from today
-                    const { months, days } = getMonthsAndDays(today, completionDate);
-
-                    const payoffProgressPercentInt = Math.round(
-                        ((item.principal - item.balance) / item.principal) * 100
-                    );
-
+                    console.log("payoffcard : ", data)
 
                     return (
                         <Card style={[styles.section_card, cardstyle, { backgroundColor: `${item.tagColor}` }]} cardStyle={[styles.section_card_inner]} key={idx}>
                             <View style={styles.groupsection}>
                                 <Text style={styles.groupsection_text1}>{item.name}</Text>
-                                <Text style={styles.groupsection_text2}> Completes on {formattedDate} ({months} month{months !== 1 ? 's' : ''} {days} day{days !== 1 ? 's' : ''})</Text>
-                                <TouchableOpacity style={styles.button} onPress={onPress}>
+                                <Text style={styles.groupsection_text2}> Completes on {item.dueDate || formatDDMMMyyyy(item.completionDate)}</Text>
+                                <TouchableOpacity style={styles.button} onPress={() => navigateHandler(item.id)}>
                                     <Image source={source} style={styles.image} />
                                 </TouchableOpacity>
                             </View>
@@ -81,7 +52,7 @@ const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainersty
                             </View>
                             <View style={styles.groupsection3}>
                                 <Text style={styles.groupsection_text1}>Payoff Progress</Text>
-                                <ProgressBar progress={payoffProgressPercentInt} tooltipLabel={`Balance ${item.balance} ${'\u20B9'}`} showTooltip={true} style={styles.progressbar} />
+                                <ProgressBar progress={item.payoffPct} tooltipLabel={`Balance : ${item.balance} ${'\u20B9'}`} showTooltip={true} style={styles.progressbar} />
                                 <Text style={styles.groupsection_text1}>{item.payoffPct} %</Text>
 
                             </View>
@@ -107,7 +78,8 @@ const styles = StyleSheet.create({
         width: '95%',
         alignSelf: "center",
         paddingHorizontal: 6,
-        borderRadius: 10
+        borderRadius: 10,
+        // opacity: 0.6
     },
     section_card_inner: {
         flexDirection: "column",

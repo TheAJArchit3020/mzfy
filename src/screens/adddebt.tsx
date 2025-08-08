@@ -38,7 +38,7 @@ type DebtForm = {
   principal: number;
   balance: number;
   minPaymentAmount: number;
-  apr: number;
+  apr: any;
   nextDueDate: string;
   tagColor: string;
 };
@@ -240,12 +240,11 @@ const DebtAdd: FC = () => {
                   }
                   onIconPress={() => setShowAprInfo((prev) => !prev)}
                   iconDisabled={false}
-                  value={form.apr}
+                  value={form.apr.toString()}
                   onChangeContent={(val) =>
-                    formDispatch({ type: "SET_FIELD", field: "apr", value: val === "" ? 0 : parseFloat(val) })
+                    formDispatch({ type: "SET_FIELD", field: "apr", value: val })
                   }
                   placeholder="Eg. 8"
-                  keyboardType="numeric"
                   placeholderTextColor={"#C6C6C6"}
                   children={
                     <Text

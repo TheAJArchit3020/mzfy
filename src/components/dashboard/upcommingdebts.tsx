@@ -12,15 +12,17 @@ import {
     Image,
 } from 'react-native'
 import Card from '@components/reusable/card'
+import { formatDDMMMyyyy } from '@components/reusable/formatdate'
 
-export interface DebtItem {
-    name: string
-    amount: number
-    date: string
-}
+// export interface DebtItem {
+//     name: string
+//     amount: number
+//     date: string
+
+// }
 
 interface UpcomingDebtsWithScrollbarProps {
-    data: DebtItem[]
+    data: any
     style?: any
     cardStyle?: any
     sort?: any
@@ -34,6 +36,7 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
     const [contentHeight, setContentHeight] = useState(1)
     const [scrollY, setScrollY] = useState(0)
 
+
     // Calculate scrollbar dimensions
     const scrollableRange = Math.max(contentHeight - containerHeight, 1)
     const thumbHeight = Math.max(
@@ -45,18 +48,15 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
 
     const onContainerLayout = (e: LayoutChangeEvent) => {
         const height = e.nativeEvent.layout.height
-        console.log('Container height:', height)
         setContainerHeight(height)
     }
 
     const onContentSizeChange = (_: number, h: number) => {
-        console.log('Content height:', h)
         setContentHeight(h)
     }
 
     const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
         const offset = e.nativeEvent.contentOffset.y
-        console.log('Scroll offset:', offset, 'Max scroll:', e.nativeEvent.contentSize.height - e.nativeEvent.layoutMeasurement.height)
         setScrollY(offset)
     }
 
@@ -75,7 +75,8 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
                     nestedScrollEnabled={true}
                     ref={scrollViewRef}
                 >
-                    {data.map((item, idx) => {
+                    {data?.map((item: any, idx: any) => {
+
                         const isLast = idx === data.length - 1
                         return (
                             <View key={idx}>
@@ -86,7 +87,7 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
                                             isLast && styles.noBorder,
                                         ]}
                                     >
-                                        <Text style={styles.text}>{item.date}</Text>
+                                        <Text style={styles.text}>{formatDDMMMyyyy(item?.dueDate)}</Text>
 
                                         <Text style={styles.text}>
                                             {'\u20B9'} {item.amount}
@@ -103,7 +104,7 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
                                             isLast && styles.noBorder,
                                         ]}
                                     >
-                                        <Text style={styles.text}>{item.date}</Text>
+                                        <Text style={styles.text}>{formatDDMMMyyyy(item?.dueDate)}</Text>
                                         <Text style={styles.text}></Text>
                                         <Text style={styles.text}>
                                             {'\u20B9'} {item.amount} /-
