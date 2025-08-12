@@ -1,6 +1,6 @@
 // add common types of ts types
 
-export type paymentStatus = "paid" | "upcoming" | "missed";
+export type paymentStatus =string;
 
 export type expenseItem = {
     date: string;
@@ -38,14 +38,42 @@ export type Transaction  = {
   }
 
   export type LogExpenseCategoryItem = {
-    _id?: string;
-    user?: string;
+    _id: string;
+    user: string;
     name: string;
-    color?: string;
-    budget?: number;
-    isDefault?: boolean;
-    __v?: number;
-    createdAt?: string;
-    updatedAt?: string;
+    color: string;
+    budget: number;
+    isDefault: boolean;
+    __v: number;
+    createdAt: string;
+    updatedAt: string;
+  };
+
+  export type DebtInfo = {
+    _id: string;
+    name: string;
+  };
+
+  export type TransactionData = {
+    _id: string;
+    user: string;
+    debt: DebtInfo;
+    openingBalance: number;
+    paymentAmount: number;
+    principalComponent: number;
+    interestComponent: number;
+    closingBalance: number;
+    dueDate: string;
+    status: string;
+    note: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  };
+
+  export type TransactionState = {
+    transaction: TransactionData | null;
+    loading: boolean;
+    error: string | null;
   };
   

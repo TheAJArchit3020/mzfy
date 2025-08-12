@@ -17,6 +17,7 @@ import ExpensesOverView from "@screens/registration/expensesOverView";
 import AllExpenses from "@screens/allExpenses";
 import LogExpense from "@screens/LogExpense";
 import CategoryManagement from "@screens/catagoryManagement";
+import Transaction from "@screens/transaction";
 export type RootStackParams = {
   splashscreen: undefined;
   introscreen: undefined;
@@ -33,6 +34,7 @@ export type RootStackParams = {
   AllExpenses: undefined;
   LogExpense: undefined;
   CategoryManagement: undefined;
+  Transaction: {id:String};
 };
 
 const Stack = createNativeStackNavigator<RootStackParams>();
@@ -41,7 +43,7 @@ const Routing: FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="CategoryManagement"
+        initialRouteName="layoutscreen"
         screenOptions={{
           headerShown: false,
         }}
@@ -78,6 +80,7 @@ const Routing: FC = () => {
           name="CategoryManagement"
           component={CategoryManagement}
         />
+        <Stack.Screen name="Transaction" component={Transaction} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -16,19 +16,32 @@ import Button from "@components/reusable/button";
 
 interface NoteProps {
   onNoteChange?: (note: string) => void;
+  initialNote?: string; // Add prop for initial note data
 }
 
-const Note: FC<NoteProps> = ({ onNoteChange }) => {
+const Note: FC<NoteProps> = ({ onNoteChange, initialNote }) => {
   const [noteText, setNoteText] = useState("");
   const [savedNote, setSavedNote] = useState("");
   const [isEditing, setIsEditing] = useState(false);
 
+  // Initialize with initial note data if provided
+  useEffect(() => {
+    if (initialNote && initialNote.trim()) {
+      setSavedNote(initialNote.trim());
+      setIsEditing(false);
+    } else {
+      // If note is empty or whitespace, show input field
+      setSavedNote("");
+      setIsEditing(true);
+    }
+  }, [initialNote]);
+
   const handleSaveNote = () => {
     if (noteText.trim()) {
-      setSavedNote(noteText);
+      setSavedNote(noteText.trim());
       setNoteText("");
       setIsEditing(false);
-      onNoteChange?.(noteText);
+      onNoteChange?.(noteText.trim());
     }
   };
 

@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { View, StyleSheet, Text, ScrollView, TextInput } from "react-native";
 import Header from "@components/reusable/header";
 import StatusDueCard from "@components/transactions/statusDueCard";
@@ -20,13 +20,63 @@ import PieChartComponent from "@components/reusable/pieChart";
 import Popup from "@components/reusable/popup";
 import DonutChart from "../../src/DonutChart";
 import Legend from "@components/reusable/Legend";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@redux/store";
+import { getTransactionData } from "@redux/Transacttion/Transaction";
 
 type TransactionScreenProps = StackScreenProps<RootStackParams, "Transaction">;
 
 const Transaction: FC<TransactionScreenProps> = ({ route }) => {
-  const status: paymentStatus = route?.params?.status ?? "paid";
+  const dispatch = useDispatch<AppDispatch>();
+  const { transaction, loading, error } = useSelector(
+    (state: RootState) => state.transaction
+  );
+
+  // State for transaction data
+  const [transactionData, setTransactionData] = useState<any>({
+    _id: "",
+    user: "",
+    debt: { _id: "", name: "Car Loan" },
+    openingBalance: 82500,
+    closingBalance: 76300,
+    paymentAmount: 6000,
+    principalComponent: 87,
+    interestComponent: 13,
+    dueDate: new Date().toISOString(),
+    status: "upcoming",
+    note: "",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    __v: 0,
+  });
+
+  console.log("trxn", route.params.id);
+  const status: paymentStatus =
+    (transactionData?.status as paymentStatus) || "upcoming";
   const [showPopup, setShowPopup] = useState(false);
   const [amount, setAmount] = useState("");
+
+  // Fetch transaction data when component mounts
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    if (!transaction) {
+      const transactionData = await dispatch(
+        getTransactionData(route.params.id.toString())
+      );
+      setTransactionData(transactionData);
+    } else {
+      setTransactionData(transaction);
+    }
+  };
+
+  // Update transaction data when API data is received
+
+  useEffect(() => {
+    console.log("transaction useEffect", transactionData);
+  }, [transactionData]);
 
   const handleCardPress = () => {
     console.log("Card pressed");
@@ -52,6 +102,9 @@ const Transaction: FC<TransactionScreenProps> = ({ route }) => {
     setAmount("");
   };
 
+  useEffect(() => {
+    console.log("trasaction", transaction);
+  }, [transaction]);
   const handleConfirmAmount = () => {
     console.log("Confirmed amount:", amount);
     // Add your amount confirmation logic here
@@ -60,6 +113,46 @@ const Transaction: FC<TransactionScreenProps> = ({ route }) => {
     setShowPopup(false);
   };
 
+  // Show loading state
+  if (loading) {
+    console.log("Loading state - transaction:", transaction);
+    return (
+      <LinearGradient
+        colors={["#463C9F", "#3A346E", "#23234B", "#2B293E", "#272631"]}
+        locations={[0, 0.64, 0.76, 0.87, 1]}
+        style={{ flex: 1 }}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+      >
+        <Header title={"Loading..."} />
+        <View style={styles.container}>
+          <Text style={styles.loadingText}>Loading transaction data...</Text>
+        </View>
+      </LinearGradient>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    console.log("Error state - error:", error);
+    return (
+      <LinearGradient
+        colors={["#463C9F", "#3A346E", "#23234B", "#2B293E", "#272631"]}
+        locations={[0, 0.64, 0.76, 0.87, 1]}
+        style={{ flex: 1 }}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+      >
+        <Header title={"Error"} />
+        <View style={styles.container}>
+          <Text style={styles.errorText}>Error: {error}</Text>
+        </View>
+      </LinearGradient>
+    );
+  }
+
+  console.log("Rendering with transactionData:", transactionData);
+  console.log("Redux transaction:", transaction);
   return (
     <LinearGradient
       colors={["#463C9F", "#3A346E", "#23234B", "#2B293E", "#272631"]}
@@ -68,15 +161,18 @@ const Transaction: FC<TransactionScreenProps> = ({ route }) => {
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
-      <Header title={"Car Loan"} />
+      <Header title={transactionData.debt?.name || "Transaction"} />
       <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
         <View style={styles.container}>
-          <BalanceTransition openingBalance={82500} closingBalance={76300} />
+          <BalanceTransition
+            openingBalance={transactionData?.openingBalance}
+            closingBalance={transactionData?.closingBalance}
+          />
           <View style={styles.transactionInfoContainer}>
             <TextCard2
               text1={"Transaction Balance"}
               text2={"₹"}
-              text3={"6000"}
+              text3={transactionData.paymentAmount?.toString() || "0"}
               text1style={styles.labelText}
               text2style={styles.rupeeSymbol}
               text3style={styles.amountText}
@@ -120,14 +216,21 @@ const Transaction: FC<TransactionScreenProps> = ({ route }) => {
             </View>
           </View>
           <StatusDueCard
-            status={status}
-            date="24/07/2025"
-            amount={25000}
+            status={transactionData.status}
+            date={
+              transactionData.dueDate
+                ? new Date(transactionData.dueDate).toLocaleDateString()
+                : "N/A"
+            }
+            amount={transactionData.paymentAmount || 0}
             onPress={handleCardPress}
           />
-          <Note onNoteChange={handleNoteChange} />
+          <Note
+            onNoteChange={handleNoteChange}
+            initialNote={transactionData.note}
+          />
           <WhatIfCalculator onExtraPaymentChange={handleExtraPaymentChange} />
-          {status === "paid" ? (
+          {transactionData.status === "paid" ? (
             <Button style={styles.editButton} onPress={handleShowPopup}>
               <View style={styles.buttonContent}>
                 <PencilIcon
@@ -314,6 +417,20 @@ const styles = StyleSheet.create({
   },
   graphContainer: {
     height: "90%",
+  },
+  loadingText: {
+    color: "#fff",
+    fontSize: wp(4.5),
+    fontFamily: "PlusJakartaSans-Bold",
+    textAlign: "center",
+    marginTop: hp(20),
+  },
+  errorText: {
+    color: "#fff",
+    fontSize: wp(4.5),
+    fontFamily: "PlusJakartaSans-Bold",
+    textAlign: "center",
+    marginTop: hp(20),
   },
 });
 

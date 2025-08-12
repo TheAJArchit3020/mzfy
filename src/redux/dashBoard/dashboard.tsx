@@ -38,9 +38,9 @@ export const fetchDashboardSummary = createAsyncThunk<DashboardSummary>(
   async (_, { rejectWithValue }) => {
     try {
       const token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODk0NmVmOTZjNGNmM2FiMzEwNzYwOGMiLCJpYXQiOjE3NTQ1NjMwMjAsImV4cCI6MTc1NzE1NTAyMH0.u001fyX4xgn0OlhB8WREJbIbAxwcUeH_9e9jzPJYO40";
+       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODliMGU4ZDM3MDg0MzRmMDExZmM0MzAiLCJpYXQiOjE3NTQ5OTIzMDgsImV4cCI6MTc1NzU4NDMwOH0.ImXIM1ZJwGBWYpdD5qCRGuWx4xJ-RoQ1xX9Nh4He5rY"
 
-      console.log("dashBoard",dashboard);
+      console.log("dashBoard", dashboard);
       const response = await axios.get(dashboard, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -52,7 +52,7 @@ export const fetchDashboardSummary = createAsyncThunk<DashboardSummary>(
       if (axios.isAxiosError(error) && error.response) {
         return rejectWithValue(error.response.data.message);
       }
-        console.log("response",error);
+      console.log("response", error);
       return rejectWithValue("Something went wrong");
     }
   }

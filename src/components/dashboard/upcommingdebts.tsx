@@ -16,6 +16,11 @@ import {
   widthToDP as wp,
   heightToDP as hp,
 } from "react-native-responsive-screens";
+import { RootStackParams } from "@managers/routing";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
+
+type navprops = NativeStackNavigationProp<RootStackParams>;
 
 export type DebtItem = {
   debtTransaction: string;
@@ -40,6 +45,7 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
   sort = true,
   showicon = true,
 }) => {
+  const navigation = useNavigation<navprops>();
   const [containerHeight, setContainerHeight] = useState(0);
   const [contentHeight, setContentHeight] = useState(1);
   const [scrollY, setScrollY] = useState(0);
@@ -108,7 +114,12 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
                     <Text style={styles.text}>{item.debtName}</Text>
 
                     {showicon && (
-                      <TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => {
+                          console.log("item", item);
+                          navigation.navigate("Transaction", { id: item.debtTransaction });
+                        }}
+                      >
                         <Image
                           source={require("@images/dashboard/rightarrow.png")}
                           style={styles.image}
@@ -124,7 +135,12 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
                       {"\u20B9"} {item.amount} /-
                     </Text>
                     {showicon && (
-                      <TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => {
+                          console.log("item", item);
+                          navigation.navigate("Transaction", { id: item.debtTransaction });
+                        }}
+                      >
                         <Image
                           source={require("@images/dashboard/rightarrow.png")}
                           style={styles.image}

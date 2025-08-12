@@ -8,4 +8,5 @@ export const expensesDashboard = `${baseurl}/expenses/dashboard`;
 export const logExpenseapi = `${baseurl}/expenses/logExpense`;
 export const getLogExpenseCatogories = `${baseurl}/categories`;
 export const addCategory = `${baseurl}/categories`
+export const getTransaction = `${baseurl}/transaction`
 // export const loginuser = `${baseurl}/auth/googleSignIn`

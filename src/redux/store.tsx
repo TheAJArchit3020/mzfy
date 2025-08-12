@@ -4,6 +4,7 @@ import userReducer from "../redux/user/userSlice";
 import loginUserReducer from "../redux/login/loginSlice";
 import dashBoardReducer from "../redux/dashBoard/dashboard";
 import expensesReducer from "../redux/expenseSlice/expenseSlice";
+import transactionReducer from "../redux/Transacttion/Transaction";
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     loginuser: loginUserReducer,
     dashBoard: dashBoardReducer,
     expenses: expensesReducer,
+    transaction: transactionReducer,
   },
 });
 

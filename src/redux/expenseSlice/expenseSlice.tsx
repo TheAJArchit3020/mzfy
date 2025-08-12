@@ -154,8 +154,8 @@ export const addCategoryAsync = createAsyncThunk(
 );
 
 const expenseSlice = createSlice({
-  name: "expense",
-  initialState,
+    name: "expense",
+    initialState,
   reducers: {
     // Add any synchronous reducers here if needed
     clearExpensesDashboard: (state) => {
