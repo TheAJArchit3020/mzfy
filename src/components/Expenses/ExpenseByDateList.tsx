@@ -9,6 +9,7 @@ import { expenseItem } from "src/commonTypes";
 
 interface ExpenseByDateListProps {
   data: expenseItem[];
+  showScrollIndicator?: boolean;
 }
 
 const CustomScrollIndicator: FC<{
@@ -39,7 +40,10 @@ const CustomScrollIndicator: FC<{
   );
 };
 
-const ExpenseByDateList: FC<ExpenseByDateListProps> = ({ data }) => {
+const ExpenseByDateList: FC<ExpenseByDateListProps> = ({
+  data,
+  showScrollIndicator = true,
+}) => {
   const [scrollOffset, setScrollOffset] = useState(0);
   const [contentHeight, setContentHeight] = useState(0);
   const [containerHeight, setContainerHeight] = useState(0);
@@ -78,7 +82,7 @@ const ExpenseByDateList: FC<ExpenseByDateListProps> = ({ data }) => {
         ))}
       </ScrollView>
 
-      {contentHeight > containerHeight && (
+      {contentHeight > containerHeight && showScrollIndicator && (
         <CustomScrollIndicator
           scrollOffset={scrollOffset}
           contentHeight={contentHeight}

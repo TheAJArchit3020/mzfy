@@ -1,7 +1,7 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { FC } from 'react'
-import Card from '@components/reusable/card'
-import LinearGradient from 'react-native-linear-gradient'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { FC } from "react";
+import Card from "@components/reusable/card";
+import LinearGradient from "react-native-linear-gradient";
 
 interface NextduedateProps {
     data: Array<{ id: string; amount: number; dueDate: string }>

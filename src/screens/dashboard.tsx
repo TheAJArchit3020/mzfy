@@ -5,9 +5,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { FC, useState } from "react";
-
+import React, { FC, useEffect, useState, useMemo } from "react";
+import { useDispatch, UseDispatch, useSelector } from "react-redux";
+import { fetchDashboardSummary } from "@redux/dashBoard/dashboard";
+import { AppDispatch, RootState } from "@redux/store";
 import Debtcountdown from "@components/dashboard/debtcountdown";
+
 import Debtbalance from "@components/dashboard/debtbalance";
 import Debtpaid from "@components/dashboard/debtpaid";
 import Nextduedate from "@components/dashboard/nextduedate";
@@ -19,13 +22,33 @@ import UpcomingDebtsWithScrollbar from "@components/dashboard/upcommingdebts";
 import Input from "@components/reusable/Input";
 import { widthToDP } from "react-native-responsive-screens";
 import Debtprogress from "@components/dashboard/debtprogress";
+import { dashboard } from "../managers/apis";
+import { DebtCountDownType } from "src/commonTypes";
+import { DebtChartDataItem, DonutDataItem } from "src/commonTypes";
 
 type navprops = NativeStackNavigationProp<RootStackParams>;
 
 const DashboardScreen: FC = () => {
-
+  const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<navprops>();
   const [show, setShow] = useState(false);
+
+  const userData = useSelector((state: RootState) => state.dashBoard);
+  const [debtFreeDate, setDebtFreeDate] = useState<DebtCountDownType>({
+    year: 0,
+    month: 0,
+    day: 0,
+  });
+  console.log("userData", userData);
+  const [donutData, setDonutData] = useState<DonutDataItem[]>([]);
+  useEffect(() => {
+    dispatch(fetchDashboardSummary());
+  }, []);
+
+  useEffect(() => {
+    adjustedDate();
+    transformDebtData(userData?.data?.balanceByDebt || []);
+  }, [userData]);
 
   const logpopupHandler = () => {
     setShow(true);
@@ -61,6 +84,51 @@ const DashboardScreen: FC = () => {
     { name: "Bike loan", amount: 20000, date: "03/08/2025" },
     { name: "Home loan", amount: 20000, date: "20/09/2025" },
   ];
+
+  const adjustedDate = () => {
+    if (!userData.data?.debtFreeDate) return null;
+
+    const today = new Date();
+    const debtFreeDate = new Date(userData.data.debtFreeDate);
+
+    let yearDiff = debtFreeDate.getFullYear() - today.getFullYear();
+    let monthDiff = debtFreeDate.getMonth() - today.getMonth();
+    let dayDiff = debtFreeDate.getDate() - today.getDate();
+
+    if (dayDiff < 0) {
+      // borrow days from previous month
+      const daysInPrevMonth = new Date(
+        debtFreeDate.getFullYear(),
+        debtFreeDate.getMonth(),
+        0
+      ).getDate();
+      dayDiff += daysInPrevMonth;
+      monthDiff--;
+    }
+
+    if (monthDiff < 0) {
+      monthDiff += 12;
+      yearDiff--;
+    }
+
+    const date = {
+      year: yearDiff,
+      month: monthDiff,
+      day: dayDiff,
+    };
+
+    setDebtFreeDate(date);
+  };
+
+  const transformDebtData = (debts: DebtChartDataItem[]) => {
+    const formatted = debts.map((debt) => ({
+      value: parseFloat(debt.balance),
+      color: debt.color,
+    }));
+
+    setDonutData(formatted);
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -74,9 +142,12 @@ const DashboardScreen: FC = () => {
             </Text>
             <Text style={styles.section1_1_text}>{getGreeting()}</Text>
           </View>
-          <TouchableOpacity style={styles.section1_2} onPress={() => {
-            navigation.navigate("profilescreen");
-          }}>
+          <TouchableOpacity
+            style={styles.section1_2}
+            onPress={() => {
+              navigation.navigate("profilescreen");
+            }}
+          >
             {/* <Image
               source={require("@images/dashboard/rightarrow.png")}
               style={{ width: 20, height: 20 }}
@@ -86,23 +157,40 @@ const DashboardScreen: FC = () => {
         </View>
 
         <View style={styles.section2}>
-          <Debtcountdown />
+          <Debtcountdown
+            data={{
+              year: debtFreeDate.year,
+              month: debtFreeDate.month,
+              day: debtFreeDate.day,
+            }}
+          />
         </View>
 
         <View style={styles.section3}>
-          <Debtprogress />
+          {<Debtprogress percent={userData.data?.payoffPct || 0} />}
         </View>
 
         <View style={styles.section4}>
-          <Debtbalance />
-          <Debtpaid />
+          <Debtbalance data={donutData} />
+          <Debtpaid debtpaid={userData.data?.totalDebtPaid || 0} />
         </View>
         <View style={styles.section7}>
-          <Nextduedate data={nextDueList} logpopupHandler={logpopupHandler} />
+          <Nextduedate
+            data={
+              userData.data?.upcomingTransactions.slice(
+                0,
+                userData.data?.balanceByDebt.length
+              ) || []
+            }
+            logpopupHandler={logpopupHandler}
+          />
         </View>
         <View style={styles.section5}>
           <Text style={styles.section5_text}>Upcoming Transactions</Text>
-          <UpcomingDebtsWithScrollbar data={upcommingdebtsList} style={styles.cardstyle1} />
+          <UpcomingDebtsWithScrollbar
+            data={userData?.data?.upcomingTransactions || []}
+            style={styles.cardstyle1}
+          />
         </View>
       </ScrollView>
 
@@ -124,10 +212,8 @@ const DashboardScreen: FC = () => {
         containerStyle={styles.popupContainerStyle}
       >
         <Input
-          value={''}
-          onChangeContent={(val) =>
-            console.log(val)
-          }
+          value={""}
+          onChangeContent={(val) => console.log(val)}
           keyboardType="numeric"
           textHeader="₹"
           children={
@@ -258,13 +344,12 @@ const styles = StyleSheet.create({
   },
 
   cardstyle1: {
-    overflow: "hidden"
+    overflow: "hidden",
   },
   popupinput: {
-    marginHorizontal: 5
+    marginHorizontal: 5,
   },
   inputWrapperStyle: {
-    marginHorizontal: 20
-  }
-
+    marginHorizontal: 20,
+  },
 });

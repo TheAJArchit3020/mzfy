@@ -1,5 +1,5 @@
 // components/RadioInput.tsx
-import React from 'react';
+import React from "react";
 import {
   View,
   Text,
@@ -7,7 +7,11 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
-} from 'react-native';
+} from "react-native";
+import {
+  widthToDP as wp,
+  heightToDP as hp,
+} from "react-native-responsive-screens";
 
 export type RadioOption = {
   label: string;
@@ -20,28 +24,32 @@ type RadioInputProps = {
   options: RadioOption[];
   selectedValue: string | null;
   onValueChange: (val: string) => void;
-  direction?: 'row' | 'column';
+  direction?: "row" | "column";
   containerStyle?: ViewStyle;
   optionStyle?: ViewStyle;
   labelStyle?: TextStyle;
+  selectedOptionStyle?: ViewStyle;
   descriptionStyle?: TextStyle;
-  children?: any
+  children?: any;
+  labelSelectedStyle?: TextStyle;
 };
 
 const RadioInput: React.FC<RadioInputProps> = ({
   options,
   selectedValue,
   onValueChange,
-  direction = 'column',
+  direction = "column",
   containerStyle,
   optionStyle,
   labelStyle,
   descriptionStyle,
-  children
+  selectedOptionStyle,
+  labelSelectedStyle,
+  children,
 }) => {
   return (
     <View
-      style={[styles.group, direction === 'row' && styles.row, containerStyle]}
+      style={[styles.group, direction === "row" && styles.row, containerStyle]}
       accessibilityRole="radiogroup"
     >
       {options.map((opt, idx) => {
@@ -51,7 +59,12 @@ const RadioInput: React.FC<RadioInputProps> = ({
         return (
           <Pressable
             key={idx}
-            style={[styles.option, optionStyle, disabled && styles.disabled]}
+            style={[
+              styles.option,
+              optionStyle,
+              disabled && styles.disabled,
+              isSelected && selectedOptionStyle,
+            ]}
             onPress={() => {
               if (disabled) return;
               onValueChange(opt.value);
@@ -71,7 +84,14 @@ const RadioInput: React.FC<RadioInputProps> = ({
               >
                 {isSelected && <View style={styles.inner} />}
               </View>
-              <Text style={[styles.label, labelStyle, disabled && styles.labelDisabled]}>
+              <Text
+                style={[
+                  styles.label,
+                  labelStyle,
+                  disabled && styles.labelDisabled,
+                  isSelected && labelSelectedStyle,
+                ]}
+              >
                 {opt.label}
               </Text>
               {opt.description ? (
@@ -84,7 +104,6 @@ const RadioInput: React.FC<RadioInputProps> = ({
         );
       })}
       {children}
-
     </View>
   );
 };
@@ -96,8 +115,8 @@ const INNER_SIZE = 8;
 
 const styles = StyleSheet.create({
   group: {
-    flexDirection: 'column',
-    gap: 4,
+    flexDirection: "column",
+    gap: hp(2),
   },
   row: {
     // flexDirection: 'row',
@@ -112,8 +131,8 @@ const styles = StyleSheet.create({
     // paddingHorizontal: 6,
   },
   left: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     flex: 1,
     gap: 8,
   },
@@ -122,32 +141,32 @@ const styles = StyleSheet.create({
     height: RADIO_SIZE,
     borderRadius: RADIO_SIZE / 2,
     borderWidth: 2,
-    borderColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderColor: "#fff",
+    justifyContent: "center",
+    alignItems: "center",
   },
   outerSelected: {
-    borderColor: '#fff',
+    borderColor: "#fff",
   },
   outerDisabled: {
-    borderColor: '#ccc',
+    borderColor: "#ccc",
   },
   inner: {
     width: INNER_SIZE,
     height: INNER_SIZE,
     borderRadius: INNER_SIZE / 2,
-    backgroundColor: '#007aff',
+    backgroundColor: "#007aff",
   },
   label: {
     fontSize: 16,
-    color: '#000',
+    color: "#000",
   },
   labelDisabled: {
-    color: '#999',
+    color: "#999",
   },
   rightLabel: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
   disabled: {
     opacity: 0.6,

@@ -1,5 +1,5 @@
 // components/UpcomingDebtsWithScrollbar.tsx
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef } from "react";
 import {
     StyleSheet,
     Text,
@@ -31,21 +31,26 @@ interface UpcomingDebtsWithScrollbarProps {
 }
 
 const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
-    data, cardStyle, style, sort = true, showicon = true
+  data,
+  cardStyle,
+  style,
+  sort = true,
+  showicon = true,
 }) => {
-    const [containerHeight, setContainerHeight] = useState(0)
-    const [contentHeight, setContentHeight] = useState(1)
-    const [scrollY, setScrollY] = useState(0)
+  const [containerHeight, setContainerHeight] = useState(0);
+  const [contentHeight, setContentHeight] = useState(1);
+  const [scrollY, setScrollY] = useState(0);
 
 
-    // Calculate scrollbar dimensions
-    const scrollableRange = Math.max(contentHeight - containerHeight, 1)
-    const thumbHeight = Math.max(
-        (containerHeight / contentHeight) * 120,  // 120px is the track height
-        20  // minimum thumb height
-    )
-    const maxThumbPos = 120 - thumbHeight
-    const thumbTop = scrollableRange > 0 ? (scrollY / scrollableRange) * maxThumbPos : 0
+  // Calculate scrollbar dimensions
+  const scrollableRange = Math.max(contentHeight - containerHeight, 1);
+  const thumbHeight = Math.max(
+    (containerHeight / contentHeight) * 120, // 120px is the track height
+    20 // minimum thumb height
+  );
+  const maxThumbPos = 120 - thumbHeight;
+  const thumbTop =
+    scrollableRange > 0 ? (scrollY / scrollableRange) * maxThumbPos : 0;
 
     const onContainerLayout = (e: LayoutChangeEvent) => {
         const height = e.nativeEvent.layout.height
@@ -120,31 +125,31 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
                     })}
                 </ScrollView>
 
-                {/* Custom scrollbar */}
-                {contentHeight > containerHeight && (
-                    <View
-                        style={[
-                            styles.scrollbarTrack,
-                            {
-                                height: 120,
-                                top: (containerHeight - 120) / 2,
-                            },
-                        ]}
-                    >
-                        <View
-                            style={[
-                                styles.scrollbarThumb,
-                                { height: thumbHeight, top: thumbTop },
-                            ]}
-                        />
-                    </View>
-                )}
-            </View>
-        </Card>
-    )
-}
+        {/* Custom scrollbar */}
+        {contentHeight > containerHeight && (
+          <View
+            style={[
+              styles.scrollbarTrack,
+              {
+                height: 120,
+                top: (containerHeight - 120) / 2,
+              },
+            ]}
+          >
+            <View
+              style={[
+                styles.scrollbarThumb,
+                { height: thumbHeight, top: thumbTop },
+              ]}
+            />
+          </View>
+        )}
+      </View>
+    </Card>
+  );
+};
 
-export default UpcomingDebtsWithScrollbar
+export default UpcomingDebtsWithScrollbar;
 
 const styles = StyleSheet.create({
     card: {

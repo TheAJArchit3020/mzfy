@@ -216,4 +216,33 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: -14,
   },
+  blurView: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: "center",
+    gap: hp(10),
+    paddingHorizontal: wp(5),
+  },
+  blurContent: {
+    flex: 1,
+    justifyContent: "center",
+    paddingHorizontal: wp(5),
+    gap: hp(5),
+  },
+  blurViewText: {
+    color: "#F7F7F7",
+    fontSize: wp(4),
+    fontFamily: "PlusJakartaSans-Bold",
+    textAlign: "center",
+  },
+  ContinueButton: {
+    backgroundColor: "blue",
+    height: hp(5),
+    borderRadius: wp(10),
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  anim: {
+    width: wp(30),
+    height: hp(20),
+  },
 });

@@ -2,7 +2,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { FC } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 
-
 import Layout from "@screens/layout";
 import Particulardebtdetail from "@screens/particulardebtdetail";
 import DebtAdd from "@screens/adddebt";
@@ -15,8 +14,9 @@ import Paywall from "@screens/paywall";
 import Splash from "@screens/splash";
 import Intro from "@screens/intro";
 import ExpensesOverView from "@screens/registration/expensesOverView";
-
-
+import AllExpenses from "@screens/allExpenses";
+import LogExpense from "@screens/LogExpense";
+import CategoryManagement from "@screens/catagoryManagement";
 export type RootStackParams = {
 
     splashscreen: undefined
