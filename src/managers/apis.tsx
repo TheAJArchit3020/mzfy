@@ -8,7 +8,6 @@ export const debtpage = `${baseurl}/debts/debtpage`
 export const payoffplans = `${baseurl}/plan`
 export const selectstrategy = `${baseurl}/plan/select`
 export const customplan = `${baseurl}/custom-plans`
-
 export const dashboard = `${baseurl}/dashboard/summary`;
 export const expensesDashboard = `${baseurl}/expenses/dashboard`;
 export const logExpenseapi = `${baseurl}/expenses/logExpense`;

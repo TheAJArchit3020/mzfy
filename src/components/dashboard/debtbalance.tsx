@@ -27,61 +27,63 @@ const Debtbalance: FC<DebtItemProps> = ({ data }) => {
     )
 }
 
-export default Debtbalance
+
+
+export default Debtbalance;
 
 const styles = StyleSheet.create({
-    section_card: {
-        width: '48%',
-        height: 168,
-        borderWidth: 0.5
-    },
-    section_card_text: {
-        color: '#fff',
-        fontFamily: "PlusJakartaSans-Bold",
-        fontSize: 14,
-    },
-    section_card_inner_content: {
-        gap: 20,
-        justifyContent: "center",
-        paddingVertical: 10
-
-    },
-    section_card_inner_content_item: {
-        flexDirection: "column",
-        gap: '5%',
-        alignItems: "center",
-        justifyContent: "center"
-    },
-    section_card_inner_content_item_text: {
-        color: '#fff',
-        fontFamily: "PlusJakartaSans-Bold",
-        fontSize: 30,
-    },
-    section_card_inner_content_item_text2: {
-        color: '#fff',
-        fontFamily: "PlusJakartaSans-Bold",
-        fontSize: 20,
-    },
-    section_card_text2: {
-        color: '#fff',
-        fontFamily: "PlusJakartaSans-Bold",
-        fontSize: 14,
-    },
-    section_card_inner: {
-        height: 'auto',
-        justifyContent: "center"
-    },
-    image: {
-        width: 20,
-        height: 20,
-        resizeMode: "contain"
-    },
-    section_card_inner_content_item2: {
-
-    },
-    section_card_inner_content_item3: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: '4%'
-    }
-})
+  section_card: {
+    width: "48%",
+    height: 168,
+    borderWidth: 0.5,
+  },
+  section_card_text: {
+    color: "#fff",
+    fontFamily: "PlusJakartaSans-Bold",
+    fontSize: 14,
+  },
+  section_card_inner_content: {
+    gap: 20,
+    justifyContent: "center",
+    paddingVertical: 10,
+  },
+  section_card_inner_content_item: {
+    flexDirection: "column",
+    gap: ".5%",
+    alignItems: "center",
+  },
+  section_card_inner_content_item_text: {
+    color: "#fff",
+    fontFamily: "PlusJakartaSans-Bold",
+    fontSize: 30,
+  },
+  section_card_inner_content_item_text2: {
+    color: "#fff",
+    fontFamily: "PlusJakartaSans-Bold",
+    fontSize: 20,
+  },
+  section_card_text2: {
+    color: "#fff",
+    fontFamily: "PlusJakartaSans-Bold",
+    fontSize: 14,
+  },
+  section_card_inner: {
+    height: "auto",
+    justifyContent: "center",
+  },
+  image: {
+    width: 20,
+    height: 20,
+    resizeMode: "contain",
+  },
+  section_card_inner_content_item2: {},
+  section_card_inner_content_item3: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: "4%",
+  },
+  donut_chart_container: {
+    width: "100%",
+    height: "85%",
+  },
+});
