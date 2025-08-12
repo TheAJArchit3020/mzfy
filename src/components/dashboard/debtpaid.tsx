@@ -3,25 +3,26 @@ import React, { FC } from 'react'
 import Card from '@components/reusable/card'
 
 interface DebtItemProps {
-    data: any
+  data: any
 }
 
 const Debtpaid: FC<DebtItemProps> = ({ data }) => {
-    
-    return (
-        <Card style={styles.section_card} cardStyle={styles.section_card_inner}>
-            <View style={styles.section_card_inner_content}>
-                <View style={styles.section_card_inner_content_item}>
-                    <Text style={styles.section_card_text}>Debt paid</Text>
-                    <Text style={styles.section_card_text2}>{'\u20B9'}&nbsp;
-                        <Text style={styles.section_card_span}>
-                            {Number(data?.totalPaid ?? 0).toLocaleString('en-IN')}
-                        </Text>
-                    </Text>
-                </View>
-            </View>
-        </Card>
-    )
+
+
+  return (
+    <Card style={styles.section_card} cardStyle={styles.section_card_inner}>
+      <View style={styles.section_card_inner_content}>
+        <View style={styles.section_card_inner_content_item}>
+          <Text style={styles.section_card_text}>Debt paid</Text>
+          <Text style={styles.section_card_text2}>{'\u20B9'}&nbsp;
+            <Text style={styles.section_card_span}>
+              {Number(data?.totalPaid ?? data?.totalDebtPaid ?? 0).toLocaleString('en-IN')}
+            </Text>
+          </Text>
+        </View>
+      </View>
+    </Card>
+  )
 }
 
 export default Debtpaid;

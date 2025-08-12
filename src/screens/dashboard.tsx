@@ -39,7 +39,7 @@ const DashboardScreen: FC = () => {
     month: 0,
     day: 0,
   });
-  console.log("userData", userData);
+ 
   const [donutData, setDonutData] = useState<DonutDataItem[]>([]);
   useEffect(() => {
     dispatch(fetchDashboardSummary());
@@ -68,22 +68,7 @@ const DashboardScreen: FC = () => {
     }
   };
 
-  const upcommingdebtsList = [
-    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
-    { name: "Bike loan", amount: 15000, date: "Apr 10 2025" },
-    { name: "Home loan", amount: 500000, date: "Apr 15 2025" },
-    { name: "Personal loan", amount: 50000, date: "Apr 20 2025" },
-    { name: "Education loan", amount: 100000, date: "Apr 25 2025" },
-    { name: "Business loan", amount: 200000, date: "Apr 30 2025" },
-    { name: "Credit card", amount: 25000, date: "May 5 2025" },
-    { name: "Medical loan", amount: 75000, date: "May 10 2025" },
-  ];
 
-  const nextDueList = [
-    { name: "Car loan", amount: 20000, date: "20/08/2025" },
-    { name: "Bike loan", amount: 20000, date: "03/08/2025" },
-    { name: "Home loan", amount: 20000, date: "20/09/2025" },
-  ];
 
   const adjustedDate = () => {
     if (!userData.data?.debtFreeDate) return null;
@@ -172,7 +157,7 @@ const DashboardScreen: FC = () => {
 
         <View style={styles.section4}>
           <Debtbalance data={donutData} />
-          <Debtpaid debtpaid={userData.data?.totalDebtPaid || 0} />
+          <Debtpaid data={userData.data || 0} />
         </View>
         <View style={styles.section7}>
           <Nextduedate

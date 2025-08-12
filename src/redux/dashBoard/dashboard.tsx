@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { dashboard } from "@managers/apis";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { RootState } from "@redux/store";
 
 // ✅ Response type
 interface BalanceByDebt {
@@ -33,17 +35,18 @@ interface DashboardSummary {
 }
 
 // ✅ Async thunk
-export const fetchDashboardSummary = createAsyncThunk<DashboardSummary>(
+export const fetchDashboardSummary = createAsyncThunk<DashboardSummary, void, { state: RootState; rejectValue: any }>(
   "dashboard/fetchDashboardSummary",
-  async (_, { rejectWithValue }) => {
-    try {
-      const token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODk0NmVmOTZjNGNmM2FiMzEwNzYwOGMiLCJpYXQiOjE3NTQ1NjMwMjAsImV4cCI6MTc1NzE1NTAyMH0.u001fyX4xgn0OlhB8WREJbIbAxwcUeH_9e9jzPJYO40";
+  async (_, { getState, rejectWithValue }) => {
 
-      console.log("dashBoard",dashboard);
+    const _token = (getState().loginuser?.items[0]?.token)
+    const storetoken = await AsyncStorage.getItem('token')
+    try {
+
+      console.log("dashBoard", dashboard);
       const response = await axios.get(dashboard, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${_token ? _token : storetoken}`,
         },
       });
       console.log("response", response);
@@ -52,7 +55,7 @@ export const fetchDashboardSummary = createAsyncThunk<DashboardSummary>(
       if (axios.isAxiosError(error) && error.response) {
         return rejectWithValue(error.response.data.message);
       }
-        console.log("response",error);
+      console.log("response", error);
       return rejectWithValue("Something went wrong");
     }
   }

@@ -4,8 +4,8 @@ import Card from "@components/reusable/card";
 import LinearGradient from "react-native-linear-gradient";
 
 interface NextduedateProps {
-    data: Array<{ id: string; amount: number; dueDate: string }>
-    logpopupHandler: () => void
+    data?: Array<{ id: string; amount: number; dueDate: string }>
+    logpopupHandler?: () => void
 }
 
 const Nextduedate: FC<NextduedateProps> = ({ data, logpopupHandler }) => {
