@@ -20,7 +20,7 @@ export const store = configureStore({
     debts: debtsReducer,
     payoffplan: payoffPlanReducer,
     strategy: strategyReducer,
-    customplan: customPlanReducer
+    customplan: customPlanReducer,
     transaction: transactionReducer,
   },
 });
