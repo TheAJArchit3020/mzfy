@@ -49,7 +49,7 @@ const initialForm: DebtForm = {
   principal: 0,
   balance: 0,
   minPaymentAmount: 0,
-  apr: 0,
+  apr: "",
   nextDueDate: "",
   tagColor: "",
 };
@@ -129,6 +129,8 @@ const DebtAdd: FC = () => {
       },
     ];
 
+    console.log("newDebts : ", newDebts)
+
     // write back into Redux
     dispatch(setField({ field: "debts", value: newDebts }));
     // clear the form
@@ -142,6 +144,8 @@ const DebtAdd: FC = () => {
     if (route?.params?.screen === 1) {
       handleSave();
     } else {
+
+      console.log("form : ", form)
       try {
         await dispatch(addDebts(form)).unwrap();
         navigation.goBack();
@@ -292,6 +296,8 @@ const DebtAdd: FC = () => {
                   onChange={(_, date) => {
                     setShowDatePicker(false);
                     if (date) {
+
+                      console.log("date : ", date)
                       formDispatch({
                         type: "SET_FIELD",
                         field: "nextDueDate",

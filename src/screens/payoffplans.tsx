@@ -57,7 +57,6 @@ const PayoffplansScreen: FC = () => {
 
 
   const payoffplanArray = useSelector((state: RootState) => state.payoffplan.items[0]) ?? [];
-  console.log("payoffplanArray : ", payoffplanArray)
 
   const __date = payoffplanArray?.estimatedDebtFreeDate
 

@@ -1,5 +1,5 @@
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React, { FC, useReducer, useState } from 'react'
+import React, { FC, useCallback, useReducer, useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import Header from '@components/reusable/header'
 import DraggablePayoffcard from '@components/payoffplan/dragablepayoffcard'
@@ -10,60 +10,113 @@ import Popup from '@components/reusable/popup'
 import Dropdown from '@components/reusable/dropdown'
 import Input from '@components/reusable/Input'
 import { widthToDP } from 'react-native-responsive-screens'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '@redux/store'
+import { useFocusEffect } from '@react-navigation/native'
+import { fetchPayoffPlan } from '@redux/payoffplans/payoffplanSlice'
+import { addCustomPlan } from '@redux/customplan/customplanSlice'
 
 
-const initialState = {
-    debtName: "",
-    extrapay: ""
-};
 
-type State = typeof initialState;
-type Action =
-    | { type: "SET_FIELD"; field: keyof State; value: any }
-    | { type: "RESET" };
-
-function reducer(state: State, action: Action): State {
-    switch (action.type) {
-        case "SET_FIELD":
-            return { ...state, [action.field]: action.value };
-        case "RESET":
-            return initialState;
-        default:
-            return state;
-    }
-}
 
 const Createcustomplan: FC = () => {
 
+    const formdispatch = useDispatch<AppDispatch>();
+    const { current } = useSelector((state: RootState) => state.customplan)
+
+    console.log("current : ", current)
+
+  
+
     const [show, setShow] = useState(false);
-    const [state, dispatch] = useReducer(reducer, initialState);
-    const [debtsData, setDebtsData] = useState([
-        { id: 1, name: 'Car Loan', minamt: 500, apr: '2.5%', payoffprogress: 5.5, time: 'Completes on Jul 2 2026 (9 month 1 days)' },
-        { id: 2, name: 'House Loan', minamt: 500, apr: '9.5%', payoffprogress: 25.5, time: 'Completes on Jul 2 2026 (9 month 1 days)' },
-        { id: 3, name: 'Bike Loan', minamt: 500, apr: '10.5%', payoffprogress: 45.5, time: 'Completes on Jul 2 2026 (9 month 1 days)' },
-    ]);
+
+
     const [scrollEnabled, setScrollEnabled] = useState(true);
+
+
+    useFocusEffect(
+        useCallback(() => {
+
+            const fetchPayoffPlans = async () => {
+                try {
+                    await formdispatch(fetchPayoffPlan()).unwrap();
+                } catch (error) {
+                    console.error('Error fetching payoff plans:', error);
+                }
+            };
+
+            fetchPayoffPlans();
+
+        }, [])
+    );
+
+
+    const payoffplanArray = useSelector((state: RootState) => state.payoffplan.items[0]) ?? [];
+
+    console.log("custom payoffplanArray : ", payoffplanArray)
+
+    const __date = payoffplanArray?.estimatedDebtFreeDate
+
+    const d = __date ? new Date(__date as string) : new Date();
+
+    const year = d.getUTCFullYear()
+
+    const monthNumber = d.getUTCMonth() + 1  // 8
+    const monthName = d.toLocaleString('default', { month: 'short', timeZone: 'UTC' })
+    const now = new Date()
+
+
+    const monthsUntil =
+        (year - now.getUTCFullYear()) * 12 +
+        ((monthNumber) - (now.getUTCMonth() + 1))
 
 
     const showsetPopup = () => {
         setShow(true);
     };
 
-    const debts = [
-        { label: 'Debt name 1', value: 'debt1' },
-        { label: 'Debt name 2', value: 'debt2' },
-        { label: 'Debt name 3', value: 'debt3' },
-        { label: 'Debt name 1', value: 'debt1' },
-        { label: 'Debt name 2', value: 'debt2' },
-        { label: 'Debt name 3', value: 'debt3' },
-    ];
 
     const [selectedDebt, setSelectedDebt] = useState<string | null>(null);
 
     const handleDataChange = (newData: any[]) => {
-        setDebtsData(newData);
+
         console.log('Debts reordered:', newData);
     };
+
+
+    const _dropdownOptions = Array.isArray(payoffplanArray?.debtOrder)
+        ? payoffplanArray?.debtOrder.map((item: any) => ({
+            label: item.name,
+            value: item.id,
+        }))
+        : [];
+
+    const filteredOptions = _dropdownOptions?.filter((item: { label: string; value: string }) => item.value === selectedDebt);
+
+
+
+
+
+    console.log("selectedDebt : ", selectedDebt)
+    console.log("filteredOptions : ", filteredOptions[0]?.label)
+
+    const _extrapayment = {
+        debt: selectedDebt,
+        amount: payoffplanArray?.extraPayments,
+    }
+
+
+    const AddCustomPlanHandler = async () => {
+
+        formdispatch(addCustomPlan({
+            name: filteredOptions[0]?.label,
+            debtOrder: selectedDebt ? [selectedDebt] : [],
+            extraPayments: [
+                ...[_extrapayment, _extrapayment]
+            ],
+        }))
+
+    }
 
     return (
         <LinearGradient
@@ -79,13 +132,13 @@ const Createcustomplan: FC = () => {
                 <View style={styles.container}>
                     <View style={styles.cardcontainer}>
                         <View style={styles.cardgroup}  >
-                            <TextCard2 text1={'Estimated payoff'} text2={'Mar'} text3={'2027'} text1style={styles.text1} text2style={styles.text2_1} text3style={styles.text2_2} cardStyle={styles.cardstyle}></TextCard2>
+                            <TextCard2 text1={'Estimated payoff'} text2={monthName} text3={year} text1style={styles.text1} text2style={styles.text2_1} text3style={styles.text2_2} cardStyle={styles.cardstyle}></TextCard2>
 
-                            <TextCard text1={'Months'} text2={'42'} text1style={styles.text1} text2style={styles.text2} cardStyle={styles.cardstyle} ></TextCard>
+                            <TextCard text1={'Months'} text2={monthsUntil} text1style={styles.text1} text2style={styles.text2} cardStyle={styles.cardstyle} ></TextCard>
                         </View>
                         <View style={styles.cardgroup2}>
-                            <TextCard text1={'Estimated payoff'} text2={'₹. 80,000/-'} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
-                            <TextCard text1={'You save'} text2={'₹. 12,000/-'} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
+                            <TextCard text1={'Total interest Paid'} text2={`₹. ${payoffplanArray?.totalInterestPaid}`} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
+                            <TextCard text1={'You save'} text2={`₹. ${payoffplanArray?.totalSavings}`} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
                         </View>
                     </View>
 
@@ -106,7 +159,7 @@ const Createcustomplan: FC = () => {
                         </View>
                         <View style={styles.cardcontainer3_inner}>
                             <DraggablePayoffcard
-                                data={debtsData}
+                                data={payoffplanArray?.debtOrder}
                                 source={require('@images/payoffplan/edit.png')}
                                 showicon={false}
                                 showcustom={true}
@@ -141,13 +194,12 @@ const Createcustomplan: FC = () => {
 
                     <View style={styles.inputgroup}>
                         <Text style={styles.inputgroup_label}>Select a debt</Text>
-                        <Dropdown
-                            options={debts}
+                        <Dropdown dropdownoptionstyle={styles.inputWrapperStyle2}
+                            options={_dropdownOptions}
                             value={selectedDebt}
                             placeholder="Debt name"
                             onChange={(val) => {
                                 setSelectedDebt(val as string);
-                                // do anything else with the selection
                                 console.log('picked', val);
                             }}
                         />
@@ -156,9 +208,10 @@ const Createcustomplan: FC = () => {
                     <View style={styles.inputgroup}>
                         <Text style={styles.inputgroup_label}>Extra payment</Text>
                         <Input
-                            value={state.extrapay}
+                            value={payoffplanArray?.extraPayments}
                             onChangeContent={(val) =>
-                                dispatch({ type: "SET_FIELD", field: "extrapay", value: val })
+                                // dispatch({ type: "SET_FIELD", field: "extrapay", value: val })
+                                console.log(val)
                             }
                             textHeader="₹"
                             inputWrapperStyle={styles.inputWrapperStyle}
@@ -356,6 +409,9 @@ const styles = StyleSheet.create({
     },
     formgroup: {
         paddingTop: 20
+    },
+    inputWrapperStyle2: {
+        backgroundColor: "#2A2A2A",
     }
 
 })

@@ -27,16 +27,13 @@ type routeProps = RouteProp<RootStackParams, 'registrationlayoutscreen'>
 const Registrationlayout: FC = () => {
 
   const route = useRoute<routeProps>();
-
   const navigation = useNavigation<navProps>();
-
   const dispatch = useDispatch<AppDispatch>();
+
 
   const userData = useSelector((state: RootState) => state.user.current)
 
   const submitFormHandler = async () => {
-
-    console.log("items : ", userData)
     try {
       await dispatch(addUser(userData)).unwrap()
       navigation.navigate('selectstrategyscreen')
@@ -60,13 +57,9 @@ const Registrationlayout: FC = () => {
   const CurrentPage = current.Component;
 
   const goNext = () => {
-
-    console.log("current : ", current?.id)
-
     if (current?.id === 6) {
       navigation.navigate('expensesoverviewscreen')
     } else {
-
       if (selectedIndex < PAGES.length - 1) {
         setSelectedIndex((i) => i + 1);
       } else {

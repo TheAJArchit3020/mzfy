@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, { useReducer } from 'react'
+import React, { FC, useReducer } from 'react'
 import Input from '@components/reusable/Input'
 import { widthToDP } from 'react-native-responsive-screens';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,7 +9,7 @@ import { setField } from '@redux/user/userSlice';
 
 
 
-const Name = () => {
+const Name:FC = () => {
 
 
   const dispatch = useDispatch()

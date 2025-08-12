@@ -1,3 +1,6 @@
+import { RootStackParams } from '@managers/routing';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { memo, useState, useRef, useEffect } from 'react';
 import {
     View,
@@ -35,6 +38,8 @@ interface DropdownProps {
     maxheight?: any;
 }
 
+type navProps = NativeStackNavigationProp<RootStackParams>
+
 const CustomStrategyDropdown: React.FC<DropdownProps> = ({
     options = [],
     value,
@@ -44,6 +49,7 @@ const CustomStrategyDropdown: React.FC<DropdownProps> = ({
     label,
     maxheight = 130,
 }) => {
+    const navigation = useNavigation<navProps>()
     const [visible, setVisible] = useState(false);
     const [triggerLayout, setTriggerLayout] = useState<LayoutRectangle | null>(null);
     const triggerRef = useRef<any>(null);
@@ -187,7 +193,8 @@ const CustomStrategyDropdown: React.FC<DropdownProps> = ({
                                     key={9}
                                     style={styles.buttonoption}
                                     onPress={() => {
-                                        // setVisible(false);
+                                        navigation.navigate('createcustomplanscreen')
+                                        setVisible(false);
                                     }}
                                     activeOpacity={0.7}
                                 >

@@ -7,9 +7,8 @@ interface Debt {
   payoffPct: number
   tagColor: string
 }
-
 interface Props {
-  size?: number     // px
+  size?: number
   strokeWidth?: number
   data?: {
     totalBalance: number
@@ -24,26 +23,31 @@ const CircularProgressbar: React.FC<Props> = ({
 }) => {
   const radius = (size - strokeWidth) / 2
   const circumference = 2 * Math.PI * radius
+  const debts = data?.inProgressDebts ?? []
 
-  // build segments for each debt slice
+  // Normalize so all segments fill the full circle
   const segments = useMemo(() => {
-    const debts = data?.inProgressDebts ?? []
-    let cumulative = 0
+    if (!debts.length) return []
+    const total = debts.reduce((s, d) => s + Math.max(0, d.payoffPct), 0)
+    // If total is 0, nothing to draw
+    if (total <= 0) return []
+
+    let acc = 0
     return debts.map(d => {
-      const pct = Math.max(0, Math.min(d.payoffPct, 100))
-      const length = (pct / 100) * circumference
-      const offset = circumference - cumulative - length
-      cumulative += length
+      const pct = Math.max(0, d.payoffPct) / total // now these sum to 1
+      const length = pct * circumference
+      const offset = circumference - acc - length
+      acc += length
       return { color: d.tagColor, length, offset }
     })
-  }, [data, circumference])
+  }, [debts, circumference])
 
   return (
     <View style={styles.container}>
       <Svg width={size} height={size}>
-        {/* rotate so 0% is at top */}
-        <G rotation="-90" origin={`${size/2}, ${size/2}`}>  
-          {/* background ring */}
+        {/* Start at 12 o'clock */}
+        <G transform={`rotate(-90, ${size / 2}, ${size / 2})`}>
+          {/* background track (optional) */}
           <Circle
             cx={size/2}
             cy={size/2}
@@ -53,7 +57,7 @@ const CircularProgressbar: React.FC<Props> = ({
             fill="none"
           />
 
-          {/* debt segments */}
+          {/* solid, contiguous slices that fill 100% */}
           {segments.map((seg, i) => (
             <Circle
               key={i}
@@ -63,7 +67,7 @@ const CircularProgressbar: React.FC<Props> = ({
               stroke={seg.color}
               strokeWidth={strokeWidth}
               fill="none"
-              strokeLinecap="round"
+              strokeLinecap="butt"           // avoids gaps between slices
               strokeDasharray={`${seg.length} ${circumference}`}
               strokeDashoffset={seg.offset}
             />
@@ -71,7 +75,6 @@ const CircularProgressbar: React.FC<Props> = ({
         </G>
       </Svg>
 
-      {/* center label */}
       <View style={styles.label}>
         <Text style={styles.percentText}>
           ₹ {Number(data?.totalBalance ?? 0).toLocaleString('en-IN')}
@@ -84,15 +87,8 @@ const CircularProgressbar: React.FC<Props> = ({
 export default CircularProgressbar
 
 const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  label: {
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  container: { justifyContent: 'center', alignItems: 'center' },
+  label: { position: 'absolute', justifyContent: 'center', alignItems: 'center' },
   percentText: {
     fontSize: 13,
     color: '#E63A30',

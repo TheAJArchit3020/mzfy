@@ -5,7 +5,7 @@ import Card from '@components/reusable/card'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParams } from '@managers/routing'
-import { formatDDMMMyyyy } from '@components/reusable/formatdate'
+import { formatDDMMMyyyy, formatDDMMMyyyy2, formatToDDMMMYYYY } from '@components/reusable/formatdate'
 
 
 interface payoffProps {
@@ -22,10 +22,25 @@ const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainersty
 
     const navigation = useNavigation<NavigationProp>();
 
-    const navigateHandler = (value: any) => {
+
+    console.log("data : ",data)
+
+    const navigateHandler = (_id: any, name: any) => {
         navigation.navigate('particulardebtdetailscreen', {
-            id: value
+            id: _id,
+            name: name
         })
+    }
+
+
+    function percentPaid(principal: any, balance: any, digits = 0) {
+        const p = parseFloat(String(principal));
+        const b = parseFloat(String(balance));
+        if (!isFinite(p) || p <= 0 || !isFinite(b)) return 0;
+
+        const paid = Math.max(0, p - b);
+        const pct = (paid / p) * 100;
+        return Number(pct.toFixed(digits)); // e.g. digits=1 -> 20.0
     }
 
 
@@ -34,12 +49,17 @@ const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainersty
             <View style={styles.cardcontainer}>
                 {data?.map((item: any, idx: any) => {
 
+                    const percentagePaid = percentPaid(item?.principal, item?.balance, 2);
+
+
+                    console.log("data :", percentagePaid)
+
                     return (
                         <Card style={[styles.section_card, cardstyle, { backgroundColor: `${item.tagColor}` }]} cardStyle={[styles.section_card_inner]} key={idx}>
                             <View style={styles.groupsection}>
                                 <Text style={styles.groupsection_text1}>{item.name}</Text>
-                                <Text style={styles.groupsection_text2}> Completes on {item.dueDate || formatDDMMMyyyy(item.completionDate || item.estimatedDebtFreeDate)}</Text>
-                                <TouchableOpacity style={styles.button} onPress={() => navigateHandler(item.id)}>
+                                <Text style={styles.groupsection_text2}> Completes on {formatToDDMMMYYYY(item.nextDueDate) || item.dueDate || formatDDMMMyyyy(item.completionDate || item.estimatedDebtFreeDate || formatDDMMMyyyy2(item.nextDueDate))}</Text>
+                                <TouchableOpacity style={styles.button} onPress={() => navigateHandler(item.id, item.name)}>
                                     <Image source={source} style={styles.image} />
                                 </TouchableOpacity>
                             </View>
@@ -50,8 +70,8 @@ const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainersty
                             </View>
                             <View style={styles.groupsection3}>
                                 <Text style={styles.groupsection_text1}>Payoff Progress</Text>
-                                <ProgressBar progress={item.payoffPct || item.payoffProgress} tooltipLabel={`Balance : ${item.balance} ${'\u20B9'}`} showTooltip={true} style={styles.progressbar} />
-                                <Text style={styles.groupsection_text1}>{item.payoffPct || item.payoffProgress} %</Text>
+                                <ProgressBar progress={percentagePaid || item.payoffPct || item.payoffProgress} tooltipLabel={`Balance : ${item.balance} ${'\u20B9'}`} showTooltip={true} style={styles.progressbar} />
+                                <Text style={styles.groupsection_text1}>{percentagePaid || item?.payoffPct || item.payoffProgress.toFixed(2)} %</Text>
 
                             </View>
 

@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontFamily: 'PlusJakartaSans-Regular',
         fontSize: 14,
-        width: '33.33%',
+        width: '30.33%',
         textAlign:"center"
     },
     scrollbarTrack: {

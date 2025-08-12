@@ -28,22 +28,13 @@ const Particulardebtdetail: FC = () => {
     const [selectedButton, setSelectedButton] = useState(0);
     const [show, setShow] = useState(false);
 
-    const { id } = route.params
+    const { id, name } = route.params
 
-    console.log("id : ", id)
 
     const logpopupHandler = () => {
         setShow(true);
     };
-    const upcommingdebtsList = [
-        { name: "Car loan", amount: 20000, date: "05 Aug 2025" },
-        { name: "Car loan", amount: 20000, date: "05 Sept 2025" },
-        { name: "Car loan", amount: 20000, date: "05 Nov 2025" },
-        { name: "Car loan", amount: 20000, date: "05 Dec 2025" },
-    ];
-    const nextDueList = [
-        { name: "Bike loan", amount: 20000, date: "03/08/2025" },
-    ];
+
 
     useFocusEffect(
         useCallback(() => {
@@ -62,8 +53,6 @@ const Particulardebtdetail: FC = () => {
 
     const DEBTDATA = (useSelector((state: RootState) => state.debts.items[0]?.payload)) ?? {};
 
-    console.log("DEBTDATA ; ", DEBTDATA)
-    console.log("select :", selectedButton)
 
 
     return (
@@ -74,7 +63,7 @@ const Particulardebtdetail: FC = () => {
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
         >
-            <Header title='Car loan' />
+            <Header title={name ? name : '-'} />
 
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.container}>

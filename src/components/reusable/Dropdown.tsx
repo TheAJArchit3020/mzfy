@@ -44,6 +44,9 @@ const Dropdown: React.FC<DropdownProps> = ({
   maxheight = 130,
   dropdownoptionstyle,
 }) => {
+
+
+  console.log("options: ", options);
   const [visible, setVisible] = useState(false);
   const [triggerLayout, setTriggerLayout] = useState<LayoutRectangle | null>(
     null

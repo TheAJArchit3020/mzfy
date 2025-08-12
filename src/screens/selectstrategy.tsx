@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { FC, useEffect, useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import Header from '@components/reusable/header'
@@ -65,12 +65,14 @@ type navProps = NativeStackNavigationProp<RootStackParams>
 const Selectstrategy: FC = () => {
 
     const navigation = useNavigation<navProps>();
+    const dispatch = useDispatch<AppDispatch>();
 
     const [selectedStrategy, setSelectedStrategy] = useState('')
     const [customPlan, setCustomPlan] = useState('')
 
     const handleSelect = async (value: string) => {
         setSelectedStrategy(value)
+        await dispatch(addStrategy(value))
     }
 
     const STRATEGIES: Strategy[] = [
@@ -134,7 +136,7 @@ const Selectstrategy: FC = () => {
                                     <TouchableOpacity
                                         style={styles.optionRow}
                                         activeOpacity={0.7}
-                                        onPress={() => handleSelect(strategy.key)}
+                                        onPress={() => handleSelect(strategy.title)}
                                     >
                                         <View style={styles.radioWrapper}>
                                             <View
@@ -249,6 +251,8 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontFamily: "PlusJakartaSans-Bold",
         fontSize: 16,
+        textTransform: "capitalize",
+        marginTop: Platform.OS === 'android' ? -5 : 0,
     },
     label: {
         color: "#fff",
