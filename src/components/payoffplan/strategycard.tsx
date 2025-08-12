@@ -86,7 +86,8 @@ const styles = StyleSheet.create({
     section_card_text2: {
         fontFamily: "PlusJakartaSans-Bold",
         color: "#fff",
-        fontSize: 30
+        fontSize: 30,
+        textTransform:"capitalize"
     },
     section_card_text3: {
         fontStyle: "italic",

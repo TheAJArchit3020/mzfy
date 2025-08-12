@@ -1,23 +1,27 @@
-import { registeruseruser, selectstrategy } from '@managers/apis'
+import { customplan, registeruseruser, selectstrategy } from '@managers/apis'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { RootState } from '@redux/store'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import axios from 'axios'
 
-export interface Strategy {
-    strategy: string
+export interface CustomPlan {
+    name: string
+    debtOrder: any
+    extraPayments: any
 }
 
-interface StrategyState {
-    current: Strategy
-    items: Strategy[]
+interface CustomPlanState {
+    current: CustomPlan
+    items: CustomPlan[]
     loading: boolean
     error: string | null
 }
 
-const initialState: StrategyState = {
+const initialState: CustomPlanState = {
     current: {
-        strategy: '',
+        name: 'My Aggressive Payoff',
+        debtOrder: [],
+        extraPayments: []
     },
     items: [],
     loading: false,
@@ -25,31 +29,31 @@ const initialState: StrategyState = {
 }
 
 type SetFieldPayload = {
-    field: keyof Strategy
+    field: keyof CustomPlan
     value: any
 }
 
-export const addStrategy = createAsyncThunk<Strategy, string, { state: RootState; rejectValue: any }>(
-    'Strategy/addStrategy',
-    async (strategy, { getState, rejectWithValue }) => {
+export const addCustomPlan = createAsyncThunk<CustomPlan, CustomPlan, { state: RootState; rejectValue: any }>(
+    'customplan/addCustomPlan',
+    async (data, { getState, rejectWithValue }) => {
 
         const _token = (getState().loginuser?.items[0]?.token)
         const storetoken = await AsyncStorage.getItem('token')
 
-        console.log("strategy", strategy)
+        console.log("data", data)
 
 
         try {
-            const resp = await axios.post<Strategy>(
-                selectstrategy,
-                { strategy },
+            const resp = await axios.post<CustomPlan>(
+                customplan,
+                data,
                 {
                     headers: {
                         Authorization: `Bearer ${_token ? _token : storetoken}`,
                     }
                 }
             )
-            console.log("Strategy resp : ", resp)
+            console.log("addCustomPlan resp : ", resp)
             return resp.data
         } catch (err: any) {
             if (axios.isAxiosError(err)) {
@@ -71,8 +75,8 @@ export const addStrategy = createAsyncThunk<Strategy, string, { state: RootState
     }
 )
 
-const strategySlice = createSlice({
-    name: 'strategy',
+const customPlanSlice = createSlice({
+    name: 'customplan',
     initialState,
     reducers: {
         /** Generic setter for any User field */
@@ -87,16 +91,16 @@ const strategySlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(addStrategy.pending, (state) => {
+            .addCase(addCustomPlan.pending, (state) => {
                 state.loading = true
                 state.error = null
             })
-            .addCase(addStrategy.fulfilled, (state, action) => {
+            .addCase(addCustomPlan.fulfilled, (state, action) => {
                 state.loading = false
                 state.items.push(action.payload)
                 state.current = initialState.current
             })
-            .addCase(addStrategy.rejected, (state, action) => {
+            .addCase(addCustomPlan.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.payload as string
             })
@@ -105,5 +109,5 @@ const strategySlice = createSlice({
     },
 })
 
-export const { setField, resetCurrent } = strategySlice.actions
-export default strategySlice.reducer
+export const { setField, resetCurrent } = customPlanSlice.actions
+export default customPlanSlice.reducer

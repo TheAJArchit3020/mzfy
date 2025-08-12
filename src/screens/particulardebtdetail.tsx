@@ -1,37 +1,60 @@
 import { Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { FC, useState } from 'react'
+import React, { FC, useCallback, useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import Header from '@components/reusable/header'
-import Debtcountdown from '@components/dashboard/debtcountdown'
-import Button from '@components/reusable/button'
 import SegmentButton from '@components/reusable/segmentbutton'
 import UpcomingDebtsWithScrollbar from '@components/dashboard/upcommingdebts'
 import Nextduedate from '@components/dashboard/nextduedate'
 import Popup from '@components/reusable/popup'
 import ProgressBar from '@components/reusable/progressbar'
 import GraphComponent from '@components/reusable/graph'
-import TextCard from '@components/reusable/textcard'
 import Card from '@components/reusable/card'
 import Input from '@components/reusable/Input'
 import { widthToDP } from 'react-native-responsive-screens'
+import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native'
+import { RootStackParams } from '@managers/routing'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '@redux/store'
+import { fetchDebtsById } from '@redux/debts/debtsSlice'
+
+type routeProps = RouteProp<RootStackParams, 'particulardebtdetailscreen'>
 
 const Particulardebtdetail: FC = () => {
+
+
+    const route = useRoute<routeProps>();
+    const dispatch = useDispatch<AppDispatch>();
 
     const [selectedButton, setSelectedButton] = useState(0);
     const [show, setShow] = useState(false);
 
+    const { id, name } = route.params
+
+
     const logpopupHandler = () => {
         setShow(true);
     };
-    const upcommingdebtsList = [
-        { name: "Car loan", amount: 20000, date: "05 Aug 2025" },
-        { name: "Car loan", amount: 20000, date: "05 Sept 2025" },
-        { name: "Car loan", amount: 20000, date: "05 Nov 2025" },
-        { name: "Car loan", amount: 20000, date: "05 Dec 2025" },
-    ];
-    const nextDueList = [
-        { name: "Bike loan", amount: 20000, date: "03/08/2025" },
-    ];
+
+
+    useFocusEffect(
+        useCallback(() => {
+            getDebtsData()
+        }, [])
+    )
+
+    const getDebtsData = async () => {
+        try {
+            await dispatch(fetchDebtsById(id));
+
+        } catch (error: any) {
+            console.log(error)
+        }
+    }
+
+    const DEBTDATA = (useSelector((state: RootState) => state.debts.items[0]?.payload)) ?? {};
+
+
+
     return (
         <LinearGradient
             colors={["#443C9F", "#3A346E", "#2B293E", "#272631", "#232323"]}
@@ -40,7 +63,7 @@ const Particulardebtdetail: FC = () => {
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
         >
-            <Header title='Car loan' />
+            <Header title={name ? name : '-'} />
 
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.container}>
@@ -49,11 +72,11 @@ const Particulardebtdetail: FC = () => {
                         <Card cardStyle={styles.cardcontainer} >
                             <View style={styles.balancegrp1} >
                                 <Text style={styles.text1}>Curent balance</Text>
-                                <Text style={styles.text2}>$ 20,000</Text>
+                                <Text style={styles.text2}>$ {DEBTDATA.currentBalance}</Text>
                             </View>
                             <View style={styles.balancegrp} >
                                 <Image source={require('@images/dashboard/rightarrow.png')} style={styles.arrowimage} />
-                                <Text style={styles.balancetext} >-35%</Text>
+                                <Text style={styles.balancetext} >-{DEBTDATA.payoffProgress}%</Text>
                             </View>
                         </Card>
 
@@ -61,10 +84,6 @@ const Particulardebtdetail: FC = () => {
                     <View style={styles.section2}>
                         <View style={styles.section2_header_content}>
                             <Text style={styles.section2_header_content_title}>Transactions</Text>
-                            {/* <Button style={styles.section2_header_content_button}>
-                                <Image source={require('@images/payoffplan/edit.png')} style={styles.editimage} />
-                                <Text style={styles.section2_header_content_button_text}>Edit debt</Text>
-                            </Button> */}
                         </View>
                         <View style={styles.section2_body}>
                             <SegmentButton items={["Upcoming transactions", "Paid transactions"]}
@@ -75,23 +94,23 @@ const Particulardebtdetail: FC = () => {
                                 containerStyle={styles.toggleButtonContainer}
                                 textStyle={styles.segmentText} />
 
-                            <UpcomingDebtsWithScrollbar data={upcommingdebtsList} style={styles.cardstyle} cardStyle={styles.cardstyle2} sort={false} />
+                            <UpcomingDebtsWithScrollbar data={selectedButton === 0 ? DEBTDATA.upcomingTransactions : DEBTDATA.paidTransactions} style={styles.cardstyle} cardStyle={styles.cardstyle2} sort={false} />
                         </View>
                     </View>
 
                     <View style={styles.section3}>
-                        <Nextduedate data={nextDueList} logpopupHandler={logpopupHandler} />
+                        <Nextduedate data={DEBTDATA.upcomingTransactions} logpopupHandler={logpopupHandler} />
                     </View>
 
                     <View style={styles.section4}>
                         <Text style={styles.section4_title}>Payoff Progress</Text>
-                        <Text style={styles.section4_title2}>34%</Text>
-                        <ProgressBar progress={34} showTooltip={true} tooltipLabel={'Balance: 20,000$'} backgroundColor='rgba(187,187,187,0.4)' />
+                        <Text style={styles.section4_title2}>{DEBTDATA.payoffProgress} %</Text>
+                        <ProgressBar progress={DEBTDATA.payoffProgress} showTooltip={true} tooltipLabel={`Balance: ${DEBTDATA.currentBalance}$`} backgroundColor='rgba(187,187,187,0.4)' />
                     </View>
 
                     <View style={styles.section4}>
                         <Text style={styles.section4_title}>Your Debt-Free Timeline</Text>
-                        <GraphComponent />
+                        {/* <GraphComponent rawData={DEBTDATA.debtFreeTimeline} /> */}
                     </View>
 
                 </View>

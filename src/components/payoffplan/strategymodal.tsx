@@ -8,6 +8,7 @@ import {
     StyleSheet,
     ViewStyle,
     TextStyle,
+    Platform,
 } from 'react-native';
 
 
@@ -193,6 +194,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#fff',
         fontFamily: 'PlusJakartaSans-Bold',
+        marginTop: Platform.OS === 'android' ? -3 : 0
     },
     subtitle: {
         fontSize: 12,

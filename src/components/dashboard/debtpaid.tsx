@@ -1,28 +1,29 @@
-import { Image, StyleSheet, Text, View } from "react-native";
-import React from "react";
-import Card from "@components/reusable/card";
+import { Image, StyleSheet, Text, View } from 'react-native'
+import React, { FC } from 'react'
+import Card from '@components/reusable/card'
 
-interface DebtpaidProps {
-  debtpaid: number;
+interface DebtItemProps {
+  data: any
 }
 
-const Debtpaid: React.FC<DebtpaidProps> = ({ debtpaid }) => {
+const Debtpaid: FC<DebtItemProps> = ({ data }) => {
+
+
   return (
     <Card style={styles.section_card} cardStyle={styles.section_card_inner}>
       <View style={styles.section_card_inner_content}>
         <View style={styles.section_card_inner_content_item}>
           <Text style={styles.section_card_text}>Debt paid</Text>
-          <Text style={styles.section_card_text2}>
-            {"\u20B9"}&nbsp;
+          <Text style={styles.section_card_text2}>{'\u20B9'}&nbsp;
             <Text style={styles.section_card_span}>
-              {debtpaid.toLocaleString("en-IN")}
+              {Number(data?.totalPaid ?? data?.totalDebtPaid ?? 0).toLocaleString('en-IN')}
             </Text>
           </Text>
         </View>
       </View>
     </Card>
-  );
-};
+  )
+}
 
 export default Debtpaid;
 

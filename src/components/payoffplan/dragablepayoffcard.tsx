@@ -4,6 +4,7 @@ import ProgressBar from '@components/reusable/progressbar'
 import Card from '@components/reusable/card'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import DraggableFlatList from "react-native-draggable-flatlist"
+import { formatDDMMMyyyy } from '@components/reusable/formatdate'
 
 interface payoffProps {
     data: any,
@@ -31,6 +32,7 @@ const DraggablePayoffcard: FC<payoffProps> = ({
     const keyExtractor = (item: any) => item.id?.toString() || item.name;
 
     const renderItem = ({ item, drag, isActive }: any) => {
+
         return (
             <View style={[styles.cardcontainer_inner, isActive && styles.activeItem]}>
                 <TouchableOpacity onPressIn={() => {
@@ -42,28 +44,28 @@ const DraggablePayoffcard: FC<payoffProps> = ({
                 <Card style={[styles.section_card, cardstyle]} cardStyle={styles.section_card_inner}>
                     <View style={styles.groupsection}>
                         <Text style={styles.groupsection_text1}>{item.name}</Text>
-                        <Text style={styles.groupsection_text2}>{item.time}</Text>
+                        <Text style={styles.groupsection_text2}>Completes on {formatDDMMMyyyy(item.estimatedDebtFreeDate)}</Text>
                         {showicon && <TouchableOpacity style={styles.button}>
                             <Image source={source} style={styles.editimage} />
                         </TouchableOpacity>}
                     </View>
                     <View style={styles.groupsection2}>
                         {showcustom ? (
-                            <Text style={styles.groupsection_text1}>Monthly Minimum (EMI): {item.minamt} {'\u20B9'}</Text>
+                            <Text style={styles.groupsection_text1}>Monthly Minimum (EMI): {item.minPaymentAmount} {'\u20B9'}</Text>
                         ) : (
-                            <Text style={styles.groupsection_text1}>Minimun: {item.minamt} {'\u20B9'}</Text>
+                            <Text style={styles.groupsection_text1}>Minimun: {item.minPaymentAmount} {'\u20B9'}</Text>
                         )}
-                        <Text style={styles.groupsection_text1}>APR: {item.apr}</Text>
+                        <Text style={styles.groupsection_text1}>APR: {item.apr} %</Text>
                     </View>
                     <View style={styles.groupsection3}>
                         <Text style={styles.groupsection_text1}>Payoff Progress</Text>
                         <ProgressBar
-                            progress={item?.payoffprogress}
-                            tooltipLabel={`Balance 20,000 ${'\u20B9'}`}
+                            progress={item?.payoffProgress}
+                            tooltipLabel={`Balance : ${item.balance} ${'\u20B9'}`}
                             showTooltip={true}
                             style={styles.progressbar}
                         />
-                        <Text style={styles.groupsection_text1}>{item.payoffprogress} %</Text>
+                        <Text style={styles.groupsection_text1}>{item.payoffProgress} %</Text>
                     </View>
                 </Card>
             </View>

@@ -1,49 +1,33 @@
-import { Image, StyleSheet, Text, View } from "react-native";
-import React from "react";
-import Card from "@components/reusable/card";
-import DonutChart from "../../DonutChart";
-import { DebtChartDataItem } from "../../commonTypes";
-import { DonutDataItem } from "../../commonTypes";
-import { widthToDP as wp } from "react-native-responsive-screens";
-interface DebtbalanceProps {
-  data: DonutDataItem[];
+import { Image, StyleSheet, Text, View } from 'react-native'
+import React, { FC } from 'react'
+import Card from '@components/reusable/card'
+import Circularprogressbar from '@components/reusable/circularprogressbar'
+
+
+
+interface DebtItemProps {
+    data: any
 }
 
-const Debtbalance: React.FC<DebtbalanceProps> = ({ data }) => {
-  // Transform DebtChartDataItem[] to DonutDataItem[]
+const Debtbalance: FC<DebtItemProps> = ({ data }) => {
 
-  return (
-    <Card style={styles.section_card} cardStyle={styles.section_card_inner}>
-      <View style={styles.section_card_inner_content}>
-        <View style={styles.section_card_inner_content_item}>
-          <View style={styles.donut_chart_container}>
-            <DonutChart
-              data={data}
-              radius={100}
-              donutStrokeWidth={25}
-              arcCornerRadius={0}
-              canvasWidth={115}
-              canvasHeight={5}
-              labelFontSize={10}
-              centerText="Balance"
-              fontFamily="PlusJakartaSans-Bold"
-              centerTextFontSize={wp(6)}
-              showLabel={false}
-              centerTextColor="#fff"
-            />
-          </View>
-          <View style={styles.section_card_inner_content_item3}>
-            <Text style={styles.section_card_text}>Balance</Text>
-            <Image
-              style={styles.image}
-              source={require("@images/dashboard/balanceicon.png")}
-            />
-          </View>
-        </View>
-      </View>
-    </Card>
-  );
-};
+
+    return (
+        <Card style={styles.section_card} cardStyle={styles.section_card_inner}>
+            <View style={styles.section_card_inner_content}>
+                <View style={styles.section_card_inner_content_item}>
+                    <Circularprogressbar  size={120} strokeWidth={12} data={data} />
+                    <View style={styles.section_card_inner_content_item3} >
+                        <Text style={styles.section_card_text}>Balance</Text>
+                        <Image style={styles.image} source={require('@images/dashboard/balanceicon.png')} />
+                    </View>
+                </View>
+            </View>
+        </Card>
+    )
+}
+
+
 
 export default Debtbalance;
 

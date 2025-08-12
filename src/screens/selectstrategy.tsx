@@ -1,5 +1,5 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { FC, useState } from 'react'
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { FC, useEffect, useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import Header from '@components/reusable/header'
 import { useNavigation } from '@react-navigation/native'
@@ -10,6 +10,9 @@ import Customstrategydropdown from '@components/strategy/customstrategydropdown'
 import Button from '@components/reusable/button'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParams } from '@managers/routing'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '@redux/store'
+import { addStrategy } from '@redux/strategies/strategySlice'
 
 
 interface CustomOption {
@@ -59,25 +62,23 @@ type navProps = NativeStackNavigationProp<RootStackParams>
 
 
 
-
-
-
 const Selectstrategy: FC = () => {
 
     const navigation = useNavigation<navProps>();
+    const dispatch = useDispatch<AppDispatch>();
 
     const [selectedStrategy, setSelectedStrategy] = useState('')
     const [customPlan, setCustomPlan] = useState('')
 
-    const handleSelect = (value: string) => {
+    const handleSelect = async (value: string) => {
         setSelectedStrategy(value)
-        console.log('selectedStrategy : ', value)
+        await dispatch(addStrategy(value))
     }
 
     const STRATEGIES: Strategy[] = [
         {
             key: 'Moneezify plan',
-            title: 'Moneezify plan',
+            title: 'moneezify',
             advantage: 'Fastest payoff and least interest',
             payoffTime: '28 Days',
             interestSaved: '1500',
@@ -85,7 +86,7 @@ const Selectstrategy: FC = () => {
         },
         {
             key: 'Debt Avalanche',
-            title: 'Debt Avalanche',
+            title: 'avalanche',
             advantage: 'Fastest payoff and least interest ',
             payoffTime: '28 Days',
             interestSaved: '1500',
@@ -93,7 +94,7 @@ const Selectstrategy: FC = () => {
         },
         {
             key: 'Debt Snowball',
-            title: 'Debt Snowball',
+            title: 'snowball',
             advantage: 'The most quick wins',
             payoffTime: '28 Days',
             interestSaved: '1500',
@@ -112,6 +113,8 @@ const Selectstrategy: FC = () => {
 
 
 
+
+
     return (
         <LinearGradient
             colors={['#5145BC', '#2F2C4A', '#2B293E', '#272631', '#232323']}
@@ -126,14 +129,14 @@ const Selectstrategy: FC = () => {
 
                 <Card cardStyle={styles.innercardstyle}>
                     {STRATEGIES.map((strategy, idx) => {
-                        const selected = selectedStrategy === strategy.key
+                        const selected = selectedStrategy === strategy.title
                         return (
                             <View key={strategy.key}>
                                 <View style={styles.radiocard}>
                                     <TouchableOpacity
                                         style={styles.optionRow}
                                         activeOpacity={0.7}
-                                        onPress={() => handleSelect(strategy.key)}
+                                        onPress={() => handleSelect(strategy.title)}
                                     >
                                         <View style={styles.radioWrapper}>
                                             <View
@@ -248,7 +251,8 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontFamily: "PlusJakartaSans-Bold",
         fontSize: 16,
-        marginTop: -4
+        textTransform: "capitalize",
+        marginTop: Platform.OS === 'android' ? -5 : 0,
     },
     label: {
         color: "#fff",

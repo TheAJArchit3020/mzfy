@@ -1,5 +1,5 @@
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
-import React, { FC, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import Strategycard from '@components/payoffplan/strategycard';
 import Payoffcard from '@components/payoffplan/payoffcard';
 import TextCard from '@components/reusable/textcard';
@@ -9,12 +9,69 @@ import GraphComponent from '@components/reusable/graph';
 import TextCard2 from '@components/reusable/textcard2';
 import Popup from '@components/reusable/popup';
 import StrategyRadioCard from '@components/payoffplan/strategymodal';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@redux/store';
+import { fetchPayoffPlan } from '@redux/payoffplans/payoffplanSlice';
+import { addStrategy } from '@redux/strategies/strategySlice';
+
 
 
 const PayoffplansScreen: FC = () => {
 
+  const dispatch = useDispatch<AppDispatch>();
   const [show, setShow] = useState(false);
+  const [choice, setChoice] = useState<string | null>(null);
+  const strategypopupHandler = () => setShow(true);
 
+
+  const handleSelect = async () => {
+    if (choice) {
+      try {
+        await dispatch(addStrategy(choice)).unwrap();
+        await dispatch(fetchPayoffPlan()).unwrap();
+      } catch (error) {
+        console.log("Error fetching strategy payoff plans", error)
+      }
+      setShow(false)
+    }
+  }
+
+
+
+  useFocusEffect(
+    useCallback(() => {
+
+      const fetchPayoffPlans = async () => {
+        try {
+          await dispatch(fetchPayoffPlan()).unwrap();
+        } catch (error) {
+          console.error('Error fetching payoff plans:', error);
+        }
+      };
+
+      fetchPayoffPlans();
+
+    }, [])
+  );
+
+
+  const payoffplanArray = useSelector((state: RootState) => state.payoffplan.items[0]) ?? [];
+
+  const __date = payoffplanArray?.estimatedDebtFreeDate
+
+  const d = __date ? new Date(__date as string) : new Date();
+
+  const year = d.getUTCFullYear()
+
+  const monthNumber = d.getUTCMonth() + 1  // 8
+  const monthName = d.toLocaleString('default', { month: 'short', timeZone: 'UTC' })
+  const now = new Date()
+
+
+  const monthsUntil =
+    (year - now.getUTCFullYear()) * 12 +
+    ((monthNumber) - (now.getUTCMonth() + 1))
 
 
   const strategies = [
@@ -44,28 +101,10 @@ const PayoffplansScreen: FC = () => {
     },
   ];
 
-  const [choice, setChoice] = useState<string | null>(null);
-
-  const strategypopupHandler = () => setShow(true);
-  const applyStrategy = () => {
-    console.log('Chosen strategy:', choice);
-    setShow(false);
-  };
 
 
-  const data = [
-    { id: 1, name: 'Car Loan', minamt: 500, apr: '2.5%', payoffprogress: 5.5, time: 'Completes on Jul 2 2026 (9 month 1 days)' },
-    { id: 2, name: 'House Loan', minamt: 500, apr: '9.5%', payoffprogress: 25.5, time: 'Completes on Jul 2 2026 (9 month 1 days)' },
-    { id: 3, name: 'Bike Loan', minamt: 500, apr: '10.5%', payoffprogress: 45.5, time: 'Completes on Jul 2 2026 (9 month 1 days)' },
-  ]
 
-  const upcommingdebtsList = [
-    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
-    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
-    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
-    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
-    { name: "Car loan", amount: 20000, date: "Apr 5 2025" },
-  ];
+
   return (
     <>
 
@@ -73,31 +112,31 @@ const PayoffplansScreen: FC = () => {
         <View style={styles.container}>
 
           {/* section1 */}
-          <Strategycard title={'Debt Snowball'} subtitle={'Debt Snowball'} onPress={strategypopupHandler} />
+          <Strategycard title={`Debt ${payoffplanArray?.strategy}`} subtitle={`Debt ${payoffplanArray?.strategy}`} onPress={strategypopupHandler} />
 
           {/* section2 */}
           <View style={styles.cardcontainer}>
             <View style={styles.cardgroup}  >
-              <TextCard2 text1={'Estimated payoff'} text2={'Mar'} text3={'2027'} text1style={styles.text1} text2style={styles.text2_1} text3style={styles.text2_2} cardStyle={styles.cardstyle}></TextCard2>
+              <TextCard2 text1={'Estimated payoff'} text2={monthName} text3={year} text1style={styles.text1} text2style={styles.text2_1} text3style={styles.text2_2} cardStyle={styles.cardstyle}></TextCard2>
 
-              <TextCard text1={'Months'} text2={'42'} text1style={styles.text1} text2style={styles.text2} cardStyle={styles.cardstyle} ></TextCard>
+              <TextCard text1={'Months'} text2={monthsUntil} text1style={styles.text1} text2style={styles.text2} cardStyle={styles.cardstyle} ></TextCard>
             </View>
             <View style={styles.cardgroup2}>
-              <TextCard text1={'Estimated payoff'} text2={'₹. 80,000/-'} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
-              <TextCard text1={'You save'} text2={'₹. 12,000/-'} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
+              <TextCard text1={'Total interest Paid'} text2={`₹. ${payoffplanArray?.totalInterestPaid}`} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
+              <TextCard text1={'You save'} text2={`₹. ${payoffplanArray?.totalSavings}`} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
             </View>
           </View>
 
           {/* section3 */}
           <View style={styles.cardcontainer2}>
             <Text style={styles.cardcontainer2_title}>Step wise Plan</Text>
-            <UpcomingDebtsWithScrollbar data={upcommingdebtsList} style={styles.payoffcard} showicon={false} />
+            <UpcomingDebtsWithScrollbar data={payoffplanArray?.stepWisePlan} style={styles.payoffcard} showicon={false} />
           </View>
           {/* section4 */}
           <View style={styles.cardcontainer3}>
             <Text style={styles.cardcontainer3_title}>Order Wise Debt payoff</Text>
             <View style={styles.cardcontainer3_inner}>
-              <Payoffcard data={data} source={require('@images/payoffplan/rightarrowwhite.png')} />
+              <Payoffcard data={payoffplanArray?.debtOrder} source={require('@images/payoffplan/rightarrowwhite.png')} />
             </View>
           </View>
 
@@ -119,7 +158,7 @@ const PayoffplansScreen: FC = () => {
           <View style={styles.cardcontainer4}>
             <Text style={styles.cardcontainer4_title}>Debt Reduction Timeline</Text>
             <View style={styles.cardcontainer4_inner}>
-              <GraphComponent />
+              {/* <GraphComponent /> */}
             </View>
           </View>
 
@@ -135,7 +174,7 @@ const PayoffplansScreen: FC = () => {
 
       <Popup
         visible={show}
-        onClose={() => setShow(false)}
+        onClose={handleSelect}
         containerStyle={styles.popupContainerStyle}
         buttonText="Select strategy"
         color1="#006FFF"

@@ -24,15 +24,19 @@ const AddDebts: FC = () => {
 
   const debtArray = useSelector((s: RootState) => s.user.current.debts) ?? [];
 
+  console.log("debtArray : ",debtArray)
+
   const navigation = useNavigation<navprops>()
 
 
 
   const handleAddDebt = () => {
 
-    navigation.navigate('adddebtscreen')
+    navigation.navigate('adddebtscreen', {
+      screen: 1
+    })
 
-    
+
   };
 
   return (

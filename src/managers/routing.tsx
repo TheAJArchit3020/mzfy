@@ -17,73 +17,73 @@ import ExpensesOverView from "@screens/registration/expensesOverView";
 import AllExpenses from "@screens/allExpenses";
 import LogExpense from "@screens/LogExpense";
 import CategoryManagement from "@screens/catagoryManagement";
-import Transaction from "@screens/transaction";
+
+
 export type RootStackParams = {
-  splashscreen: undefined;
-  introscreen: undefined;
-  layoutscreen: undefined;
-  expensesoverviewscreen: undefined;
-  adddebtscreen: undefined;
-  particulardebtdetailscreen: undefined;
-  createcustomplanscreen: undefined;
-  registrationlayoutscreen: { index: number };
-  selectstrategyscreen: undefined;
-  profilescreen: undefined;
-  loginscreen: undefined;
-  paywallscreen: undefined;
-  AllExpenses: undefined;
-  LogExpense: undefined;
-  CategoryManagement: undefined;
-  Transaction: {id:String};
+
+    splashscreen: undefined
+    introscreen: undefined
+    layoutscreen: undefined
+    expensesoverviewscreen: undefined
+    adddebtscreen: { screen: number }
+    particulardebtdetailscreen: { id: any, name: any }
+    createcustomplanscreen: undefined
+    registrationlayoutscreen: { index: number }
+    selectstrategyscreen: undefined
+    profilescreen: undefined
+    loginscreen: undefined
+    paywallscreen: undefined
+    AllExpenses: undefined;
+    LogExpense: undefined;
+    CategoryManagement: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParams>();
 
 const Routing: FC = () => {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="layoutscreen"
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen name="splashscreen" component={Splash} />
-        <Stack.Screen name="introscreen" component={Intro} />
-        <Stack.Screen
-          name="registrationlayoutscreen"
-          component={Registrationlayout}
-        />
-        <Stack.Screen
-          name="expensesoverviewscreen"
-          component={ExpensesOverView}
-        />
+    return (
+        <NavigationContainer>
+            <Stack.Navigator
+                initialRouteName="splashscreen"
+                screenOptions={{
+                    headerShown: false,
+                }}
+            >
+                <Stack.Screen name="splashscreen" component={Splash} />
+                <Stack.Screen name="introscreen" component={Intro} />
+                <Stack.Screen
+                    name="registrationlayoutscreen"
+                    component={Registrationlayout}
+                />
+                <Stack.Screen
+                    name="expensesoverviewscreen"
+                    component={ExpensesOverView}
+                />
 
-        <Stack.Screen name="layoutscreen" component={Layout} />
+                <Stack.Screen name="layoutscreen" component={Layout} />
 
-        <Stack.Screen name="adddebtscreen" component={DebtAdd} />
-        <Stack.Screen
-          name="particulardebtdetailscreen"
-          component={Particulardebtdetail}
-        />
-        <Stack.Screen
-          name="createcustomplanscreen"
-          component={Createcustomplan}
-        />
-        <Stack.Screen name="selectstrategyscreen" component={Selectstrategy} />
-        <Stack.Screen name="profilescreen" component={Profile} />
-        <Stack.Screen name="loginscreen" component={Login} />
-        <Stack.Screen name="paywallscreen" component={Paywall} />
-        <Stack.Screen name="AllExpenses" component={AllExpenses} />
-        <Stack.Screen name="LogExpense" component={LogExpense} />
-        <Stack.Screen
-          name="CategoryManagement"
-          component={CategoryManagement}
-        />
-        <Stack.Screen name="Transaction" component={Transaction} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+                <Stack.Screen name="adddebtscreen" component={DebtAdd} />
+                <Stack.Screen
+                    name="particulardebtdetailscreen"
+                    component={Particulardebtdetail}
+                />
+                <Stack.Screen
+                    name="createcustomplanscreen"
+                    component={Createcustomplan}
+                />
+                <Stack.Screen name="selectstrategyscreen" component={Selectstrategy} />
+                <Stack.Screen name="profilescreen" component={Profile} />
+                <Stack.Screen name="loginscreen" component={Login} />
+                <Stack.Screen name="paywallscreen" component={Paywall} />
+                <Stack.Screen name="AllExpenses" component={AllExpenses} />
+                <Stack.Screen name="LogExpense" component={LogExpense} />
+                <Stack.Screen
+                    name="CategoryManagement"
+                    component={CategoryManagement}
+                />
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
 };
 
 export default Routing;

@@ -26,9 +26,11 @@ import {
 } from "react-native-heroicons/solid";
 import { Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@redux/store";
+import { RootState, AppDispatch } from "@redux/store";
 import { setField } from "@redux/user/userSlice";
-import { useNavigation } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { addDebts } from "@redux/debts/debtsSlice";
+import { RootStackParams } from "@managers/routing";
 
 type DebtForm = {
   name: string;
@@ -36,7 +38,7 @@ type DebtForm = {
   principal: number;
   balance: number;
   minPaymentAmount: number;
-  apr: number;
+  apr: any;
   nextDueDate: string;
   tagColor: string;
 };
@@ -47,7 +49,7 @@ const initialForm: DebtForm = {
   principal: 0,
   balance: 0,
   minPaymentAmount: 0,
-  apr: 0,
+  apr: "",
   nextDueDate: "",
   tagColor: "",
 };
@@ -74,12 +76,15 @@ function reducer(state: DebtForm, action: Action): DebtForm {
   }
 }
 
+type routeProps = RouteProp<RootStackParams, 'adddebtscreen'>;
 
 const DebtAdd: FC = () => {
 
   const navigation = useNavigation();
+  const route = useRoute<routeProps>();
 
-  const dispatch = useDispatch();
+
+  const dispatch = useDispatch<AppDispatch>();
   const debtArray = useSelector((s: RootState) => s.user.current.debts) ?? [];
 
   // local form state
@@ -124,6 +129,8 @@ const DebtAdd: FC = () => {
       },
     ];
 
+    console.log("newDebts : ", newDebts)
+
     // write back into Redux
     dispatch(setField({ field: "debts", value: newDebts }));
     // clear the form
@@ -131,9 +138,22 @@ const DebtAdd: FC = () => {
 
     navigation.goBack()
 
-    // optionally navigate away or give feedback…
   };
 
+  const submitFormHandler = async () => {
+    if (route?.params?.screen === 1) {
+      handleSave();
+    } else {
+
+      console.log("form : ", form)
+      try {
+        await dispatch(addDebts(form)).unwrap();
+        navigation.goBack();
+      } catch (err) {
+        console.log("Error adding user:", err);
+      }
+    }
+  }
 
   return (
     <LinearGradient
@@ -224,12 +244,11 @@ const DebtAdd: FC = () => {
                   }
                   onIconPress={() => setShowAprInfo((prev) => !prev)}
                   iconDisabled={false}
-                  value={form.apr}
+                  value={form.apr.toString()}
                   onChangeContent={(val) =>
-                    formDispatch({ type: "SET_FIELD", field: "apr", value: val === "" ? 0 : parseFloat(val) })
+                    formDispatch({ type: "SET_FIELD", field: "apr", value: val })
                   }
                   placeholder="Eg. 8"
-                  keyboardType="numeric"
                   placeholderTextColor={"#C6C6C6"}
                   children={
                     <Text
@@ -277,6 +296,8 @@ const DebtAdd: FC = () => {
                   onChange={(_, date) => {
                     setShowDatePicker(false);
                     if (date) {
+
+                      console.log("date : ", date)
                       formDispatch({
                         type: "SET_FIELD",
                         field: "nextDueDate",
@@ -295,23 +316,23 @@ const DebtAdd: FC = () => {
                 >
                   <View style={styles.modalBg}>
                     {/* <View style={styles.pickerWrapper}> */}
-                      <DateTimePicker
-                        value={form.nextDueDate ? new Date(form.nextDueDate) : new Date()}
-                        mode="date"
-                        display="spinner"
-                        onChange={(_, date) => {
-                          if (date) {
-                            formDispatch({
-                              type: "SET_FIELD",
-                              field: "nextDueDate",
-                              value: date.toISOString().split("T")[0],
-                            });
-                          }
-                        }}
-                      />
-                      <Button onPress={() => setShowDatePicker(false)} style={styles.confirmButton}>
-                        <Text style={styles.buttonText}>Done</Text>
-                      </Button>
+                    <DateTimePicker
+                      value={form.nextDueDate ? new Date(form.nextDueDate) : new Date()}
+                      mode="date"
+                      display="spinner"
+                      onChange={(_, date) => {
+                        if (date) {
+                          formDispatch({
+                            type: "SET_FIELD",
+                            field: "nextDueDate",
+                            value: date.toISOString().split("T")[0],
+                          });
+                        }
+                      }}
+                    />
+                    <Button onPress={() => setShowDatePicker(false)} style={styles.confirmButton}>
+                      <Text style={styles.buttonText}>Done</Text>
+                    </Button>
                     {/* </View> */}
                   </View>
                 </Modal>
@@ -369,7 +390,7 @@ const DebtAdd: FC = () => {
                   </View>
                 </View>
               </Modal>
-              <Button onPress={handleSave} style={styles.saveButton}>
+              <Button onPress={submitFormHandler} style={styles.saveButton}>
                 <Text style={styles.buttonText}>Save</Text>
               </Button>
               <Button onPress={() => formDispatch({ type: "RESET" })} style={styles.cancelButton}>
