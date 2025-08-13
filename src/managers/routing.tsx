@@ -17,6 +17,7 @@ import ExpensesOverView from "@screens/registration/expensesOverView";
 import AllExpenses from "@screens/allExpenses";
 import LogExpense from "@screens/LogExpense";
 import CategoryManagement from "@screens/catagoryManagement";
+import Pennieaichat from "@screens/pennieaichat";
 
 
 export type RootStackParams = {
@@ -36,6 +37,7 @@ export type RootStackParams = {
     AllExpenses: undefined;
     LogExpense: undefined;
     CategoryManagement: undefined;
+    pennieaichatscreen: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParams>();
@@ -44,7 +46,7 @@ const Routing: FC = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName="splashscreen"
+                initialRouteName="pennieaichatscreen"
                 screenOptions={{
                     headerShown: false,
                 }}
@@ -80,6 +82,10 @@ const Routing: FC = () => {
                 <Stack.Screen
                     name="CategoryManagement"
                     component={CategoryManagement}
+                />
+                <Stack.Screen
+                    name="pennieaichatscreen"
+                    component={Pennieaichat}
                 />
             </Stack.Navigator>
         </NavigationContainer>
