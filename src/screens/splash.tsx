@@ -8,13 +8,16 @@ import LinearGradient from "react-native-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParams } from "@managers/routing";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useSelector } from "react-redux";
-import { RootState } from "@redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@redux/store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { fetchUser } from "@redux/user/userSlice";
 
 type navProps = NativeStackNavigationProp<RootStackParams>
 
-const Splash:FC = () => {
+const Splash: FC = () => {
+
+  const dispatch = useDispatch<AppDispatch>();
 
 
   const navigation = useNavigation<navProps>();
@@ -30,6 +33,7 @@ const Splash:FC = () => {
     console.log("token : ", token)
 
     if (token) {
+      await dispatch(fetchUser());
       navigation.navigate('layoutscreen')
     } else {
       navigation.navigate('introscreen')

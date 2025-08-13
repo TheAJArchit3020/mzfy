@@ -60,9 +60,6 @@ export const addDebts = createAsyncThunk<Debts, Debts, { state: RootState; rejec
         const storetoken = await AsyncStorage.getItem('token')
 
 
-        console.log("data : ", data)
-
-
         try {
             const resp = await axios.post<Debts>(
                 debts,
@@ -111,7 +108,6 @@ export const fetchDebtsById = createAsyncThunk<Debts, string, { state: RootState
                     }
                 }
             )
-            console.log("fetchDebtsById resp : ", resp.data)
             return resp.data
         } catch (err: any) {
             if (axios.isAxiosError(err)) {
@@ -125,7 +121,6 @@ export const fetchDebtsById = createAsyncThunk<Debts, string, { state: RootState
                     data: errorData,
                 })
             } else {
-                // Non-Axios error (e.g. coding bug, thrown manually)
                 console.log("Unexpected error:", err)
                 return rejectWithValue({ message: (err as Error).message })
             }
@@ -149,7 +144,6 @@ export const fetchAllDebts = createAsyncThunk<AllDebts, void, { state: RootState
                     }
                 }
             )
-            console.log("fetchDebts resp : ", resp.data)
             return resp.data
         } catch (err: any) {
             if (axios.isAxiosError(err)) {

@@ -43,19 +43,16 @@ export const fetchDashboardSummary = createAsyncThunk<DashboardSummary, void, { 
     const storetoken = await AsyncStorage.getItem('token')
     try {
 
-      console.log("dashBoard", dashboard);
       const response = await axios.get(dashboard, {
         headers: {
           Authorization: `Bearer ${_token ? _token : storetoken}`,
         },
       });
-      console.log("response", response);
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response) {
         return rejectWithValue(error.response.data.message);
       }
-      console.log("response", error);
       return rejectWithValue("Something went wrong");
     }
   }

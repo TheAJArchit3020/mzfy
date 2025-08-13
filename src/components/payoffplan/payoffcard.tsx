@@ -23,8 +23,6 @@ const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainersty
     const navigation = useNavigation<NavigationProp>();
 
 
-    console.log("data : ",data)
-
     const navigateHandler = (_id: any, name: any) => {
         navigation.navigate('particulardebtdetailscreen', {
             id: _id,
@@ -51,8 +49,6 @@ const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainersty
 
                     const percentagePaid = percentPaid(item?.principal, item?.balance, 2);
 
-
-                    console.log("data :", percentagePaid)
 
                     return (
                         <Card style={[styles.section_card, cardstyle, { backgroundColor: `${item.tagColor}` }]} cardStyle={[styles.section_card_inner]} key={idx}>

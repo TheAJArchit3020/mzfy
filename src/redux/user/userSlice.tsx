@@ -35,7 +35,7 @@ const initialState: UserState = {
         profession: '',
         currency: '',
         personalIncome: '',
-        totalHouseholdIncome: '',
+        totalHouseholdIncome: 0,
         expenseByCategory: {},
         debts: [],
     },
@@ -53,7 +53,7 @@ export const addUser = createAsyncThunk<User, User, { state: RootState; rejectVa
     'user/addUser',
     async (newUser, { getState, rejectWithValue }) => {
 
-        const _token = (getState().loginuser.items[0].token)
+        const _token = (getState().loginuser?.items[0]?.token)
 
 
         try {
@@ -69,7 +69,7 @@ export const addUser = createAsyncThunk<User, User, { state: RootState; rejectVa
             console.log("addUser resp : ", resp)
             return resp.data
         } catch (err: any) {
-           if (axios.isAxiosError(err)) {
+            if (axios.isAxiosError(err)) {
 
                 const statusCode = err.response?.status
                 const errorData = err.response?.data

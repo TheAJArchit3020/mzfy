@@ -29,18 +29,24 @@ import { DebtChartDataItem, DonutDataItem } from "src/commonTypes";
 type navprops = NativeStackNavigationProp<RootStackParams>;
 
 const DashboardScreen: FC = () => {
+
+
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<navprops>();
   const [show, setShow] = useState(false);
 
   const userData = useSelector((state: RootState) => state.dashBoard);
+  const userDetails = useSelector((state: RootState) => state.user.items[0]);
+
   const [debtFreeDate, setDebtFreeDate] = useState<DebtCountDownType>({
     year: 0,
     month: 0,
     day: 0,
   });
- 
+
   const [donutData, setDonutData] = useState<DonutDataItem[]>([]);
+
+
   useEffect(() => {
     dispatch(fetchDashboardSummary());
   }, []);
@@ -114,6 +120,9 @@ const DashboardScreen: FC = () => {
     setDonutData(formatted);
   };
 
+
+
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -123,7 +132,7 @@ const DashboardScreen: FC = () => {
         <View style={styles.section1}>
           <View style={styles.section1_1}>
             <Text style={styles.section1_1_text}>
-              Hey <Text style={styles.section1_1_span}>Sumit ,</Text>
+              Hey <Text style={styles.section1_1_span}>{userDetails?.name} ,</Text>
             </Text>
             <Text style={styles.section1_1_text}>{getGreeting()}</Text>
           </View>
@@ -137,7 +146,7 @@ const DashboardScreen: FC = () => {
               source={require("@images/dashboard/rightarrow.png")}
               style={{ width: 20, height: 20 }}
             /> */}
-            <Text style={styles.section1_2_text}>S</Text>
+            <Text style={styles.section1_2_text}>{userDetails?.name?.charAt(0).toUpperCase()}</Text>
           </TouchableOpacity>
         </View>
 

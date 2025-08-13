@@ -52,7 +52,7 @@ const Profile: FC = () => {
 
     const USERARRAY = useSelector((state: RootState) => state.user.items[0]) ?? [];
 
-    console.log("USERARRAY : ", USERARRAY)
+
 
 
     const LogoutHandler = async () => {

@@ -145,7 +145,6 @@ const Createcustomplan: FC = () => {
                     <View style={styles.cardcontainer3}>
                         <View style={styles.cardcontainer3_content}>
                             <View>
-
                                 <Text style={styles.cardcontainer3_title}>Order Wise Debt payoff</Text>
                                 <View style={styles.info_content}>
                                     <Image source={require('@images/payoffplan/info.png')} style={styles.infoimage} />
@@ -208,7 +207,7 @@ const Createcustomplan: FC = () => {
                     <View style={styles.inputgroup}>
                         <Text style={styles.inputgroup_label}>Extra payment</Text>
                         <Input
-                            value={payoffplanArray?.extraPayments}
+                            // value={payoffplanArray?.extraPayments}
                             onChangeContent={(val) =>
                                 // dispatch({ type: "SET_FIELD", field: "extrapay", value: val })
                                 console.log(val)

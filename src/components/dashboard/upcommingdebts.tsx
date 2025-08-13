@@ -38,7 +38,6 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
   showicon = true,
 }) => {
 
-  console.log("data : ", data)
   const [containerHeight, setContainerHeight] = useState(0);
   const [contentHeight, setContentHeight] = useState(1);
   const [scrollY, setScrollY] = useState(0);

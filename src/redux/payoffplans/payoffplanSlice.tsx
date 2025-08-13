@@ -40,7 +40,6 @@ export const fetchPayoffPlan = createAsyncThunk<PayoffPlan, void, { state: RootS
                     }
                 }
             )
-            console.log("fetchPayoffPlan resp : ", resp.data)
             return resp.data
         } catch (err: any) {
             return rejectWithValue(err.response?.data || err.message)
