@@ -66,7 +66,12 @@ export const addUser = createAsyncThunk<User, User, { state: RootState; rejectVa
                     }
                 }
             )
-            console.log("addUser resp : ", resp)
+
+            if (resp.data) {
+                fetchUser();
+            }
+
+
             return resp.data
         } catch (err: any) {
             if (axios.isAxiosError(err)) {
@@ -104,7 +109,6 @@ export const fetchUser = createAsyncThunk<User, void, { state: RootState; reject
                     }
                 }
             )
-            console.log("fetchUser resp : ", resp.data)
             return resp.data
         } catch (err: any) {
             if (axios.isAxiosError(err)) {
