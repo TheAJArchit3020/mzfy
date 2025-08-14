@@ -33,6 +33,10 @@ const Registrationlayout: FC = () => {
 
   const userData = useSelector((state: RootState) => state.user.current)
 
+  const isPresent = (v: any) =>
+    v !== undefined && v !== null && !(typeof v === "string" && v.trim() === "");
+
+
   const submitFormHandler = async () => {
     try {
       await dispatch(addUser(userData)).unwrap()
@@ -56,7 +60,19 @@ const Registrationlayout: FC = () => {
   const current = PAGES[selectedIndex];
   const CurrentPage = current.Component;
 
+  const requiredByStep: Record<(typeof PAGES)[number]["name"], boolean> = {
+    name: isPresent(userData?.name),
+    profession: isPresent(userData?.profession),
+    selectcurrency: isPresent(userData?.currency),
+    IncomeDetails: isPresent(userData?.personalIncome),
+    monthlyexpense: isPresent(userData?.expenseByCategory),
+    loading: isPresent(userData?.debts), // adjust if you want at least one debt
+  };
+
+  const isCurrentStepValid = requiredByStep[current.name];
+
   const goNext = () => {
+    if (!isCurrentStepValid) return;
     if (current?.id === 6) {
       navigation.navigate('expensesoverviewscreen')
     } else {
@@ -111,7 +127,7 @@ const Registrationlayout: FC = () => {
         </View>
 
         <View style={styles.buttonWrapper}>
-          <Button onPress={goNext} style={styles.button}>
+          <Button onPress={goNext} style={styles.button} disabled={!isCurrentStepValid}>
             <Text style={styles.buttonText}>
               {selectedIndex < PAGES.length - 1 ? "Next" : "Done"}
             </Text>

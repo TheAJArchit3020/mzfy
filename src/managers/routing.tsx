@@ -46,7 +46,7 @@ const Routing: FC = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName="pennieaichatscreen"
+                initialRouteName="registrationlayoutscreen"
                 screenOptions={{
                     headerShown: false,
                 }}
