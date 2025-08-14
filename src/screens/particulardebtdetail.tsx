@@ -11,11 +11,11 @@ import GraphComponent from '@components/reusable/graph'
 import Card from '@components/reusable/card'
 import Input from '@components/reusable/Input'
 import { widthToDP } from 'react-native-responsive-screens'
-import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native'
+import { RouteProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import { RootStackParams } from '@managers/routing'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@redux/store'
-import { fetchDebtsById } from '@redux/debts/debtsSlice'
+import { fetchDebtsById, logTransaction } from '@redux/debts/debtsSlice'
 
 type routeProps = RouteProp<RootStackParams, 'particulardebtdetailscreen'>
 
@@ -24,11 +24,16 @@ const Particulardebtdetail: FC = () => {
 
     const route = useRoute<routeProps>();
     const dispatch = useDispatch<AppDispatch>();
+    const navigation = useNavigation();
 
     const [selectedButton, setSelectedButton] = useState(0);
     const [show, setShow] = useState(false);
+    const [selectedDueTransaction, setSelectedDueTransaction] = useState('');
+    const [logAmount, setLogAmount] = useState('');
 
     const { id, name } = route.params
+
+    const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
 
 
     const logpopupHandler = () => {
@@ -54,6 +59,22 @@ const Particulardebtdetail: FC = () => {
     const DEBTDATA = (useSelector((state: RootState) => state.debts.items[0]?.payload)) ?? {};
 
 
+    const LogTransactionHandler = async () => {
+
+        await dispatch(logTransaction({ selectedDueTransaction, logAmount })).then((payload) => {
+            console.log("Transaction logged successfully:", payload.meta.requestStatus);
+            if (payload.meta.requestStatus === 'fulfilled') {
+                setShow(false);
+                navigation.goBack();
+            }
+        }).catch((err) => {
+            console.error("Error logging transaction:", err);
+        });
+    }
+
+
+
+
 
     return (
         <LinearGradient
@@ -72,7 +93,7 @@ const Particulardebtdetail: FC = () => {
                         <Card cardStyle={styles.cardcontainer} >
                             <View style={styles.balancegrp1} >
                                 <Text style={styles.text1}>Curent balance</Text>
-                                <Text style={styles.text2}>$ {DEBTDATA.currentBalance}</Text>
+                                <Text style={styles.text2}>{selectedCurrency ?? ''} {DEBTDATA.currentBalance}</Text>
                             </View>
                             <View style={styles.balancegrp} >
                                 <Image source={require('@images/dashboard/rightarrow.png')} style={styles.arrowimage} />
@@ -99,13 +120,17 @@ const Particulardebtdetail: FC = () => {
                     </View>
 
                     <View style={styles.section3}>
-                        <Nextduedate data={DEBTDATA.upcomingTransactions} logpopupHandler={logpopupHandler} />
+                        <Nextduedate
+                            data={DEBTDATA.upcomingTransactions}
+                            logpopupHandler={logpopupHandler}
+                            setSelectedDueTransaction={setSelectedDueTransaction}
+                        />
                     </View>
 
                     <View style={styles.section4}>
                         <Text style={styles.section4_title}>Payoff Progress</Text>
                         <Text style={styles.section4_title2}>{DEBTDATA.payoffProgress} %</Text>
-                        <ProgressBar progress={DEBTDATA.payoffProgress} showTooltip={true} tooltipLabel={`Balance: ${DEBTDATA.currentBalance}$`} backgroundColor='rgba(187,187,187,0.4)' />
+                        <ProgressBar progress={DEBTDATA.payoffProgress} showTooltip={true} tooltipLabel={`Balance: ${DEBTDATA.currentBalance} ${selectedCurrency}`} backgroundColor='rgba(187,187,187,0.4)' />
                     </View>
 
                     <View style={styles.section4}>
@@ -119,14 +144,14 @@ const Particulardebtdetail: FC = () => {
             <Popup
                 visible={show}
                 title="Paid amount"
-                onClose={() => setShow(false)}
+                onClose={() => LogTransactionHandler()}
                 titleStyle={styles.popuptitle}
                 containerStyle={styles.popupContainerStyle}
             >
                 <Input
-                    value={''}
-                    onChangeContent={(val) =>
-                        console.log(val)
+                    value={logAmount}
+                    onChangeContent={(val: string) =>
+                        setLogAmount(val)
                     }
                     keyboardType="numeric"
                     textHeader="₹"

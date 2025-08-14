@@ -12,5 +12,8 @@ export const dashboard = `${baseurl}/dashboard/summary`;
 export const expensesDashboard = `${baseurl}/expenses/dashboard`;
 export const logExpenseapi = `${baseurl}/expenses/logExpense`;
 export const getLogExpenseCatogories = `${baseurl}/categories`;
-export const addCategory = `${baseurl}/categories`
+export const addCategory = `${baseurl}/categories`;
+export const logtransaction = `${baseurl}/transaction`;
+
+
 // export const loginuser = `${baseurl}/auth/googleSignIn`

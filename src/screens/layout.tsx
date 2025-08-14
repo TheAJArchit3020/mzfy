@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import SegmentButton from "@components/reusable/segmentbutton";
 import LinearGradient from "react-native-linear-gradient";
 import DashboardScreen from "./dashboard";
@@ -7,9 +7,32 @@ import DebtsScreen from "./debts";
 import PayoffplansScreen from "./payoffplans";
 import LearnScreen from "./learn";
 import Expenses from "./Expenses";
+import { useFocusEffect } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@redux/store";
+import { fetchUser } from "@redux/user/userSlice";
+
+
 const Layout: React.FC = () => {
+
+  const dispatch = useDispatch<AppDispatch>();
   const [tab, setTab] = useState(0);
   const tabs = ["Dashboard", "Debts", "Pay off Plan", "Expenses"];
+
+  useFocusEffect(
+    useCallback(() => {
+      getUserDetails();
+    }, [])
+  );
+
+  const getUserDetails = async () => {
+    try {
+      await dispatch(fetchUser()).unwrap()
+    } catch (err: any) {
+      console.log("Error adding user:", err);
+    }
+
+  }
 
   return (
     <View style={styles.container}>

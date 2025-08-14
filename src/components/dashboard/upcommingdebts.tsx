@@ -119,7 +119,7 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
                     <Text style={styles.text}>{formatDDMMMyyyy(item?.dueDate)}</Text>
                     <Text style={styles.text}></Text>
                     <Text style={[styles.text]}>
-                      {'\u20B9'} {item.amount} /-
+                      {userDetails?.selectedCurrency} {item.amount} /-
                     </Text>
                     {showicon && <TouchableOpacity>
                       <Image source={require('@images/dashboard/rightarrow.png')} style={styles.image} />

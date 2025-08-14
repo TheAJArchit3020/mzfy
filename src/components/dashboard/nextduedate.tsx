@@ -1,33 +1,63 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { FC } from "react";
+import React, { FC, useEffect, useMemo } from "react";
 import Card from "@components/reusable/card";
 import LinearGradient from "react-native-linear-gradient";
+import { AppDispatch } from "@redux/store";
+import { useDispatch } from "react-redux";
+import { logTransaction } from "@redux/debts/debtsSlice";
 
 interface NextduedateProps {
     data?: Array<{ id: string; amount: number; dueDate: string }>
     logpopupHandler?: () => void
+    setSelectedDueTransaction?: (id: string) => void
 }
 
-const Nextduedate: FC<NextduedateProps> = ({ data, logpopupHandler }) => {
-    // today at midnight
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
+const Nextduedate: FC<NextduedateProps> = ({ data, logpopupHandler, setSelectedDueTransaction }) => {
 
-    // determine next calendar month
-    const currentYear = today.getFullYear()
-    const currentMonth = today.getMonth()         // 0 = Jan
-    const nextMonthIndex = (currentMonth + 1) % 12
-    const nextMonthYear = currentMonth === 11 ? currentYear + 1 : currentYear
 
-    // filter data for dueDate in next month
-    const nextMonthData = data?.filter(item => {
-        const due = new Date(item.dueDate)
-        return due.getFullYear() === nextMonthYear && due.getMonth() === nextMonthIndex
-    }) ?? []
+    const startOfDay = (d: Date) => {
+        const x = new Date(d);
+        x.setHours(0, 0, 0, 0);
+        return x;
+    };
+    const sameYMD = (a: Date, b: Date) =>
+        a.getFullYear() === b.getFullYear() &&
+        a.getMonth() === b.getMonth() &&
+        a.getDate() === b.getDate();
+
+    const today = useMemo(() => startOfDay(new Date()), []);
+
+    // Build a list of upcoming items (due today or later), sorted soonest first.
+    const upcomingSorted = useMemo(() => {
+        return (data ?? [])
+            .map(item => ({ ...item, _due: startOfDay(new Date(item.dueDate)) }))
+            .filter(item => !isNaN(item._due.getTime()) && item._due >= today)
+            .sort((a, b) => a._due.getTime() - b._due.getTime());
+    }, [data, today]);
+
+
+    // Pick all items that fall on the earliest upcoming day
+    const comingData = useMemo(() => {
+        if (upcomingSorted.length === 0) return [];
+        const firstDate = upcomingSorted[0]._due;
+        return upcomingSorted.filter(x => sameYMD(x._due, firstDate));
+    }, [upcomingSorted]);
+
+
+    // Set the selected transaction id (first card) when it changes
+    useEffect(() => {
+        if (setSelectedDueTransaction) {
+            setSelectedDueTransaction(comingData[0]?.id ?? "");
+        }
+    }, [setSelectedDueTransaction, comingData]);
+
+    if (comingData.length === 0) return null;
+
+
 
     return (
         <>
-            {nextMonthData.map((item, idx) => {
+            {comingData?.map((item, idx) => {
                 const dueDate = new Date(item.dueDate)
                 // gap in days
                 const gapMs = dueDate.getTime() - today.getTime()

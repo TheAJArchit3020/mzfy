@@ -1,4 +1,4 @@
-import { debtpage, debts, registeruseruser } from '@managers/apis'
+import { debtpage, debts, logtransaction, registeruseruser } from '@managers/apis'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { RootState } from '@redux/store'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
@@ -158,6 +158,46 @@ export const fetchAllDebts = createAsyncThunk<AllDebts, void, { state: RootState
                 })
             } else {
                 // Non-Axios error (e.g. coding bug, thrown manually)
+                console.log("Unexpected error:", err)
+                return rejectWithValue({ message: (err as Error).message })
+            }
+        }
+    }
+)
+
+
+export const logTransaction = createAsyncThunk<Debts, any, { state: RootState; rejectValue: any }>(
+    'debts/logTransaction',
+    async (data, { getState, rejectWithValue }) => {
+
+        const _token = (getState().loginuser?.items[0]?.token)
+        const storetoken = await AsyncStorage.getItem('token')
+        console.log("datadatadata:", data);
+
+
+        try {
+            const resp = await axios.post<Debts>(
+                `${logtransaction}/${data?.selectedDueTransaction}/log`,
+                { amountPaid: data?.logAmount }, // Assuming you need to send an amount paid, adjust as necessary
+                {
+                    headers: {
+                        Authorization: `Bearer ${_token ? _token : storetoken}`,
+                    }
+                }
+            )
+            return resp.data
+        } catch (err: any) {
+            if (axios.isAxiosError(err)) {
+
+                const statusCode = err.response?.status
+                const errorData = err.response?.data
+
+                return rejectWithValue({
+                    message: err.message,
+                    status: statusCode,
+                    data: errorData,
+                })
+            } else {
                 console.log("Unexpected error:", err)
                 return rejectWithValue({ message: (err as Error).message })
             }

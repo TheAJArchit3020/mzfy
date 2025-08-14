@@ -25,7 +25,7 @@ const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainersty
     const navigation = useNavigation<NavigationProp>();
 
     const currency = useSelector((state: RootState) => state.user?.current?.currency)
-    const currency2 = useSelector((state: RootState) => state.user?.items[0]?.currency)
+    const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
 
 
     const navigateHandler = (_id: any, name: any) => {
@@ -65,13 +65,13 @@ const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainersty
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.groupsection2}>
-                                <Text style={styles.groupsection_text1}>Minimun: {item.minPaymentAmount} {currency ? currency : currency2}</Text>
+                                <Text style={styles.groupsection_text1}>Minimun: {item.minPaymentAmount} {currency ? currency : selectedCurrency}</Text>
                                 <Text style={styles.groupsection_text1}>APR: {item.apr}%</Text>
 
                             </View>
                             <View style={styles.groupsection3}>
                                 <Text style={styles.groupsection_text1}>Payoff Progress</Text>
-                                <ProgressBar progress={percentagePaid || item.payoffPct || item.payoffProgress} tooltipLabel={`Balance : ${item.balance} ${currency ? currency : currency2}`} showTooltip={true} style={styles.progressbar} />
+                                <ProgressBar progress={percentagePaid || item.payoffPct || item.payoffProgress} tooltipLabel={`Balance : ${item.balance} ${currency ? currency : selectedCurrency}`} showTooltip={true} style={styles.progressbar} />
                                 <Text style={styles.groupsection_text1}>{percentagePaid || item?.payoffPct || item.payoffProgress.toFixed(2)} %</Text>
 
                             </View>
