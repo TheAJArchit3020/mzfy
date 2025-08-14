@@ -1,6 +1,8 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
 import React, { FC } from 'react'
 import Card from '@components/reusable/card'
+import { useSelector } from 'react-redux'
+import { RootState } from '@redux/store'
 
 interface DebtItemProps {
   data: any
@@ -8,13 +10,15 @@ interface DebtItemProps {
 
 const Debtpaid: FC<DebtItemProps> = ({ data }) => {
 
+  const userDetails = useSelector((state: RootState) => state.user?.items[0]);
+
 
   return (
     <Card style={styles.section_card} cardStyle={styles.section_card_inner}>
       <View style={styles.section_card_inner_content}>
         <View style={styles.section_card_inner_content_item}>
           <Text style={styles.section_card_text}>Debt paid</Text>
-          <Text style={styles.section_card_text2}>{'\u20B9'}&nbsp;
+          <Text style={styles.section_card_text2}>{userDetails?.selectedCurrency}&nbsp;
             <Text style={styles.section_card_span}>
               {Number(data?.totalPaid ?? data?.totalDebtPaid ?? 0).toLocaleString('en-IN')}
             </Text>

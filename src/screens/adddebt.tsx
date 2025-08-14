@@ -86,6 +86,8 @@ const DebtAdd: FC = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const debtArray = useSelector((s: RootState) => s.user.current.debts) ?? [];
+  const currency = useSelector((state: RootState) => state.user.current?.currency)
+  const currency2 = useSelector((state: RootState) => state.user.items[0]?.currency)
 
   // local form state
   const [form, formDispatch] = useReducer(reducer, initialForm);
@@ -209,7 +211,7 @@ const DebtAdd: FC = () => {
                   })
                 }
                 placeholderTextColor={"#C6C6C6"}
-                textHeader="₹"
+                textHeader={currency ? currency : currency2}
               />
               <Input
                 label="Balance"
@@ -217,7 +219,7 @@ const DebtAdd: FC = () => {
                 onChangeContent={(val) =>
                   formDispatch({ type: "SET_FIELD", field: "balance", value: val === "" ? 0 : parseFloat(val) })
                 }
-                textHeader="₹"
+                textHeader={currency ? currency : currency2}
               />
               <Input
                 label="Monthly Minimum (EMI)"
@@ -230,7 +232,7 @@ const DebtAdd: FC = () => {
                     value: val === "" ? 0 : parseFloat(val),
                   })
                 }
-                textHeader="₹"
+                textHeader={currency ? currency : currency2}
               />
               <View style={styles.aprContainer}>
                 <Input

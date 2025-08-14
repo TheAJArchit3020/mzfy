@@ -1,6 +1,8 @@
+import { RootState } from '@redux/store'
 import React, { useMemo } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import Svg, { Circle, G } from 'react-native-svg'
+import { useSelector } from 'react-redux'
 
 interface Debt {
   id: string
@@ -21,6 +23,9 @@ const CircularProgressbar: React.FC<Props> = ({
   strokeWidth = 10,
   data
 }) => {
+  const userDetails = useSelector((state: RootState) => state.user.items[0]);
+
+
   const radius = (size - strokeWidth) / 2
   const circumference = 2 * Math.PI * radius
   const debts = data?.inProgressDebts ?? []
@@ -49,8 +54,8 @@ const CircularProgressbar: React.FC<Props> = ({
         <G transform={`rotate(-90, ${size / 2}, ${size / 2})`}>
           {/* background track (optional) */}
           <Circle
-            cx={size/2}
-            cy={size/2}
+            cx={size / 2}
+            cy={size / 2}
             r={radius}
             stroke="#e6e6e6"
             strokeWidth={strokeWidth}
@@ -61,8 +66,8 @@ const CircularProgressbar: React.FC<Props> = ({
           {segments.map((seg, i) => (
             <Circle
               key={i}
-              cx={size/2}
-              cy={size/2}
+              cx={size / 2}
+              cy={size / 2}
               r={radius}
               stroke={seg.color}
               strokeWidth={strokeWidth}
@@ -77,7 +82,7 @@ const CircularProgressbar: React.FC<Props> = ({
 
       <View style={styles.label}>
         <Text style={styles.percentText}>
-          ₹ {Number(data?.totalBalance ?? 0).toLocaleString('en-IN')}
+          {userDetails?.selectedCurrency} {Number(data?.totalBalance ?? 0).toLocaleString('en-IN')}
         </Text>
       </View>
     </View>

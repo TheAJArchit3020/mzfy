@@ -35,7 +35,7 @@ const DashboardScreen: FC = () => {
   const navigation = useNavigation<navprops>();
   const [show, setShow] = useState(false);
 
-  const userData = useSelector((state: RootState) => state.dashBoard);
+  const dashboardData = useSelector((state: RootState) => state.dashBoard);
   const userDetails = useSelector((state: RootState) => state.user.items[0]);
 
   const [debtFreeDate, setDebtFreeDate] = useState<DebtCountDownType>({
@@ -53,8 +53,8 @@ const DashboardScreen: FC = () => {
 
   useEffect(() => {
     adjustedDate();
-    transformDebtData(userData?.data?.balanceByDebt || []);
-  }, [userData]);
+    transformDebtData(dashboardData?.data?.balanceByDebt || []);
+  }, [dashboardData]);
 
   const logpopupHandler = () => {
     setShow(true);
@@ -77,10 +77,10 @@ const DashboardScreen: FC = () => {
 
 
   const adjustedDate = () => {
-    if (!userData.data?.debtFreeDate) return null;
+    if (!dashboardData.data?.debtFreeDate) return null;
 
     const today = new Date();
-    const debtFreeDate = new Date(userData.data.debtFreeDate);
+    const debtFreeDate = new Date(dashboardData.data.debtFreeDate);
 
     let yearDiff = debtFreeDate.getFullYear() - today.getFullYear();
     let monthDiff = debtFreeDate.getMonth() - today.getMonth();
@@ -161,19 +161,19 @@ const DashboardScreen: FC = () => {
         </View>
 
         <View style={styles.section3}>
-          {<Debtprogress percent={userData.data?.payoffPct || 0} />}
+          {<Debtprogress percent={dashboardData.data?.payoffPct || 0} />}
         </View>
 
         <View style={styles.section4}>
           <Debtbalance data={donutData} />
-          <Debtpaid data={userData.data || 0} />
+          <Debtpaid data={dashboardData.data || 0} />
         </View>
         <View style={styles.section7}>
           <Nextduedate
             data={
-              userData.data?.upcomingTransactions.slice(
+              dashboardData.data?.upcomingTransactions.slice(
                 0,
-                userData.data?.balanceByDebt.length
+                dashboardData.data?.balanceByDebt.length
               ) || []
             }
             logpopupHandler={logpopupHandler}
@@ -182,7 +182,7 @@ const DashboardScreen: FC = () => {
         <View style={styles.section5}>
           <Text style={styles.section5_text}>Upcoming Transactions</Text>
           <UpcomingDebtsWithScrollbar
-            data={userData?.data?.upcomingTransactions || []}
+            data={dashboardData?.data?.upcomingTransactions || []}
             style={styles.cardstyle1}
           />
         </View>

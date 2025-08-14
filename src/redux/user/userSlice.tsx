@@ -17,6 +17,7 @@ export interface User {
     expenseByCategory: any
     debts: any
     currentStrategy?: string
+    selectedCurrency?: string
 }
 
 interface UserState {
@@ -67,10 +68,7 @@ export const addUser = createAsyncThunk<User, User, { state: RootState; rejectVa
                 }
             )
 
-            if (resp.data) {
-                fetchUser();
-            }
-
+            fetchUser();
 
             return resp.data
         } catch (err: any) {

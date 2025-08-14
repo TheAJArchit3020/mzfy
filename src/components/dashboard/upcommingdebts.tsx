@@ -14,6 +14,8 @@ import {
 import Card from '@components/reusable/card'
 import { formatDDMMMyyyy } from '@components/reusable/formatdate'
 import { widthToDP } from 'react-native-responsive-screens'
+import { useSelector } from "react-redux";
+import { RootState } from "@redux/store";
 
 // export interface DebtItem {
 //     name: string
@@ -37,6 +39,8 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
   sort = true,
   showicon = true,
 }) => {
+
+  const userDetails = useSelector((state: RootState) => state.user?.items[0]);
 
   const [containerHeight, setContainerHeight] = useState(0);
   const [contentHeight, setContentHeight] = useState(1);
@@ -97,7 +101,7 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
                     <Text style={[styles.text, { textAlign: "left" }]}>{formatDDMMMyyyy(item?.dueDate)}</Text>
 
                     <Text style={styles.text}>
-                      {'\u20B9'} {item.amount}
+                      {userDetails?.selectedCurrency} {item.amount}
                     </Text>
                     <Text style={[styles.text, { textAlign: item.debtName ? "left" : "right" }]}>
                       {item.name ?? item.debtName}</Text>

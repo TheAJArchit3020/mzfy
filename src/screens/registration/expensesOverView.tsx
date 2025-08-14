@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useMemo } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import LottieView from "lottie-react-native";
 import {
@@ -13,12 +13,30 @@ import Button from "@components/reusable/button";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParams } from "@managers/routing";
 import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
+import { RootState } from "@redux/store";
 
 type navProps = NativeStackNavigationProp<RootStackParams>
 
 const ExpensesOverView: FC = () => {
 
   const navigation = useNavigation<navProps>();
+  const userData = useSelector((state: RootState) => state.user.current)
+
+  console.log("userData : ", userData?.expenseByCategory)
+
+  const totalMonthlyExpense = (expenseByCategory: any) =>
+    ["food", "health", "investment", "miscellaneous"]
+      .reduce((sum, key) => sum + (Number(expenseByCategory?.[key]) || 0), 0);
+
+
+  const total = useMemo(
+    () => totalMonthlyExpense(userData?.expenseByCategory ?? {}),
+    [userData?.expenseByCategory]
+  );
+
+  const balance = userData?.personalIncome - total;
+
 
 
   return (
@@ -40,12 +58,12 @@ const ExpensesOverView: FC = () => {
           style={styles.lottieAnimation}
         />
         <Text style={styles.Text}>
-          Your monthly balance shows ₹.50,000/- in surplus — this gives you room
+          Your monthly balance shows {userData?.currency}.{balance}/- in surplus — this gives you room
           to build savings or reduce debt quicker.
         </Text>
       </View>
 
-     
+
       <Button style={styles.button} onPress={() => navigation.navigate('registrationlayoutscreen', {
         index: 6
       })}>

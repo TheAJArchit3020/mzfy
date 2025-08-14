@@ -2,6 +2,8 @@ import { Image, StyleSheet, Text, View } from 'react-native'
 import React, { FC } from 'react'
 import Card from '@components/reusable/card'
 import Circularprogressbar from '@components/reusable/circularprogressbar'
+import { useSelector } from 'react-redux'
+import { RootState } from '@redux/store'
 
 
 
@@ -10,6 +12,7 @@ interface DebtItemProps {
 }
 
 const Debtbalance: FC<DebtItemProps> = ({ data }) => {
+
 
 
   return (

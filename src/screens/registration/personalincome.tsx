@@ -14,6 +14,7 @@ const IncomeDetails: FC = () => {
   const dispatch = useDispatch()
   const income = useSelector((state: RootState) => state.user.current.personalIncome)
   const totalincome = useSelector((state: RootState) => state.user.current.totalHouseholdIncome)
+  const currency = useSelector((state: RootState) => state.user.current.currency)
 
   const [selectedOption, setSelectedOption] = useState<string>("");
 
@@ -30,7 +31,7 @@ const IncomeDetails: FC = () => {
           if (!touched) setTouched(true);
           dispatch(setField({ field: 'personalIncome', value: val }))
         }}
-        placeholder="Eg. ₹ 30,000"
+        placeholder={`Eg. ${currency} 30,000`}
         placeholderTextColor={'#C6C6C6'}
         label="Personal income"
         type="number"
