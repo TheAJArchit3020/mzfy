@@ -19,13 +19,17 @@ const IncomeDetails: FC = () => {
 
   const OPTIONS = ["Yes", "No"];
 
+  const [touched, setTouched] = useState(false);
+  const empty = (income ?? '').trim().length === 0;
+
   return (
     <View style={styles.container}>
       <Input
         value={income}
-        onChangeContent={(val: any) =>
+        onChangeContent={(val: any) => {
+          if (!touched) setTouched(true);
           dispatch(setField({ field: 'personalIncome', value: val }))
-        }
+        }}
         placeholder="Eg. ₹ 30,000"
         placeholderTextColor={'#C6C6C6'}
         label="Personal income"
@@ -33,6 +37,7 @@ const IncomeDetails: FC = () => {
         style={styles.input}
         containerStyle={styles.inputContainer}
       />
+      {touched && empty && <Text style={styles.error}>This field is required.</Text>}
 
       <Text style={styles.questionText}>
         Do you want to consider only your personal income?
@@ -132,6 +137,12 @@ const styles = StyleSheet.create({
     fontSize: wp(4),
     fontFamily: "PlusJakartaSans-Regular",
   },
+  error: {
+    color: "#FF6B6B",
+    fontSize: 16,
+    fontFamily: "PlusJakartaSans-Bold"
+  },
+
 });
 
 export default IncomeDetails;

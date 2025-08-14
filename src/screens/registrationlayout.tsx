@@ -37,6 +37,15 @@ const Registrationlayout: FC = () => {
     v !== undefined && v !== null && !(typeof v === "string" && v.trim() === "");
 
 
+  const EXPENSE_KEYS = ['investment', 'food', 'health', 'miscellaneous'] as const;
+
+  const hasAnyExpenseAmount = (ebc: any) => {
+    if (!ebc || typeof ebc !== 'object') return false;
+    // true only if at least one category is > 0
+    return EXPENSE_KEYS.some(k => Number(ebc?.[k]) > 0)
+      || Object.values(ebc).some((v) => Number(v) > 0); // fallback if keys differ
+  };
+
   const submitFormHandler = async () => {
     try {
       await dispatch(addUser(userData)).unwrap()
@@ -60,16 +69,31 @@ const Registrationlayout: FC = () => {
   const current = PAGES[selectedIndex];
   const CurrentPage = current.Component;
 
-  const requiredByStep: Record<(typeof PAGES)[number]["name"], boolean> = {
-    name: isPresent(userData?.name),
-    profession: isPresent(userData?.profession),
-    selectcurrency: isPresent(userData?.currency),
-    IncomeDetails: isPresent(userData?.personalIncome),
-    monthlyexpense: isPresent(userData?.expenseByCategory),
-    loading: isPresent(userData?.debts), // adjust if you want at least one debt
+  const isStepValid = (stepName: (typeof PAGES)[number]["name"]) => {
+    switch (stepName) {
+      case "name":
+        return isPresent(userData?.name);
+      case "profession":
+        return isPresent(userData?.profession);
+      case "IncomeDetails":
+        return isPresent(userData?.personalIncome);
+      case "monthlyexpense":
+        return hasAnyExpenseAmount(userData?.expenseByCategory);
+      case "loading": {
+        const d = userData?.debts;
+        return Array.isArray(d) ? d.length > 0 : isPresent(d);
+      }
+      // ⬇️ No validation for these two:
+      case "age":
+      case "selectcurrency":
+        return true;
+
+      default:
+        return true;
+    }
   };
 
-  const isCurrentStepValid = requiredByStep[current.name];
+  const isCurrentStepValid = isStepValid(current.name);
 
   const goNext = () => {
     if (!isCurrentStepValid) return;

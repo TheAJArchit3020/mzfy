@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, { FC } from 'react'
+import React, { FC, useMemo, useState } from 'react'
 import { widthToDP } from 'react-native-responsive-screens';
 import Input from '@components/reusable/Input';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,10 +7,17 @@ import { RootState } from '@redux/store';
 import { setField } from '@redux/user/userSlice';
 
 const Monthlyexpense: FC = () => {
+
+  const CATEGORIES = ['investment', 'food', 'health', 'miscellaneous'] as const;
+
   const dispatch = useDispatch()
   const expenseByCategory = useSelector((s: RootState) => s.user.current.expenseByCategory) || {}
 
+  const [touched, setTouched] = useState(false);
+
   const handleChange = (key: string, raw: string) => {
+
+    if (!touched) setTouched(true);
     // remove any non-digit/non-dot, and ensure only one dot
     let sanitized = raw.replace(/[^0-9.]/g, '')
     const parts = sanitized.split('.')
@@ -28,9 +35,14 @@ const Monthlyexpense: FC = () => {
     )
   }
 
+  const hasAnyAmount = useMemo(
+    () => CATEGORIES.some(k => Number(expenseByCategory?.[k]) > 0),
+    [expenseByCategory]
+  );
+
   return (
     <View style={styles.container}>
-      {(['investment', 'food', 'health', 'miscellaneous'] as const).map(cat => (
+      {CATEGORIES.map(cat => (
         <View style={styles.form} key={cat}>
           <Text style={styles.formlabel}>
             {cat.charAt(0).toUpperCase() + cat.slice(1)}
@@ -49,6 +61,9 @@ const Monthlyexpense: FC = () => {
           />
         </View>
       ))}
+      {touched && !hasAnyAmount && (
+        <Text style={styles.error}>Please enter at least one amount.</Text>
+      )}
     </View>
   )
 }
@@ -71,5 +86,10 @@ const styles = StyleSheet.create({
   input: {
     fontFamily: "PlusJakartaSans-Bold",
     fontSize: widthToDP(3.5)
-  }
+  },
+  error: {
+    color: '#FF6B6B',
+    fontSize: 16,
+    fontFamily: 'PlusJakartaSans-Bold',
+  },
 })
