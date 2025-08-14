@@ -1,5 +1,5 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
-import React, { FC, useCallback } from 'react'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { FC, useCallback, useState } from 'react'
 import Header from '@components/reusable/header';
 import LinearGradient from 'react-native-linear-gradient';
 import Button from '@components/reusable/button';
@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@redux/store';
 import { fetchUser } from '@redux/user/userSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Input from '@components/reusable/Input';
+import { PencilIcon } from 'react-native-heroicons/solid';
 
 
 type navProps = NativeStackNavigationProp<RootStackParams>
@@ -18,6 +20,7 @@ const Profile: FC = () => {
 
     const navigation = useNavigation<navProps>();
     const dispatch = useDispatch<AppDispatch>();
+    const [editMode, setEditMode] = useState<{ [key: number]: boolean }>({});
 
 
     // ⏰ Get current hour
@@ -62,6 +65,14 @@ const Profile: FC = () => {
     }
 
 
+    const handleEditProfile = (index: number) => {
+        setEditMode(prev => ({
+            ...prev,
+            [index]: !prev[index] // toggle only the clicked one
+        }));
+    };
+
+
 
     return (
 
@@ -95,6 +106,30 @@ const Profile: FC = () => {
                                 <Text style={styles.section2_content_item_title}>Email</Text>
                                 <Text style={styles.section2_content_item_value}>{USERARRAY?.email}</Text>
                             </View>
+                        </View>
+                        <View style={styles.section2_content}>
+                            <Text style={styles.label} >Personal Income</Text>
+                            <Input value={USERARRAY?.personalIncome} textHeader={USERARRAY?.selectedCurrency} editable={!!editMode[1]}
+                                children={
+                                    <TouchableOpacity onPress={() => handleEditProfile(1)}>
+                                        <PencilIcon color={"#fff"} size={24} />
+                                    </TouchableOpacity>
+                                }
+                                containerStyle={styles.containerStyle}
+                                style={styles.inputStyle}
+                            />
+                        </View>
+                        <View style={styles.section2_content}>
+                            <Text style={styles.label} >Household Income</Text>
+                            <Input value={USERARRAY?.totalHouseholdIncome} textHeader={USERARRAY?.selectedCurrency} editable={!!editMode[2]}
+                                children={
+                                    <TouchableOpacity onPress={() => handleEditProfile(2)}>
+                                        <PencilIcon color={"#fff"} size={24} />
+                                    </TouchableOpacity>
+                                }
+                                containerStyle={styles.containerStyle}
+                                style={styles.inputStyle}
+                            />
                         </View>
 
                         {/* <View style={styles.section2_content}>
@@ -194,7 +229,7 @@ const styles = StyleSheet.create({
     },
     section2: {
         flexDirection: "column",
-        gap: 30,
+        gap: 25,
         marginHorizontal: 20
     },
     section2_content: {
@@ -278,6 +313,13 @@ const styles = StyleSheet.create({
     },
     upgradebutton: {
         padding: 12
+    },
+    containerStyle: {
+        marginBottom: 0
+    },
+    inputStyle: {
+        fontFamily: "PlusJakartaSans-Bold",
+        fontSize: 16,
     }
 
 

@@ -59,6 +59,8 @@ const Particulardebtdetail: FC = () => {
     const DEBTDATA = (useSelector((state: RootState) => state.debts.items[0]?.payload)) ?? {};
 
 
+    console.log("DEBTDATA : ", DEBTDATA)
+
     const LogTransactionHandler = async () => {
 
         await dispatch(logTransaction({ selectedDueTransaction, logAmount })).then((payload) => {
@@ -135,7 +137,7 @@ const Particulardebtdetail: FC = () => {
 
                     <View style={styles.section4}>
                         <Text style={styles.section4_title}>Your Debt-Free Timeline</Text>
-                        {/* <GraphComponent rawData={DEBTDATA.debtFreeTimeline} /> */}
+                        <GraphComponent rawData={DEBTDATA.debtFreeTimeline} />
                     </View>
 
                 </View>

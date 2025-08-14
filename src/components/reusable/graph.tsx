@@ -9,7 +9,7 @@ import { ChevronRightIcon, ChevronUpIcon } from "react-native-heroicons/solid";
 
 interface RawPoint {
   amount: number;
-  dueDate: string; // ISO
+  dueDate: string; 
 }
 
 interface GraphComponentProps {

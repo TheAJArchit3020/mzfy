@@ -87,7 +87,7 @@ const DebtAdd: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const debtArray = useSelector((s: RootState) => s.user.current.debts) ?? [];
   const currency = useSelector((state: RootState) => state.user.current?.currency)
-  const currency2 = useSelector((state: RootState) => state.user.items[0]?.currency)
+  const currency2 = useSelector((state: RootState) => state.user.items[0]?.selectedCurrency)
 
   // local form state
   const [form, formDispatch] = useReducer(reducer, initialForm);
