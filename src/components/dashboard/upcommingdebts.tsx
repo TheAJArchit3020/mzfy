@@ -103,7 +103,7 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
                     <Text style={styles.text}>
                       {userDetails?.selectedCurrency} {item.amount}
                     </Text>
-                    <Text style={[styles.text, { textAlign: item.debtName ? "left" : "right" }]}>
+                    <Text style={[styles.text, { textAlign: item.debtName ? "right" : "right", paddingRight: item.debtName ? "5%" : "auto" }]}>
                       {item.name ?? item.debtName}</Text>
 
                     {showicon && <TouchableOpacity>
