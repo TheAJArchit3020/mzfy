@@ -22,7 +22,7 @@ const Layout: React.FC = () => {
   useFocusEffect(
     useCallback(() => {
       getUserDetails();
-    }, [])
+    }, [tabs])
   );
 
   const getUserDetails = async () => {
@@ -33,6 +33,8 @@ const Layout: React.FC = () => {
     }
 
   }
+
+
 
   return (
     <View style={styles.container}>

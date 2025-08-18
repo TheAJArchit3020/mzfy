@@ -102,7 +102,7 @@ const PayoffplansScreen: FC = () => {
   ];
 
 
-
+   const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
 
 
   return (
@@ -122,8 +122,8 @@ const PayoffplansScreen: FC = () => {
               <TextCard text1={'Months'} text2={monthsUntil} text1style={styles.text1} text2style={styles.text2} cardStyle={styles.cardstyle} ></TextCard>
             </View>
             <View style={styles.cardgroup2}>
-              <TextCard text1={'Total interest Paid'} text2={`₹. ${payoffplanArray?.totalInterestPaid}`} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
-              <TextCard text1={'You save'} text2={`₹. ${payoffplanArray?.totalSavings}`} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
+              <TextCard text1={'Total interest Paid'} text2={`${selectedCurrency} ${payoffplanArray?.totalInterestPaid}`} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
+              <TextCard text1={'You save'} text2={`${selectedCurrency} ${payoffplanArray?.totalSavings}`} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
             </View>
           </View>
 

@@ -26,6 +26,9 @@ const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainersty
 
     const currency = useSelector((state: RootState) => state.user?.current?.currency)
     const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
+    const selectedCurrency_ = useSelector((state: RootState) => state.user?.items[0])
+
+    console.log("selectedCurrency : ",selectedCurrency_)
 
 
     const navigateHandler = (_id: any, name: any) => {
