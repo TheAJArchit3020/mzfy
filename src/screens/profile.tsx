@@ -8,7 +8,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParams } from '@managers/routing';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@redux/store';
-import { fetchUser } from '@redux/user/userSlice';
+import { deleteUser, fetchUser } from '@redux/user/userSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Input from '@components/reusable/Input';
 import { PencilIcon } from 'react-native-heroicons/solid';
@@ -71,6 +71,17 @@ const Profile: FC = () => {
             [index]: !prev[index] // toggle only the clicked one
         }));
     };
+
+
+    const handleDeleteAccount = async () => {
+        try {
+            await dispatch(deleteUser()).unwrap();
+            await AsyncStorage.removeItem('token');
+            navigation.navigate('splashscreen');
+        } catch (err: any) {
+            console.log("Error deleting account:", err);
+        }
+    }
 
 
 

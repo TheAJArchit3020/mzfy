@@ -17,7 +17,7 @@ import { RootStackParams } from "@managers/routing";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@redux/store";
-import { addUser } from "@redux/user/userSlice";
+import { addUser, fetchUser } from "@redux/user/userSlice";
 
 type navProps = NativeStackNavigationProp<RootStackParams>
 
@@ -49,6 +49,7 @@ const Registrationlayout: FC = () => {
   const submitFormHandler = async () => {
     try {
       await dispatch(addUser(userData)).unwrap()
+      await dispatch(fetchUser()).unwrap()
       navigation.navigate('selectstrategyscreen')
     } catch (err: any) {
       console.error("Error adding user:", err);

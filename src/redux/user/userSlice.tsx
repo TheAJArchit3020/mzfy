@@ -1,4 +1,4 @@
-import { registeruseruser } from '@managers/apis'
+import { deleteuser, registeruseruser } from '@managers/apis'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { RootState } from '@redux/store'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
@@ -131,6 +131,48 @@ export const fetchUser = createAsyncThunk<User, void, { state: RootState; reject
         }
     }
 )
+
+
+// delete user
+export const deleteUser = createAsyncThunk<void, void, { state: RootState; rejectValue: any }>(
+    'user/deleteUser',
+    async (_, { getState, rejectWithValue }) => {
+
+        const _token = (getState().loginuser?.items[0]?.token)
+        const storetoken = await AsyncStorage.getItem('token')
+
+        try {
+            await axios.delete(
+                deleteuser,
+                {
+                    headers: {
+                        Authorization: `Bearer ${_token ? _token : storetoken}`,
+                    }
+                }
+            )
+
+        } catch (err: any) {
+            if (axios.isAxiosError(err)) {
+
+                const statusCode = err.response?.status
+                const errorData = err.response?.data
+
+                return rejectWithValue({
+                    message: err.message,
+                    status: statusCode,
+                    data: errorData,
+                })
+            } else {
+                // Non-Axios error (e.g. coding bug, thrown manually)
+                console.log("Unexpected error:", err)
+                return rejectWithValue({ message: (err as Error).message })
+            }
+        }
+    }
+)
+
+
+
 const userSlice = createSlice({
     name: 'user',
     initialState,
@@ -172,6 +214,23 @@ const userSlice = createSlice({
                 state.items = [action.payload]
             })
             .addCase(fetchUser.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload as string
+            })
+
+
+        // delete user
+        builder
+            .addCase(deleteUser.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(deleteUser.fulfilled, (state) => {
+                state.loading = false
+                state.items = []
+                state.current = initialState.current
+            })
+            .addCase(deleteUser.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.payload as string
             })

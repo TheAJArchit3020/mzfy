@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState, AppDispatch } from '@redux/store'
 import { checkUser } from '@redux/login/loginSlice'
 import { unwrapResult } from '@reduxjs/toolkit'
-import { setField } from '@redux/user/userSlice'
+import { fetchUser, setField } from '@redux/user/userSlice'
 
 type navProps = NativeStackNavigationProp<RootStackParams>
 
@@ -71,6 +71,7 @@ const Login: FC = () => {
             const { detailsExists, token, userId } = payloadData;
 
             if (detailsExists) {
+                await dispatch(fetchUser()).unwrap()
                 navigation.navigate('layoutscreen');
             } else {
                 navigation.navigate('registrationlayoutscreen', {

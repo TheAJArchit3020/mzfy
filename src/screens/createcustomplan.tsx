@@ -12,7 +12,7 @@ import Input from '@components/reusable/Input'
 import { widthToDP } from 'react-native-responsive-screens'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@redux/store'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { fetchPayoffPlan } from '@redux/payoffplans/payoffplanSlice'
 import { addCustomPlan, fetchCustomPlan } from '@redux/customplan/customplanSlice'
 
@@ -20,6 +20,8 @@ import { addCustomPlan, fetchCustomPlan } from '@redux/customplan/customplanSlic
 
 
 const Createcustomplan: FC = () => {
+
+    const navigation = useNavigation();
 
     const dispatch = useDispatch<AppDispatch>();
     const { current } = useSelector((state: RootState) => state.customplan)
@@ -121,6 +123,12 @@ const Createcustomplan: FC = () => {
 
     }
 
+    const CancelHandler = () => {
+        setPlanName('');
+        setDebtExtraPaymentArray([]);
+        setDebtArray([]);
+    }
+
 
 
     const AddCustomPlanHandler = async () => {
@@ -134,6 +142,8 @@ const Createcustomplan: FC = () => {
             setDebtExtraPaymentArray([]);
             setDebtArray([]);
             setShow2(false);
+            navigation.goBack();
+
         }).catch((error) => {
             console.error('Error adding custom plan:', error);
         });
@@ -194,7 +204,7 @@ const Createcustomplan: FC = () => {
                         <Button style={styles.button_save} onPress={() => setShow2(true)} >
                             <Text style={styles.button_save_text}>Save</Text>
                         </Button>
-                        <Button style={styles.button_cancel}>
+                        <Button style={styles.button_cancel} onPress={CancelHandler} >
                             <Text style={styles.button_cancel_text}>Cancel</Text>
                         </Button>
                     </View>

@@ -31,6 +31,7 @@ type Props = {
     subtitleStyle?: TextStyle;
     infoLabelStyle?: TextStyle;
     infoValueStyle?: TextStyle;
+    onClose2?: () => void;
 };
 
 const StrategyRadioCard: React.FC<Props> = ({
@@ -42,6 +43,7 @@ const StrategyRadioCard: React.FC<Props> = ({
     subtitleStyle,
     infoLabelStyle,
     infoValueStyle,
+    onClose2
 }) => {
     const [customPlan, setCustomPlan] = useState('')
     const isSelected = selectedValue === option.value;
@@ -96,6 +98,7 @@ const StrategyRadioCard: React.FC<Props> = ({
 
             {option.value === 'custom' && (
                 <Customstrategydropdown
+                    onClose2={onClose2}
                     style={styles.dropdown}
                     options={customOptions}
                     value={customPlan}

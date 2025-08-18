@@ -1,4 +1,4 @@
-import { customplan, registeruseruser, selectstrategy } from '@managers/apis'
+import { customplan, previewcustomplan, registeruseruser, selectstrategy } from '@managers/apis'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { RootState } from '@redux/store'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
@@ -124,7 +124,7 @@ export const previewCustomPlan = createAsyncThunk<CustomPlan, CustomPlan, { stat
 
         try {
             const resp = await axios.post<CustomPlan>(
-                customplan,
+                previewcustomplan,
                 { CustomPlan },
                 {
                     headers: {

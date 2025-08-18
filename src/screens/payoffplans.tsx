@@ -198,6 +198,7 @@ const PayoffplansScreen: FC = () => {
 
       <Popup
         visible={show}
+        onClose2={() => setShow(false)}
         onClose={handleSelect}
         containerStyle={styles.popupContainerStyle}
         buttonText="Select strategy"
