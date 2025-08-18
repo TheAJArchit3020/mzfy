@@ -56,7 +56,7 @@ const PayoffplansScreen: FC = () => {
   );
 
 
-  const payoffplanArray = useSelector((state: RootState) => state.payoffplan.items[0]) ?? [];
+  const payoffplanArray = useSelector((state: RootState) => state?.payoffplan?.items[0]) ?? [];
 
   const __date = payoffplanArray?.estimatedDebtFreeDate
 
@@ -102,7 +102,7 @@ const PayoffplansScreen: FC = () => {
   ];
 
 
-   const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
+  const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
 
 
   return (
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   },
   text2: {
     color: '#fff',
-    fontSize: 40,
+    fontSize: 36,
     fontFamily: 'PlusJakartaSans-Bold',
     textAlign: "center"
 
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
   },
   text2_2: {
     color: '#fff',
-    fontSize: 40,
+    fontSize: 36,
     fontFamily: 'PlusJakartaSans-Bold',
     textAlign: "center"
   },

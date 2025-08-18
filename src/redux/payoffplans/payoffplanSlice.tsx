@@ -25,7 +25,7 @@ const initialState: PayoffPlanState = {
 
 // fetch user....
 export const fetchPayoffPlan = createAsyncThunk<PayoffPlan, void, { state: RootState; rejectValue: any }>(
-    'user/fetchUser',
+    'user/fetchPayoffPlan',
     async (_, { getState, rejectWithValue }) => {
 
         const _token = (getState().loginuser?.items[0]?.token)
