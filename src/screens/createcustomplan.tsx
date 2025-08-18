@@ -14,48 +14,58 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@redux/store'
 import { useFocusEffect } from '@react-navigation/native'
 import { fetchPayoffPlan } from '@redux/payoffplans/payoffplanSlice'
-import { addCustomPlan } from '@redux/customplan/customplanSlice'
+import { addCustomPlan, fetchCustomPlan } from '@redux/customplan/customplanSlice'
 
 
 
 
 const Createcustomplan: FC = () => {
 
-    const formdispatch = useDispatch<AppDispatch>();
+    const dispatch = useDispatch<AppDispatch>();
     const { current } = useSelector((state: RootState) => state.customplan)
-
-    console.log("current : ", current)
-
-  
-
     const [show, setShow] = useState(false);
+    const [show2, setShow2] = useState(false);
 
 
     const [scrollEnabled, setScrollEnabled] = useState(true);
+    const [debtAmount, setDebtAmount] = useState('');
+    const [planName, setPlanName] = useState('');
+    const [debtExtraPaymentArray, setDebtExtraPaymentArray] = useState<any[]>([]);
+    const [debtArray, setDebtArray] = useState<any[]>([]);
+    const [selectedDebt, setSelectedDebt] = useState<string | null>(null);
+
+    const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
+    const payoffCustomplanArray = useSelector((state: RootState) => state?.customplan?.items[0]) ?? [];
+
+
+
+
+
+
+
+
 
 
     useFocusEffect(
         useCallback(() => {
 
-            const fetchPayoffPlans = async () => {
+            const _fetchCustomPlan = async () => {
                 try {
-                    await formdispatch(fetchPayoffPlan()).unwrap();
+                    await dispatch(fetchCustomPlan());
                 } catch (error) {
-                    console.error('Error fetching payoff plans:', error);
+                    console.error('Error fetchCustomPlan payoff plans:', error);
                 }
             };
 
-            fetchPayoffPlans();
+            _fetchCustomPlan();
 
         }, [])
     );
 
 
-    const payoffplanArray = useSelector((state: RootState) => state.payoffplan.items[0]) ?? [];
 
-    console.log("custom payoffplanArray : ", payoffplanArray)
 
-    const __date = payoffplanArray?.estimatedDebtFreeDate
+    const __date = payoffCustomplanArray?.estimatedDebtFreeDate
 
     const d = __date ? new Date(__date as string) : new Date();
 
@@ -75,46 +85,58 @@ const Createcustomplan: FC = () => {
         setShow(true);
     };
 
+    console.log(" payoffCustomplanArray?.debtOrder : ", payoffCustomplanArray?.debtOrder)
 
-    const [selectedDebt, setSelectedDebt] = useState<string | null>(null);
+
+
+    const _debtorder = payoffCustomplanArray?.debtOrder?.map((item: any) => {
+        return item.id;
+    });
+
 
     const handleDataChange = (newData: any[]) => {
-
-        console.log('Debts reordered:', newData);
+        const reorderedIds = newData?.map(item => item.id);
+        setDebtArray(reorderedIds);
     };
 
 
-    const _dropdownOptions = Array.isArray(payoffplanArray?.debtOrder)
-        ? payoffplanArray?.debtOrder.map((item: any) => ({
+    const _dropdownOptions = Array.isArray(payoffCustomplanArray?.debtOrder)
+        ? payoffCustomplanArray?.debtOrder.map((item: any) => ({
             label: item.name,
             value: item.id,
         }))
         : [];
 
-    const filteredOptions = _dropdownOptions?.filter((item: { label: string; value: string }) => item.value === selectedDebt);
+    const handleSelectedDebtChange = () => {
 
+        const newExtraPayment = {
+            debt: selectedDebt,
+            extraAmount: Number(debtAmount),
+        };
 
+        setDebtExtraPaymentArray((prev) => [...prev, newExtraPayment]);
+        setDebtAmount('');
+        setSelectedDebt(null);
+        setShow(false);
 
-
-
-    console.log("selectedDebt : ", selectedDebt)
-    console.log("filteredOptions : ", filteredOptions[0]?.label)
-
-    const _extrapayment = {
-        debt: selectedDebt,
-        amount: payoffplanArray?.extraPayments,
     }
+
 
 
     const AddCustomPlanHandler = async () => {
 
-        formdispatch(addCustomPlan({
-            name: filteredOptions[0]?.label,
-            debtOrder: selectedDebt ? [selectedDebt] : [],
-            extraPayments: [
-                ...[_extrapayment, _extrapayment]
-            ],
-        }))
+        await dispatch(addCustomPlan({
+            name: planName,
+            debtOrder: debtArray?.length > 0 ? debtArray : _debtorder,
+            extraPayments: debtExtraPaymentArray,
+        })).then(() => {
+            setPlanName('');
+            setDebtExtraPaymentArray([]);
+            setDebtArray([]);
+            setShow2(false);
+        }).catch((error) => {
+            console.error('Error adding custom plan:', error);
+        });
 
     }
 
@@ -137,8 +159,8 @@ const Createcustomplan: FC = () => {
                             <TextCard text1={'Months'} text2={monthsUntil} text1style={styles.text1} text2style={styles.text2} cardStyle={styles.cardstyle} ></TextCard>
                         </View>
                         <View style={styles.cardgroup2}>
-                            <TextCard text1={'Total interest Paid'} text2={`₹. ${payoffplanArray?.totalInterestPaid}`} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
-                            <TextCard text1={'You save'} text2={`₹. ${payoffplanArray?.totalSavings}`} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
+                            <TextCard text1={'Total interest Paid'} text2={`${selectedCurrency} ${payoffCustomplanArray?.totalInterestPaid}`} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
+                            <TextCard text1={'You save'} text2={`${selectedCurrency} ${payoffCustomplanArray?.totalSavings}`} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
                         </View>
                     </View>
 
@@ -158,7 +180,7 @@ const Createcustomplan: FC = () => {
                         </View>
                         <View style={styles.cardcontainer3_inner}>
                             <DraggablePayoffcard
-                                data={payoffplanArray?.debtOrder}
+                                data={payoffCustomplanArray?.debtOrder || []}
                                 source={require('@images/payoffplan/edit.png')}
                                 showicon={false}
                                 showcustom={true}
@@ -169,7 +191,7 @@ const Createcustomplan: FC = () => {
                     </View>
 
                     <View style={styles.buttongroup}>
-                        <Button style={styles.button_save}>
+                        <Button style={styles.button_save} onPress={() => setShow2(true)} >
                             <Text style={styles.button_save_text}>Save</Text>
                         </Button>
                         <Button style={styles.button_cancel}>
@@ -183,7 +205,8 @@ const Createcustomplan: FC = () => {
             {/* log payment popup */}
             <Popup
                 visible={show}
-                onClose={() => setShow(false)}
+                onClose={handleSelectedDebtChange}
+                onClose2={() => setShow(false)}
                 containerStyle={styles.popupContainerStyle}
                 buttonText='Set'
                 color1="#B2FF59"
@@ -207,12 +230,11 @@ const Createcustomplan: FC = () => {
                     <View style={styles.inputgroup}>
                         <Text style={styles.inputgroup_label}>Extra payment</Text>
                         <Input
-                            // value={payoffplanArray?.extraPayments}
+                            value={debtAmount}
                             onChangeContent={(val) =>
-                                // dispatch({ type: "SET_FIELD", field: "extrapay", value: val })
-                                console.log(val)
+                                setDebtAmount(val)
                             }
-                            textHeader="₹"
+                            textHeader={selectedCurrency}
                             inputWrapperStyle={styles.inputWrapperStyle}
                             children={
                                 <Text
@@ -225,6 +247,31 @@ const Createcustomplan: FC = () => {
                                     /-
                                 </Text>
                             }
+                        />
+
+                    </View>
+                </View>
+            </Popup>
+
+            <Popup
+                visible={show2}
+                onClose2={() => setShow2(false)}
+                onClose={AddCustomPlanHandler}
+                containerStyle={styles.popupContainerStyle}
+                buttonText='Ok'
+                color1="#B2FF59"
+                color2="#00C853"
+            >
+                <View style={styles.formgroup}>
+
+                    <View style={styles.inputgroup}>
+                        <Text style={styles.inputgroup_label}>Enter Plan name</Text>
+                        <Input
+                            value={planName}
+                            onChangeContent={(val) =>
+                                setPlanName(val)
+                            }
+                            inputWrapperStyle={styles.inputWrapperStyle}
                         />
 
                     </View>
@@ -337,7 +384,7 @@ const styles = StyleSheet.create({
     },
     text2: {
         color: '#fff',
-        fontSize: 40,
+        fontSize: 36,
         fontFamily: 'PlusJakartaSans-Bold',
         textAlign: "center"
 
@@ -355,7 +402,7 @@ const styles = StyleSheet.create({
     },
     text2_2: {
         color: '#fff',
-        fontSize: 40,
+        fontSize: 36,
         fontFamily: 'PlusJakartaSans-Bold',
         textAlign: "center"
     },

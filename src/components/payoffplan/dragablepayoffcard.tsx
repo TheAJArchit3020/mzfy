@@ -5,6 +5,8 @@ import Card from '@components/reusable/card'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import DraggableFlatList from "react-native-draggable-flatlist"
 import { formatDDMMMyyyy } from '@components/reusable/formatdate'
+import { useSelector } from 'react-redux'
+import { RootState } from '@redux/store'
 
 interface payoffProps {
     data: any,
@@ -18,7 +20,7 @@ interface payoffProps {
 }
 
 const DraggablePayoffcard: FC<payoffProps> = ({
-    data,
+    data = [],
     source,
     cardstyle,
     cardcontainerstyle,
@@ -27,11 +29,14 @@ const DraggablePayoffcard: FC<payoffProps> = ({
     onDataChange,
     onDragStatusChange
 }) => {
-    const [localData, setLocalData] = useState(data);
+    const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
 
-    const keyExtractor = (item: any) => item.id?.toString() || item.name;
+    console.log("data : ", data)
+
+    const keyExtractor = (item: any) => item?.id?.toString() || item?.name;
 
     const renderItem = ({ item, drag, isActive }: any) => {
+
 
         return (
             <View style={[styles.cardcontainer_inner, isActive && styles.activeItem]}>
@@ -51,9 +56,9 @@ const DraggablePayoffcard: FC<payoffProps> = ({
                     </View>
                     <View style={styles.groupsection2}>
                         {showcustom ? (
-                            <Text style={styles.groupsection_text1}>Monthly Minimum (EMI): {item.minPaymentAmount} {'\u20B9'}</Text>
+                            <Text style={styles.groupsection_text1}>Monthly Minimum (EMI): {item.minPaymentAmount} {selectedCurrency}</Text>
                         ) : (
-                            <Text style={styles.groupsection_text1}>Minimun: {item.minPaymentAmount} {'\u20B9'}</Text>
+                            <Text style={styles.groupsection_text1}>Minimun: {item.minPaymentAmount} {selectedCurrency}</Text>
                         )}
                         <Text style={styles.groupsection_text1}>APR: {item.apr} %</Text>
                     </View>
@@ -61,11 +66,11 @@ const DraggablePayoffcard: FC<payoffProps> = ({
                         <Text style={styles.groupsection_text1}>Payoff Progress</Text>
                         <ProgressBar
                             progress={item?.payoffProgress}
-                            tooltipLabel={`Balance : ${item.balance} ${'\u20B9'}`}
+                            tooltipLabel={`Balance : ${item.balance} ${selectedCurrency}`}
                             showTooltip={true}
                             style={styles.progressbar}
                         />
-                        <Text style={styles.groupsection_text1}>{item.payoffProgress} %</Text>
+                        <Text style={styles.groupsection_text1}>{item.payoffProgress.toFixed(0)} %</Text>
                     </View>
                 </Card>
             </View>
@@ -73,9 +78,9 @@ const DraggablePayoffcard: FC<payoffProps> = ({
     };
 
     const handleDragEnd = ({ data: newData }: { data: any[] }) => {
-        setLocalData(newData);
         onDragStatusChange?.(false);
         if (onDataChange) {
+
             onDataChange(newData);
         }
     };
@@ -83,9 +88,8 @@ const DraggablePayoffcard: FC<payoffProps> = ({
     return (
         <View style={styles.cardcontainer}>
             <GestureHandlerRootView style={{ flex: 1 }}>
-                {/* <NestableScrollContainer> */}
                 <DraggableFlatList
-                    data={localData}
+                    data={data}
                     renderItem={renderItem}
                     keyExtractor={keyExtractor}
                     onDragEnd={handleDragEnd}
@@ -94,7 +98,6 @@ const DraggablePayoffcard: FC<payoffProps> = ({
                     dragItemOverflow={true}
 
                 />
-                {/* </NestableScrollContainer> */}
             </GestureHandlerRootView>
         </View>
     )

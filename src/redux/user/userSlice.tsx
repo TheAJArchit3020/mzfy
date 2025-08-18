@@ -98,6 +98,8 @@ export const fetchUser = createAsyncThunk<User, void, { state: RootState; reject
         const _token = (getState().loginuser?.items[0]?.token)
         const storetoken = await AsyncStorage.getItem('token')
 
+        console.log("storetoken : ", storetoken)
+
         try {
             const resp = await axios.get<User>(
                 registeruseruser,
@@ -168,7 +170,6 @@ const userSlice = createSlice({
             .addCase(fetchUser.fulfilled, (state, action) => {
                 state.loading = false
                 state.items = [action.payload]
-                state.current = initialState.current
             })
             .addCase(fetchUser.rejected, (state, action) => {
                 state.loading = false

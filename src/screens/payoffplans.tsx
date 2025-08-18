@@ -13,8 +13,24 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@redux/store';
 import { fetchPayoffPlan } from '@redux/payoffplans/payoffplanSlice';
-import { addStrategy } from '@redux/strategies/strategySlice';
+import { addStrategy, fetchStrategy } from '@redux/strategies/strategySlice';
+import { formatDuration } from '@components/reusable/formatdate';
 
+type StrategyKey = "ai" | "avalanche" | "snowball" | "custom";
+
+interface StrategyNode {
+  estimatedDebtFreeDate?: string;
+  totalInterestPaid?: number;
+  totalSavings?: number;
+}
+
+interface Strategy {
+  ai?: StrategyNode;
+  avalanche?: StrategyNode;
+  snowball?: StrategyNode;
+  custom?: StrategyNode;
+  // meta fields you may have: _id, user, createdAt, updatedAt, etc.
+}
 
 
 const PayoffplansScreen: FC = () => {
@@ -23,6 +39,9 @@ const PayoffplansScreen: FC = () => {
   const [show, setShow] = useState(false);
   const [choice, setChoice] = useState<string | null>(null);
   const strategypopupHandler = () => setShow(true);
+
+
+  const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
 
 
   const handleSelect = async () => {
@@ -45,6 +64,7 @@ const PayoffplansScreen: FC = () => {
       const fetchPayoffPlans = async () => {
         try {
           await dispatch(fetchPayoffPlan()).unwrap();
+          await dispatch(fetchStrategy()).unwrap();
         } catch (error) {
           console.error('Error fetching payoff plans:', error);
         }
@@ -57,6 +77,7 @@ const PayoffplansScreen: FC = () => {
 
 
   const payoffplanArray = useSelector((state: RootState) => state?.payoffplan?.items[0]) ?? [];
+
 
   const __date = payoffplanArray?.estimatedDebtFreeDate
 
@@ -73,36 +94,39 @@ const PayoffplansScreen: FC = () => {
     (year - now.getUTCFullYear()) * 12 +
     ((monthNumber) - (now.getUTCMonth() + 1))
 
+  const strategyPlanArray = useSelector((state: RootState) => state?.strategy?.items[0]) ?? [];
+
+  const raw = strategyPlanArray
+
 
   const strategies = [
     {
       title: 'Debt Avalanche',
       subtitle: 'Prioritize highest interest rate',
       advantage: 'Fastest payoff and least interest',
-      timeToPayoff: '28 Days',
-      interestSaved: '₹1,500',
+      timeToPayoff: formatDuration(raw[0]?.avalanche?.estimatedDebtFreeDate),
+      interestSaved: `${selectedCurrency} ${raw[0]?.avalanche?.totalInterestPaid?.toLocaleString()}`,
       value: 'avalanche',
     },
     {
       title: 'Debt Snowball',
       subtitle: 'Prioritize lowest balance first',
       advantage: 'The most quick wins',
-      timeToPayoff: '2 Days',
-      interestSaved: '₹1,500',
+      timeToPayoff: formatDuration(raw[0]?.snowball?.estimatedDebtFreeDate),
+      interestSaved: `${selectedCurrency} ${raw[0]?.snowball?.totalInterestPaid?.toLocaleString()}`,
       value: 'snowball',
     },
     {
       title: 'Custom',
       subtitle: 'Customized Plan',
       advantage: 'Customized Plan',
-      timeToPayoff: '3 yrs 2 mos',
-      interestSaved: '₹1,500',
+      timeToPayoff: formatDuration(raw[0]?.custom?.estimatedDebtFreeDate),
+      interestSaved: `${selectedCurrency} ${raw[0]?.custom?.totalInterestPaid?.toLocaleString()}`,
       value: 'custom',
     },
   ];
 
 
-  const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
 
 
   return (

@@ -13,63 +13,65 @@ import {
 import LinearGradient from "react-native-linear-gradient";
 
 export interface PopupProps {
-    visible: boolean
-    onClose: () => void
-    title?: string
-    children: ReactNode
-    containerStyle?: ViewStyle
-    titleStyle?: TextStyle
-    buttonText?: string
-    color1?: string
-    color2?: string
-    buttonTextStyle?: any
-    isDisable?: any
+  visible: boolean
+  onClose: () => void
+  onClose2?: () => void
+  title?: string
+  children: ReactNode
+  containerStyle?: ViewStyle
+  titleStyle?: TextStyle
+  buttonText?: string
+  color1?: string
+  color2?: string
+  buttonTextStyle?: any
+  isDisable?: any
 }
 
 const Popup: React.FC<PopupProps> = ({
-    visible,
-    onClose,
-    title,
-    children,
-    containerStyle,
-    titleStyle,
-    buttonText = 'OK',
-    color1 = '#B2FF59',
-    color2 = '#00C853',
-    buttonTextStyle,
-    isDisable = false
+  visible,
+  onClose,
+  onClose2,
+  title,
+  children,
+  containerStyle,
+  titleStyle,
+  buttonText = 'OK',
+  color1 = '#B2FF59',
+  color2 = '#00C853',
+  buttonTextStyle,
+  isDisable = false
 }) => {
   return (
     <Modal
       transparent
       animationType="fade"
       visible={visible}
-      onRequestClose={onClose}
+      onRequestClose={onClose2}
     >
       {/* Backdrop */}
-      <TouchableWithoutFeedback onPress={onClose}>
+      <TouchableWithoutFeedback onPress={onClose2}>
         <View style={styles.backdrop} />
       </TouchableWithoutFeedback>
 
-            {/* Centered popup container */}
-            <View style={styles.centeredView}>
-                <View style={[styles.modalView, containerStyle]}>
-                    {title && <Text style={[styles.modalTitle, titleStyle]}>{title}</Text>}
-                    <View style={styles.modalContent}>{children}</View>
-                    <LinearGradient
-                        colors={[color1, color2]}
-                        locations={[0, 1]}
-                        start={{ x: 1, y: 0 }}
-                        end={{ x: 0, y: 1 }}
-                    >
-                        <TouchableOpacity onPress={onClose} disabled={isDisable} style={[styles.closeButton, isDisable && { backgroundColor: "#666666" }]}>
-                            <Text style={[styles.closeButtonText, buttonTextStyle]}>{buttonText}</Text>
-                        </TouchableOpacity>
-                    </LinearGradient>
-                </View>
-            </View>
-        </Modal>
-    )
+      {/* Centered popup container */}
+      <View style={styles.centeredView}>
+        <View style={[styles.modalView, containerStyle]}>
+          {title && <Text style={[styles.modalTitle, titleStyle]}>{title}</Text>}
+          <View style={styles.modalContent}>{children}</View>
+          <LinearGradient
+            colors={[color1, color2]}
+            locations={[0, 1]}
+            start={{ x: 1, y: 0 }}
+            end={{ x: 0, y: 1 }}
+          >
+            <TouchableOpacity onPress={onClose} disabled={isDisable} style={[styles.closeButton, isDisable && { backgroundColor: "#666666" }]}>
+              <Text style={[styles.closeButtonText, buttonTextStyle]}>{buttonText}</Text>
+            </TouchableOpacity>
+          </LinearGradient>
+        </View>
+      </View>
+    </Modal>
+  )
 }
 
 export default Popup;

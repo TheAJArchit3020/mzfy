@@ -13,6 +13,7 @@ export interface CustomPlan {
 interface CustomPlanState {
     current: CustomPlan
     items: CustomPlan[]
+    previewCustomData: CustomPlan[]
     loading: boolean
     error: string | null
 }
@@ -24,6 +25,7 @@ const initialState: CustomPlanState = {
         extraPayments: []
     },
     items: [],
+    previewCustomData: [],
     loading: false,
     error: null,
 }
@@ -75,6 +77,83 @@ export const addCustomPlan = createAsyncThunk<CustomPlan, CustomPlan, { state: R
     }
 )
 
+export const fetchCustomPlan = createAsyncThunk<CustomPlan, void, { state: RootState; rejectValue: any }>(
+    'customplan/fetchCustomPlan',
+    async (_: void, { getState, rejectWithValue }) => {
+
+        const _token = (getState().loginuser?.items[0]?.token)
+        const storetoken = await AsyncStorage.getItem('token')
+
+        try {
+            const resp = await axios.get<CustomPlan>(
+                customplan,
+                {
+                    headers: {
+                        Authorization: `Bearer ${_token ? _token : storetoken}`,
+                    }
+                }
+            )
+            console.log("fetchCustomPlan resp : ", resp)
+            return resp.data
+        } catch (err: any) {
+            if (axios.isAxiosError(err)) {
+
+                const statusCode = err.response?.status
+                const errorData = err.response?.data
+
+                return rejectWithValue({
+                    message: err.message,
+                    status: statusCode,
+                    data: errorData,
+                })
+            } else {
+                // Non-Axios error (e.g. coding bug, thrown manually)
+                console.log("Unexpected error:", err)
+                return rejectWithValue({ message: (err as Error).message })
+            }
+        }
+    }
+)
+
+export const previewCustomPlan = createAsyncThunk<CustomPlan, CustomPlan, { state: RootState; rejectValue: any }>(
+    'customplan/previewCustomPlan',
+    async (CustomPlan, { getState, rejectWithValue }) => {
+
+        const _token = (getState().loginuser?.items[0]?.token)
+        const storetoken = await AsyncStorage.getItem('token')
+
+        try {
+            const resp = await axios.post<CustomPlan>(
+                customplan,
+                { CustomPlan },
+                {
+                    headers: {
+                        Authorization: `Bearer ${_token ? _token : storetoken}`,
+                    }
+                }
+            )
+            console.log("previewCustomPlan resp : ", resp)
+            return resp.data
+        } catch (err: any) {
+            if (axios.isAxiosError(err)) {
+
+                const statusCode = err.response?.status
+                const errorData = err.response?.data
+
+                return rejectWithValue({
+                    message: err.message,
+                    status: statusCode,
+                    data: errorData,
+                })
+            } else {
+                // Non-Axios error (e.g. coding bug, thrown manually)
+                console.log("Unexpected error:", err)
+                return rejectWithValue({ message: (err as Error).message })
+            }
+        }
+    }
+)
+
 const customPlanSlice = createSlice({
     name: 'customplan',
     initialState,
@@ -101,6 +180,35 @@ const customPlanSlice = createSlice({
                 state.current = initialState.current
             })
             .addCase(addCustomPlan.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload as string
+            })
+
+
+        builder
+            .addCase(fetchCustomPlan.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(fetchCustomPlan.fulfilled, (state, action) => {
+                state.loading = false
+                state.items = [action.payload]
+            })
+            .addCase(fetchCustomPlan.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload as string
+            })
+
+        builder
+            .addCase(previewCustomPlan.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(previewCustomPlan.fulfilled, (state, action) => {
+                state.loading = false
+                state.previewCustomData = [action.payload]
+            })
+            .addCase(previewCustomPlan.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.payload as string
             })
