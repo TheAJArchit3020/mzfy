@@ -10,10 +10,10 @@ import {
   LayoutChangeEvent,
   TouchableOpacity,
   Image,
-} from 'react-native'
-import Card from '@components/reusable/card'
-import { formatDDMMMyyyy } from '@components/reusable/formatdate'
-import { widthToDP } from 'react-native-responsive-screens'
+} from "react-native";
+import Card from "@components/reusable/card";
+import { formatDDMMMyyyy } from "@components/reusable/formatdate";
+import { widthToDP } from "react-native-responsive-screens";
 
 // export interface DebtItem {
 //     name: string
@@ -23,11 +23,12 @@ import { widthToDP } from 'react-native-responsive-screens'
 // }
 
 interface UpcomingDebtsWithScrollbarProps {
-  data: any
-  style?: any
-  cardStyle?: any
-  sort?: any
-  showicon?: any
+  data: any;
+  style?: any;
+  cardStyle?: any;
+  sort?: any;
+  showicon?: any;
+  onArrowPress: (id: string) => void;
 }
 
 const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
@@ -36,13 +37,12 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
   style,
   sort = true,
   showicon = true,
+  onArrowPress,
 }) => {
-
-  console.log("data : ", data)
+  console.log("data : ", data);
   const [containerHeight, setContainerHeight] = useState(0);
   const [contentHeight, setContentHeight] = useState(1);
   const [scrollY, setScrollY] = useState(0);
-
 
   // Calculate scrollbar dimensions
   const scrollableRange = Math.max(contentHeight - containerHeight, 1);
@@ -55,23 +55,26 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
     scrollableRange > 0 ? (scrollY / scrollableRange) * maxThumbPos : 0;
 
   const onContainerLayout = (e: LayoutChangeEvent) => {
-    const height = e.nativeEvent.layout.height
-    setContainerHeight(height)
-  }
+    const height = e.nativeEvent.layout.height;
+    setContainerHeight(height);
+  };
 
   const onContentSizeChange = (_: number, h: number) => {
-    setContentHeight(h)
-  }
+    setContentHeight(h);
+  };
 
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const offset = e.nativeEvent.contentOffset.y
-    setScrollY(offset)
-  }
+    const offset = e.nativeEvent.contentOffset.y;
+    setScrollY(offset);
+  };
 
-  const scrollViewRef = useRef<ScrollView>(null)
+  const scrollViewRef = useRef<ScrollView>(null);
 
   return (
-    <Card style={[styles.card, style]} cardStyle={[styles.innerCard, cardStyle]}>
+    <Card
+      style={[styles.card, style]}
+      cardStyle={[styles.innerCard, cardStyle]}
+    >
       <View style={styles.scrollArea} onLayout={onContainerLayout}>
         <ScrollView
           onScroll={onScroll}
@@ -84,46 +87,57 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
           ref={scrollViewRef}
         >
           {data?.map((item: any, idx: any) => {
-
-            const isLast = idx === data.length - 1
+            const isLast = idx === data.length - 1;
             return (
               <View key={idx}>
-                {sort ?
-                  (<View
-                    style={[
-                      styles.row,
-                      isLast && styles.noBorder,
-                    ]}
-                  >
-                    <Text style={[styles.text, { textAlign: "left" }]}>{formatDDMMMyyyy(item?.dueDate)}</Text>
+                {sort ? (
+                  <View style={[styles.row, isLast && styles.noBorder]}>
+                    <Text style={[styles.text, { textAlign: "left" }]}>
+                      {formatDDMMMyyyy(item?.dueDate)}
+                    </Text>
 
                     <Text style={styles.text}>
-                      {'\u20B9'} {item.amount}
+                      {"\u20B9"} {item.amount}
                     </Text>
-                    <Text style={[styles.text, { textAlign: item.debtName ? "left" : "right" }]}>
-                      {item.name ?? item.debtName}</Text>
+                    <Text
+                      style={[
+                        styles.text,
+                        { textAlign: item.debtName ? "left" : "right" },
+                      ]}
+                    >
+                      {item.name ?? item.debtName}
+                    </Text>
 
-                    {showicon && <TouchableOpacity>
-                      <Image source={require('@images/dashboard/rightarrow.png')} style={styles.image} />
-                    </TouchableOpacity>}
-                  </View>)
-                  : (<View
-                    style={[
-                      styles.row,
-                      isLast && styles.noBorder,
-                    ]}
-                  >
-                    <Text style={styles.text}>{formatDDMMMyyyy(item?.dueDate)}</Text>
+                    {showicon && (
+                      <TouchableOpacity onPress={() => onArrowPress(item.debtTransaction)}>
+                        <Image
+                          source={require("@images/dashboard/rightarrow.png")}
+                          style={styles.image}
+                        />
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                ) : (
+                  <View style={[styles.row, isLast && styles.noBorder]}>
+                    <Text style={styles.text}>
+                      {formatDDMMMyyyy(item?.dueDate)}
+                    </Text>
                     <Text style={styles.text}></Text>
                     <Text style={[styles.text]}>
-                      {'\u20B9'} {item.amount} /-
+                      {"\u20B9"} {item.amount} /-
                     </Text>
-                    {showicon && <TouchableOpacity>
-                      <Image source={require('@images/dashboard/rightarrow.png')} style={styles.image} />
-                    </TouchableOpacity>}
-                  </View>)}
+                    {showicon && (
+                      <TouchableOpacity onPress={() => onArrowPress(item.debtTransaction)}>
+                        <Image
+                          source={require("@images/dashboard/rightarrow.png")}
+                          style={styles.image}
+                        />
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                )}
               </View>
-            )
+            );
           })}
         </ScrollView>
 
@@ -155,20 +169,19 @@ export default UpcomingDebtsWithScrollbar;
 
 const styles = StyleSheet.create({
   card: {
-    width: '100%',
+    width: "100%",
     padding: 0,
     height: 200,
   },
   innerCard: {
     padding: 0,
-    justifyContent: 'flex-start',
-    overflow: 'visible',
+    justifyContent: "flex-start",
+    overflow: "visible",
     // backgroundColor: "#2A2A2A"
-
   },
   scrollArea: {
     height: 200,
-    position: 'relative',
+    position: "relative",
   },
   scrollView: {
     flex: 1,
@@ -177,42 +190,41 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   row: {
-    flexDirection: 'row',
+    flexDirection: "row",
     // justifyContent: 'space-between',
-    borderBottomColor: '#C0C0C0',
+    borderBottomColor: "#C0C0C0",
     borderBottomWidth: 0.2,
     paddingTop: 25,
     paddingBottom: 12,
     marginHorizontal: 30,
-
   },
   noBorder: {
     borderBottomWidth: 0,
   },
   text: {
-    color: '#fff',
-    fontFamily: 'PlusJakartaSans-Regular',
+    color: "#fff",
+    fontFamily: "PlusJakartaSans-Regular",
     fontSize: 14,
-    width: '30.33%',
-    textAlign: "center"
+    width: "30.33%",
+    textAlign: "center",
   },
   scrollbarTrack: {
-    position: 'absolute',
+    position: "absolute",
     right: 14,
     width: 2,
-    backgroundColor: '#D9D9D9',
+    backgroundColor: "#D9D9D9",
     borderRadius: 4,
   },
   scrollbarThumb: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     width: 2,
-    backgroundColor: '#006FFF',
+    backgroundColor: "#006FFF",
     borderRadius: 4,
   },
   image: {
     width: 24,
     height: 24,
-    resizeMode: "contain"
+    resizeMode: "contain",
   },
-})
+});

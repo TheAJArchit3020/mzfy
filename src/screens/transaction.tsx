@@ -1,5 +1,14 @@
 import React, { FC, useState, useEffect } from "react";
-import { View, StyleSheet, Text, ScrollView, TextInput } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  ScrollView,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
+  Keyboard,
+} from "react-native";
 import Header from "@components/reusable/header";
 import StatusDueCard from "@components/transactions/statusDueCard";
 import BalanceTransition from "@components/transactions/BalanceTransition";
@@ -22,7 +31,13 @@ import DonutChart from "../../src/DonutChart";
 import Legend from "@components/reusable/Legend";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@redux/store";
-import { getTransactionData } from "@redux/Transacttion/Transaction";
+import {
+  getTransactionData,
+  logPayment,
+} from "@redux/Transacttion/Transaction";
+import { saveNoteApi } from "@managers/apis";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type TransactionScreenProps = StackScreenProps<RootStackParams, "Transaction">;
 
@@ -36,12 +51,12 @@ const Transaction: FC<TransactionScreenProps> = ({ route }) => {
   const [transactionData, setTransactionData] = useState<any>({
     _id: "",
     user: "",
-    debt: { _id: "", name: "Car Loan" },
-    openingBalance: 82500,
-    closingBalance: 76300,
-    paymentAmount: 6000,
-    principalComponent: 87,
-    interestComponent: 13,
+    debt: { _id: "", name: " " },
+    openingBalance: 0,
+    closingBalance: 0,
+    paymentAmount: 0,
+    principalComponent: 0,
+    interestComponent: 0,
     dueDate: new Date().toISOString(),
     status: "upcoming",
     note: "",
@@ -50,11 +65,12 @@ const Transaction: FC<TransactionScreenProps> = ({ route }) => {
     __v: 0,
   });
 
-  console.log("trxn", route.params.id);
   const status: paymentStatus =
     (transactionData?.status as paymentStatus) || "upcoming";
   const [showPopup, setShowPopup] = useState(false);
   const [amount, setAmount] = useState("");
+  const [kbEnabled, setKbEnabled] = useState(false);
+  const [note, setNote] = useState("");
 
   // Fetch transaction data when component mounts
   useEffect(() => {
@@ -62,14 +78,11 @@ const Transaction: FC<TransactionScreenProps> = ({ route }) => {
   }, []);
 
   const fetchData = async () => {
-    if (!transaction) {
-      const transactionData = await dispatch(
-        getTransactionData(route.params.id.toString())
-      );
-      setTransactionData(transactionData);
-    } else {
-      setTransactionData(transaction);
-    }
+    const transactionData = await dispatch(
+      getTransactionData(route.params.id.toString())
+    );
+    setTransactionData(transactionData.payload.transaction);
+    console.log("transactionData", transactionData);
   };
 
   // Update transaction data when API data is received
@@ -90,6 +103,7 @@ const Transaction: FC<TransactionScreenProps> = ({ route }) => {
 
   const handleNoteChange = (note: string) => {
     console.log("Note saved:", note);
+    setNote(note);
     // Add your note change logic here
   };
 
@@ -105,13 +119,38 @@ const Transaction: FC<TransactionScreenProps> = ({ route }) => {
   useEffect(() => {
     console.log("trasaction", transaction);
   }, [transaction]);
-  const handleConfirmAmount = () => {
+  const handleConfirm = async () => {
     console.log("Confirmed amount:", amount);
-    // Add your amount confirmation logic here
-    // You can update the transaction status, save to database, etc.
+    if(amount === "") return;
+    try {
+      await dispatch(
+        logPayment({
+          transactionId: transactionData._id,
+          amount: Number(amount),
+        })
+      );
+
+      fetchData();
+    } catch (error) {
+      console.error("Failed to log payment:", error);
+    }
     setAmount("");
     setShowPopup(false);
   };
+
+  // Keyboard handlers to toggle KeyboardAvoidingView
+  useEffect(() => {
+    const showSub = Keyboard.addListener("keyboardDidShow", () =>
+      setKbEnabled(true)
+    );
+    const hideSub = Keyboard.addListener("keyboardDidHide", () =>
+      setKbEnabled(false)
+    );
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
 
   // Show loading state
   if (loading) {
@@ -151,153 +190,211 @@ const Transaction: FC<TransactionScreenProps> = ({ route }) => {
     );
   }
 
-  console.log("Rendering with transactionData:", transactionData);
-  console.log("Redux transaction:", transaction);
-  return (
-    <LinearGradient
-      colors={["#463C9F", "#3A346E", "#23234B", "#2B293E", "#272631"]}
-      locations={[0, 0.64, 0.76, 0.87, 1]}
-      style={{ flex: 1 }}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
-    >
-      <Header title={transactionData.debt?.name || "Transaction"} />
-      <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
-        <View style={styles.container}>
-          <BalanceTransition
-            openingBalance={transactionData?.openingBalance}
-            closingBalance={transactionData?.closingBalance}
-          />
-          <View style={styles.transactionInfoContainer}>
-            <TextCard2
-              text1={"Transaction Balance"}
-              text2={"₹"}
-              text3={transactionData.paymentAmount?.toString() || "0"}
-              text1style={styles.labelText}
-              text2style={styles.rupeeSymbol}
-              text3style={styles.amountText}
-              cardStyle={styles.textCardStyle}
-            />
-            <View
-              style={[
-                styles.textCardStyle,
-                {
-                  borderWidth: 0.5,
-                  borderColor: "#F7F7F7",
-                  paddingHorizontal: wp(1.5),
-                  padding: wp(0),
-                },
-              ]}
-            >
-              <View style={styles.graphContainer}>
-                <DonutChart
-                  data={[
-                    { value: 87, label: "87%", color: "#006FFF" },
-                    { value: 13, label: "13%", color: "#DC143C" },
-                  ]}
-                  canvasHeight={hp(5)}
-                  arcCornerRadius={0}
-                  fontFamily="PlusJakartaSans-Bold"
-                  labelFontSize={wp(6.5)}
-                  lineStroke={3}
-                  centerText="Breakdown"
-                  centerTextFontSize={wp(5.5)}
-                />
-              </View>
-              <Legend
-                data={[
-                  { name: "Interest", color: "#DC143C" },
-                  { name: "Principle", color: "#006FFF" },
-                ]}
-                layout="row"
-                containerStyle={styles.legendContainer}
-                textStyle={styles.legendText}
-              />
-            </View>
-          </View>
-          <StatusDueCard
-            status={transactionData.status}
-            date={
-              transactionData.dueDate
-                ? new Date(transactionData.dueDate).toLocaleDateString()
-                : "N/A"
-            }
-            amount={transactionData.paymentAmount || 0}
-            onPress={handleCardPress}
-          />
-          <Note
-            onNoteChange={handleNoteChange}
-            initialNote={transactionData.note}
-          />
-          <WhatIfCalculator onExtraPaymentChange={handleExtraPaymentChange} />
-          {transactionData.status === "paid" ? (
-            <Button style={styles.editButton} onPress={handleShowPopup}>
-              <View style={styles.buttonContent}>
-                <PencilIcon
-                  color="#fff"
-                  size={wp(4.5)}
-                  style={{ marginRight: wp(2) }}
-                />
-                <Text style={styles.editButtonText}>Edit Payment</Text>
-              </View>
-            </Button>
-          ) : (
-            <Button onPress={handleShowPopup}>
-              <LinearGradient
-                colors={["#00C853", "#B2FF59"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.logButton}
-              >
-                <View style={styles.buttonContent}>
-                  <PlusCircleIcon
-                    color="#222"
-                    size={wp(4.5)}
-                    style={{ marginRight: wp(2) }}
-                  />
-                  <Text style={styles.logButtonText}>Log payment</Text>
-                </View>
-              </LinearGradient>
-            </Button>
-          )}
-        </View>
-      </ScrollView>
+  const handleSaveNote = async (note: string) => {
+    console.log("Note api:", note);
+    try {
+      const storetoken = await AsyncStorage.getItem("token");
+      const response = await axios.post(
+        `${saveNoteApi}/${route.params.id}/save-note`,
+        {
+          note: note.toString(),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${storetoken}`,
+          },
+        }
+      );
+      console.log("Note saved response:", response);
+    } catch (error) {
+      console.error("Failed to save note:", error);
+    }
+  };
 
-      {/* Popup for Paid Amount */}
-      <Popup
-        visible={showPopup}
-        onClose={handleClosePopup}
-        title="Paid amount"
-        containerStyle={styles.popupContainer}
-        titleStyle={styles.popupTitle}
-        buttonText="OK"
-        color1="#00C853"
-        color2="#B2FF59"
-        buttonTextStyle={styles.popupButtonText}
+  return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={"padding"}
+      enabled={kbEnabled}
+    >
+      <LinearGradient
+        colors={["#463C9F", "#3A346E", "#23234B", "#2B293E", "#272631"]}
+        locations={[0, 0.64, 0.76, 0.87, 1]}
+        style={{ flex: 1 }}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
       >
-        <View style={styles.inputContainer}>
-          <Text style={styles.rupeeSymbolInput}>₹</Text>
-          <TextInput
-            style={styles.amountInput}
-            value={amount}
-            onChangeText={setAmount}
-            placeholder=""
-            placeholderTextColor="#666"
-            keyboardType="numeric"
-            autoFocus
-          />
-          <Text style={styles.slashText}>/-</Text>
+        <Header title={transactionData.debt?.name || "Transaction"} />
+        <View style={styles.main}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={styles.contentSection}
+          >
+            <View style={styles.container}>
+              <BalanceTransition
+                openingBalance={transactionData?.openingBalance}
+                closingBalance={transactionData?.closingBalance}
+              />
+              <View style={styles.transactionInfoContainer}>
+                <TextCard2
+                  text1={"Transaction Balance"}
+                  text2={"₹"}
+                  text3={transactionData.paymentAmount?.toString() || "0"}
+                  text1style={styles.labelText}
+                  text2style={styles.rupeeSymbol}
+                  text3style={styles.amountText}
+                  cardStyle={styles.textCardStyle}
+                />
+                <View
+                  style={[
+                    styles.textCardStyle,
+                    {
+                      borderWidth: 0.5,
+                      borderColor: "#F7F7F7",
+                      paddingHorizontal: wp(1.5),
+                      padding: wp(0),
+                    },
+                  ]}
+                >
+                  <View style={styles.graphContainer}>
+                    <DonutChart
+                      data={[
+                        {
+                          value: transactionData.interestComponent,
+                          label: `${transactionData.interestComponent?.toFixed(
+                            0
+                          )}%`,
+                          color: "#DC143C",
+                        },
+                        {
+                          value: transactionData.principalComponent,
+                          label: `${transactionData.principalComponent?.toFixed(
+                            0
+                          )}%`,
+                          color: "#006FFF",
+                        },
+                      ]}
+                      radius={55}
+                      donutStrokeWidth={10}
+                      canvasWidth={25}
+                      canvasHeight={20}
+                      arcCornerRadius={0}
+                      fontFamily="PlusJakartaSans-Bold"
+                      labelFontSize={wp(3)}
+                      lineStroke={3}
+                      labelOffset={10}
+                      centerText="Breakdown"
+                      centerTextFontSize={wp(3)}
+                      singleLineLabel={true}
+                    />
+                  </View>
+                  <Legend
+                    data={[
+                      { name: "Interest", color: "#DC143C" },
+                      { name: "Principle", color: "#006FFF" },
+                    ]}
+                    layout="row"
+                    containerStyle={styles.legendContainer}
+                    textStyle={styles.legendText}
+                  />
+                </View>
+              </View>
+              <StatusDueCard
+                status={transactionData.status}
+                date={
+                  transactionData.dueDate
+                    ? new Date(transactionData.dueDate).toLocaleDateString()
+                    : "N/A"
+                }
+                amount={transactionData.paymentAmount || 0}
+                onPress={handleCardPress}
+              />
+              <Note
+                onNoteChange={handleNoteChange}
+                initialNote={transactionData.note}
+                saveNote={(note) => handleSaveNote(note)}
+              />
+              {/* <WhatIfCalculator onExtraPaymentChange={handleExtraPaymentChange} /> */}
+            </View>
+
+            <View style={styles.footer}>
+              {transactionData.status === "paid" ? (
+                <Button style={styles.editButton} onPress={handleShowPopup}>
+                  <View style={styles.buttonContent}>
+                    <PencilIcon
+                      color="#fff"
+                      size={wp(4.5)}
+                      style={{ marginRight: wp(2) }}
+                    />
+                    <Text style={styles.editButtonText}>Edit Payment</Text>
+                  </View>
+                </Button>
+              ) : (
+                <Button onPress={handleShowPopup}>
+                  <LinearGradient
+                    colors={["#00C853", "#B2FF59"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={styles.logButton}
+                  >
+                    <View style={styles.buttonContent}>
+                      <PlusCircleIcon
+                        color="#222"
+                        size={wp(4.5)}
+                        style={{ marginRight: wp(2) }}
+                      />
+                      <Text style={styles.logButtonText}>Log payment</Text>
+                    </View>
+                  </LinearGradient>
+                </Button>
+              )}
+            </View>
+          </ScrollView>
         </View>
-      </Popup>
-    </LinearGradient>
+
+        {/* Popup for Paid Amount */}
+        <Popup
+          visible={showPopup}
+          onClose={handleClosePopup}
+          onConfirm={handleConfirm}
+          title="Paid amount"
+          containerStyle={styles.popupContainer}
+          titleStyle={styles.popupTitle}
+          buttonText="OK"
+          color1="#00C853"
+          color2="#B2FF59"
+          buttonTextStyle={styles.popupButtonText}
+        >
+          <View style={styles.inputContainer}>
+            <Text style={styles.rupeeSymbolInput}>₹</Text>
+            <TextInput
+              style={styles.amountInput}
+              value={amount}
+              onChangeText={setAmount}
+              placeholder=""
+              placeholderTextColor="#666"
+              keyboardType="numeric"
+              autoFocus
+            />
+            <Text style={styles.slashText}>/-</Text>
+          </View>
+        </Popup>
+      </LinearGradient>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
+  main: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     paddingHorizontal: wp(5),
     gap: hp(2),
+  },
+  contentSection: {
+    flex: 9,
   },
   buttonContent: {
     flexDirection: "row",
@@ -309,7 +406,7 @@ const styles = StyleSheet.create({
     borderRadius: wp(10),
     paddingVertical: hp(1.5),
     alignItems: "center",
-    marginBottom: hp(5),
+    marginBottom: 0,
   },
   editButtonText: {
     color: "#fff",
@@ -321,7 +418,7 @@ const styles = StyleSheet.create({
     borderRadius: wp(10),
     paddingVertical: hp(1.5),
     alignItems: "center",
-    marginBottom: hp(5),
+    marginBottom: 0,
   },
   logButtonText: {
     color: "#222",
@@ -364,7 +461,7 @@ const styles = StyleSheet.create({
   },
   legendContainer: {
     paddingHorizontal: wp(3),
-    marginBottom: hp(1),
+    paddingBottom: hp(1),
   },
   legendText: {
     color: "#fff",
@@ -431,6 +528,11 @@ const styles = StyleSheet.create({
     fontFamily: "PlusJakartaSans-Bold",
     textAlign: "center",
     marginTop: hp(20),
+  },
+  footer: {
+    paddingHorizontal: wp(5),
+    marginVertical: hp(2),
+    justifyContent: "center",
   },
 });
 

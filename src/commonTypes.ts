@@ -38,15 +38,16 @@ export type Transaction  = {
   }
 
   export type LogExpenseCategoryItem = {
-    _id: string;
-    user: string;
+    id?: string;
+    _id?: string;
+    user?: string;
     name: string;
-    color: string;
+    color?: string;
     budget: number;
-    isDefault: boolean;
-    __v: number;
-    createdAt: string;
-    updatedAt: string;
+    isDefault?: boolean;
+    __v?: number;
+    createdAt?: string;
+    updatedAt?: string;
   };
 
   export type DebtInfo = {

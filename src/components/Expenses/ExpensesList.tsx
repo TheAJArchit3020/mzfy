@@ -61,7 +61,7 @@ const ExpensesList: FC<ExpensesListProps> = ({ data }) => {
         {data.transactions.map((item, index) => {
           const { image } = getCategoryImage(item.category);
           return (
-            <View key={item.id} style={styles.transactionItem}>
+            <View key={item.id || `${data.date}-${index}` } style={styles.transactionItem}>
               <View style={styles.transactionLeft}>
                 <View style={styles.transactionDetailContainer}>
                   <Image

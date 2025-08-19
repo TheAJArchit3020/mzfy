@@ -25,21 +25,26 @@ import Debtprogress from "@components/dashboard/debtprogress";
 import { dashboard } from "../managers/apis";
 import { DebtCountDownType } from "src/commonTypes";
 import { DebtChartDataItem, DonutDataItem } from "src/commonTypes";
-
+import use from "react";
+import Transaction from "./transaction";
+import { logPayment } from "@redux/Transacttion/Transaction";
 type navprops = NativeStackNavigationProp<RootStackParams>;
 
 const DashboardScreen: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<navprops>();
   const [show, setShow] = useState(false);
+  const userData = useSelector((state: RootState) => state.user);
+  const [logPaymentAmount, setLogPaymentAmount] = useState<String>();
+  const dashboardData = useSelector((state: RootState) => state.dashBoard);
+  const [selectedTrasactionId, setSelectedTransactionId] = useState<string>("");
 
-  const userData = useSelector((state: RootState) => state.dashBoard);
   const [debtFreeDate, setDebtFreeDate] = useState<DebtCountDownType>({
     year: 0,
     month: 0,
     day: 0,
   });
- 
+
   const [donutData, setDonutData] = useState<DonutDataItem[]>([]);
   useEffect(() => {
     dispatch(fetchDashboardSummary());
@@ -47,10 +52,13 @@ const DashboardScreen: FC = () => {
 
   useEffect(() => {
     adjustedDate();
-    transformDebtData(userData?.data?.balanceByDebt || []);
-  }, [userData]);
+    transformDebtData(dashboardData?.data?.balanceByDebt || []);
+    console.log("dashboardData", dashboardData);
+  }, [dashboardData]);
 
-  const logpopupHandler = () => {
+  const logpopupHandler = (id: string) => {
+    console.log("id", id);
+    setSelectedTransactionId(id);
     setShow(true);
   };
 
@@ -68,13 +76,11 @@ const DashboardScreen: FC = () => {
     }
   };
 
-
-
   const adjustedDate = () => {
-    if (!userData.data?.debtFreeDate) return null;
+    if (!dashboardData.data?.debtFreeDate) return null;
 
     const today = new Date();
-    const debtFreeDate = new Date(userData.data.debtFreeDate);
+    const debtFreeDate = new Date(dashboardData.data.debtFreeDate);
 
     let yearDiff = debtFreeDate.getFullYear() - today.getFullYear();
     let monthDiff = debtFreeDate.getMonth() - today.getMonth();
@@ -110,8 +116,37 @@ const DashboardScreen: FC = () => {
       value: parseFloat(debt.balance),
       color: debt.color,
     }));
-
     setDonutData(formatted);
+  };
+
+  const handleSeprateTrasactionNavigation = (id: string) => {
+    navigation.navigate("Transaction", { id: id });
+  };
+
+  const handleConfirm = async () => {
+    console.log(
+      "Confirmed amount:",
+      selectedTrasactionId,
+      " ",
+      " amount",
+      logPaymentAmount
+    );
+    try {
+      const response = await dispatch(
+        logPayment({
+          transactionId: selectedTrasactionId,
+          amount: Number(logPaymentAmount),
+        })
+      ).unwrap();
+
+      if (response) {
+        setShow(false);
+        setLogPaymentAmount("0");
+        fetchDashboardSummary();
+      }
+    } catch (error) {
+      console.error("Failed to log payment:", error);
+    }
   };
 
   return (
@@ -123,7 +158,10 @@ const DashboardScreen: FC = () => {
         <View style={styles.section1}>
           <View style={styles.section1_1}>
             <Text style={styles.section1_1_text}>
-              Hey <Text style={styles.section1_1_span}>Sumit ,</Text>
+              Hey{" "}
+              <Text style={styles.section1_1_span}>
+                {userData.current.name}
+              </Text>
             </Text>
             <Text style={styles.section1_1_text}>{getGreeting()}</Text>
           </View>
@@ -152,29 +190,33 @@ const DashboardScreen: FC = () => {
         </View>
 
         <View style={styles.section3}>
-          {<Debtprogress percent={userData.data?.payoffPct || 0} />}
+          {<Debtprogress percent={dashboardData.data?.payoffPct || 0} />}
         </View>
 
         <View style={styles.section4}>
-          <Debtbalance data={donutData} />
-          <Debtpaid data={userData.data || 0} />
+          <Debtbalance
+            data={donutData}
+            totalBalance={dashboardData.data?.totalBalance || 0}
+          />
+          <Debtpaid data={dashboardData.data || 0} />
         </View>
         <View style={styles.section7}>
           <Nextduedate
             data={
-              userData.data?.upcomingTransactions.slice(
+              dashboardData.data?.upcomingTransactions.slice(
                 0,
-                userData.data?.balanceByDebt.length
+                dashboardData.data?.balanceByDebt.length
               ) || []
             }
-            logpopupHandler={logpopupHandler}
+            logpopupHandler={(id) => logpopupHandler(id)}
           />
         </View>
         <View style={styles.section5}>
           <Text style={styles.section5_text}>Upcoming Transactions</Text>
           <UpcomingDebtsWithScrollbar
-            data={userData?.data?.upcomingTransactions || []}
+            data={dashboardData?.data?.upcomingTransactions || []}
             style={styles.cardstyle1}
+            onArrowPress={handleSeprateTrasactionNavigation}
           />
         </View>
       </ScrollView>
@@ -192,13 +234,17 @@ const DashboardScreen: FC = () => {
       <Popup
         visible={show}
         title="Paid amount"
-        onClose={() => setShow(false)}
+        onClose={() => {
+          setShow(false);
+          setLogPaymentAmount("0");
+        }}
+        onConfirm={handleConfirm}
         titleStyle={styles.popuptitle}
         containerStyle={styles.popupContainerStyle}
       >
         <Input
-          value={""}
-          onChangeContent={(val) => console.log(val)}
+          value={logPaymentAmount?.toString()}
+          onChangeContent={setLogPaymentAmount}
           keyboardType="numeric"
           textHeader="₹"
           children={

@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect, useMemo } from "react";
 import { View, Text, StyleSheet, ScrollView, Image } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import DateNavigator from "../components/reusable/DateNavigator";
@@ -21,6 +21,22 @@ import { AppDispatch, RootState } from "@redux/store";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParams } from "@managers/routing";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { expenseItem, Transaction } from "src/commonTypes";
+
+const monthNames = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
 type ExpensesScreenNavigationProp = StackNavigationProp<RootStackParams>;
 
@@ -31,9 +47,9 @@ const Expenses: FC<ExpensesProps> = ({}) => {
   const dispatch = useDispatch<AppDispatch>();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTab, setSelectedTab] = useState(0); // 0 for Expenses, 1 for Categories
-  const userData = useSelector((state: RootState) => state.expenses);
-  console.log("userData", userData);
-  const isDataAvailable = userData.totalSpent > 0;
+  const userExpensesData = useSelector((state: RootState) => state.expenses);
+  console.log("userExpensesData", userExpensesData);
+  const isDataAvailable = userExpensesData.totalSpent > 0;
   useEffect(() => {
     console.log(
       "year : ",
@@ -52,29 +68,48 @@ const Expenses: FC<ExpensesProps> = ({}) => {
     setSelectedDate(date);
     console.log("Selected date:", date.toLocaleDateString());
   };
+  const totalSpentPercent = Math.ceil(
+    (userExpensesData.totalSpent / (userExpensesData.totalBudget || 1)) * 100
+  );
+  const remainingPercent = 100 - totalSpentPercent;
 
   const pieChartData = [
-    { value: 64, color: "#DC143C", name: "Total Spent" },
-    { value: 26, color: "#006FFF", name: "Monthly Budget" },
+    { value: totalSpentPercent, color: "#DC143C", name: "Total Spent" },
+    { value: remainingPercent, color: "#006FFF", name: "Monthly Budget" },
   ];
 
-  const categoriesData = [
-    { value: 40.8, color: "#4CAF50", label: "Investment", emoji: "💹" },
-    { value: 30.19, color: "#177AD5", label: "Entertainment", emoji: "🎬" },
-    { value: 10.69, color: "#FF6B6B", label: "Health", emoji: "🩺" },
-    { value: 8.06, color: "#8BC34A", label: "Miscellaneous", emoji: "🧰" },
-    { value: 10, color: "#9C27B0", label: "Food", emoji: "🍽️" },
-  ].map((item) => ({
-    ...item,
-    line1: item.label,
-    line2: `${item.value}% ${item.emoji}`,
-  }));
+  const totalBudget = userExpensesData.totalBudget || 1; // Prevent division by zero
+
+  // Create category data with percentage values
+  const categoriesData =
+    userExpensesData.getCatogories?.map((cat) => {
+      const percentage = (cat.budget / totalBudget) * 100;
+
+      // Optional: emoji mapping
+      const emojiMap: Record<string, string> = {
+        Investment: "💹",
+        Entertainment: "🎬",
+        Health: "🩺",
+        Miscellaneous: "🧰",
+        Food: "🍽️",
+      };
+
+      return {
+        value: Number(percentage.toFixed(2)),
+        color: cat.color || "#006FFF",
+        label: cat.name,
+        emoji: emojiMap[cat.name] || "",
+        line1: cat.name,
+        line2: `${percentage.toFixed(2)}% ${emojiMap[cat.name] || "📌"}`,
+      };
+    }) || [];
 
   const segmentItems = ["Expenses", "Categories"];
 
   const handleCategoryManagement = () => {
     console.log("Category management pressed");
     // Add navigation or modal logic here
+    navigation.navigate("CategoryManagement");
   };
 
   const handleAddExpense = () => {
@@ -83,67 +118,99 @@ const Expenses: FC<ExpensesProps> = ({}) => {
     navigation.navigate("LogExpense");
   };
 
-  // Sample expenses data with dates
-  const expensesData = [
-    {
-      date: "31 Thu",
-      transactions: [
-        {
-          id: "1",
-          category: "Food",
-          item: "Biriyani",
-          amount: 350,
-          date: "31 Thu",
-        },
-        {
-          id: "2",
-          category: "Health",
-          item: "Tablet",
-          amount: 200,
-          date: "31 Thu",
-        },
-      ],
-    },
-    {
-      date: "30 Wed",
-      transactions: [
-        {
-          id: "3",
-          category: "Food",
-          item: "Biriyani",
-          amount: 350,
-          date: "30 Wed",
-        },
-        {
-          id: "4",
-          category: "Entertainment",
-          item: "Movie",
-          amount: 200,
-          date: "30 Wed",
-        },
-      ],
-    },
-    {
-      date: "29 Tue",
-      transactions: [
-        {
-          id: "5",
-          category: "Investment",
-          item: "Stocks",
-          amount: 1000,
-          date: "29 Tue",
-        },
-        {
-          id: "6",
-          category: "Miscellaneous",
-          item: "Books",
-          amount: 150,
-          date: "29 Tue",
-        },
-      ],
-    },
-  ];
+  const getRecentRemaining = useMemo(() => {
+    return userExpensesData.totalBudget - userExpensesData.totalSpent;
+  }, [userExpensesData.totalBudget, userExpensesData.totalSpent]);
 
+  // Calculate last 7 days (including today) expenses for the graph
+  const { graphData, graphLabels } = useMemo(() => {
+    const toDateKey = (d: Date) => {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    };
+
+    // Build an ordered list of the last 7 days from oldest to today
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const last7Days: Date[] = [];
+    for (let i = 6; i >= 0; i -= 1) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      last7Days.push(d);
+    }
+
+    // Precompute totals by date key
+    const totalsByDate: Record<string, number> = {};
+    const recent = Array.isArray(userExpensesData.recentExpenses)
+      ? userExpensesData.recentExpenses
+      : [];
+    for (const exp of recent as any[]) {
+      const expDate = new Date(exp?.date);
+      if (isNaN(expDate.getTime())) continue;
+      const key = toDateKey(expDate);
+      totalsByDate[key] = (totalsByDate[key] || 0) + (Number(exp?.amount) || 0);
+    }
+
+    // Build rawData and labels arrays aligned to last7Days
+    const rawData = last7Days.map((d) => ({
+      amount: totalsByDate[toDateKey(d)] || 0,
+      dueDate: toDateKey(d),
+    }));
+    const labels = last7Days.map((d) => {
+      const day = String(d.getDate()).padStart(2, "0");
+      const month = monthNames[d.getMonth()];
+      return `${day} ${month}`;
+    });
+
+    return { graphData: rawData, graphLabels: labels };
+  }, [userExpensesData.recentExpenses]);
+
+  // Sample expenses data with dates
+  const expensesData: expenseItem[] = Object.values(
+    (userExpensesData.recentExpenses || []).reduce(
+      (
+        acc: Record<string, { date: string; transactions: Transaction[] }>,
+        exp: any
+      ) => {
+        // Format the date as "DD DDD" (e.g., "31 Thu")
+        const dateObj = new Date(exp.date);
+        const dateLabel = dateObj.toLocaleDateString("en-US", {
+          day: "numeric",
+          weekday: "short",
+        });
+
+        // If this date group doesn't exist, create it
+        if (!acc[dateLabel]) {
+          acc[dateLabel] = {
+            date: dateLabel,
+            transactions: [],
+          };
+        }
+
+        // Push into transactions
+        acc[dateLabel].transactions.push({
+          id: exp.expense || exp._id || "", // ID from backend
+          category: exp.category || "",
+          item: exp.note || exp.description || "", // Use note as item (or replace with real item name if available)
+          amount: exp.amount || 0,
+          date: dateLabel,
+        });
+
+        return acc;
+      },
+      {} as Record<string, { date: string; transactions: Transaction[] }>
+    )
+  ).sort((a, b) => {
+    // Sort by date descending (most recent first)
+    const dateA = new Date(a.transactions[0]?.date || "");
+    const dateB = new Date(b.transactions[0]?.date || "");
+    return dateB.getTime() - dateA.getTime();
+  }) as expenseItem[];
+  {
+    console.log("categoriesData", categoriesData);
+  }
   return (
     <LinearGradient
       colors={["#463C9F", "#3A346E", "#23234B", "#2B293E", "#272631"]}
@@ -169,13 +236,13 @@ const Expenses: FC<ExpensesProps> = ({}) => {
                 {/* Monthly Budget Card */}
                 <View style={styles.card}>
                   <Text style={styles.cardLabel}>Monthly budget</Text>
-                  <Text style={styles.cardAmount}>₹50,000</Text>
+                  <Text style={styles.cardAmount}>₹{userExpensesData.totalBudget}</Text>
                 </View>
 
                 {/* Total Spent Card */}
                 <View style={styles.card}>
                   <Text style={styles.cardLabel}>Total spent</Text>
-                  <Text style={styles.cardAmount}>₹32,000</Text>
+                  <Text style={styles.cardAmount}>₹{userExpensesData.totalSpent}</Text>
                 </View>
               </View>
 
@@ -213,22 +280,24 @@ const Expenses: FC<ExpensesProps> = ({}) => {
                         />
                       </View>
                       <View style={styles.balanceContainer}>
-                        <Text style={styles.balanceText}>Balance: ₹18,000</Text>
+                        <Text style={styles.balanceText}>
+                          Balance: ₹{getRecentRemaining}
+                        </Text>
                       </View>
                     </View>
                   ) : (
                     // Categories View
-                    <View style={styles.graphContainer}>
+                    <View>
                       <DonutChart
                         data={categoriesData}
-                        donutStrokeWidth={wp(3)}
-                        radius={wp(20)}
+                        donutStrokeWidth={20}
+                        radius={90}
                         arcCornerRadius={0}
                         labelOffset={20}
-                        canvasHeight={wp(45)}
-                        canvasWidth={wp(40)}
+                        canvasHeight={30}
+                        canvasWidth={300}
                         fontFamily="PlusJakartaSans-Bold"
-                        labelFontSize={wp(3)}
+                        labelFontSize={wp(2.5)}
                         lineStroke={wp(0.5)}
                       />
                     </View>
@@ -243,7 +312,7 @@ const Expenses: FC<ExpensesProps> = ({}) => {
                     Recent expenses
                   </Text>
                   <Button
-                    onPress={() => console.log("See all expenses")}
+                    onPress={() => navigation.navigate("AllExpenses")}
                     style={styles.expensesButton}
                   >
                     <BookOpenIcon size={wp(5)} color="white" />
@@ -253,15 +322,21 @@ const Expenses: FC<ExpensesProps> = ({}) => {
                 <View style={styles.financialOverview}>
                   <View style={styles.financialItem}>
                     <Text style={styles.financialLabel}>Budget</Text>
-                    <Text style={styles.financialAmount}>₹50,000</Text>
+                    <Text style={styles.financialAmount}>
+                      ₹{userExpensesData.totalBudget}
+                    </Text>
                   </View>
                   <View style={styles.financialItem}>
                     <Text style={styles.financialLabel}>Exp.</Text>
-                    <Text style={styles.financialAmount}>₹32,000</Text>
+                    <Text style={styles.financialAmount}>
+                      ₹{userExpensesData.totalSpent}
+                    </Text>
                   </View>
                   <View style={styles.financialItem}>
                     <Text style={styles.financialLabel}>Remaining</Text>
-                    <Text style={styles.financialAmount}>₹18,000</Text>
+                    <Text style={styles.financialAmount}>
+                      ₹{getRecentRemaining}
+                    </Text>
                   </View>
                 </View>
               </View>
@@ -275,7 +350,11 @@ const Expenses: FC<ExpensesProps> = ({}) => {
               <View style={styles.spendingTrendContainer}>
                 <Text style={styles.sectionTitle}>Spending trend</Text>
                 <View style={styles.graphContainer}>
-                  <GraphComponent width={wp(80)} />
+                  <GraphComponent
+                    width={wp(80)}
+                    rawData={graphData}
+                    labels={graphLabels}
+                  />
                 </View>
               </View>
 
@@ -350,10 +429,9 @@ const styles = StyleSheet.create({
   },
   cardAmount: {
     color: "#fff",
-    fontSize: wp(5.5),
+    fontSize: wp(5),
     fontFamily: "PlusJakartaSans-Bold",
     fontWeight: "bold",
-    textAlign: "center",
   },
   expensesDataContainer: {
     marginHorizontal: wp(5),

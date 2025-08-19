@@ -1,33 +1,49 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
-import React, { FC } from 'react'
-import Card from '@components/reusable/card'
-import Circularprogressbar from '@components/reusable/circularprogressbar'
-
-
-
-interface DebtItemProps {
-    data: any
+import { Image, StyleSheet, Text, View } from "react-native";
+import React from "react";
+import Card from "@components/reusable/card";
+import DonutChart from "../../DonutChart";
+import { DebtChartDataItem } from "../../commonTypes";
+import { DonutDataItem } from "../../commonTypes";
+import { widthToDP as wp } from "react-native-responsive-screens";
+interface DebtbalanceProps {
+  data: DonutDataItem[];
+  totalBalance: number;
 }
 
-const Debtbalance: FC<DebtItemProps> = ({ data }) => {
-
-
-    return (
-        <Card style={styles.section_card} cardStyle={styles.section_card_inner}>
-            <View style={styles.section_card_inner_content}>
-                <View style={styles.section_card_inner_content_item}>
-                    <Circularprogressbar  size={120} strokeWidth={12} data={data} />
-                    <View style={styles.section_card_inner_content_item3} >
-                        <Text style={styles.section_card_text}>Balance</Text>
-                        <Image style={styles.image} source={require('@images/dashboard/balanceicon.png')} />
-                    </View>
-                </View>
-            </View>
-        </Card>
-    )
-}
-
-
+const Debtbalance: React.FC<DebtbalanceProps> = ({ data, totalBalance }) => {
+  // Transform DebtChartDataItem[] to DonutDataItem[]
+  return (
+    <Card style={styles.section_card} cardStyle={styles.section_card_inner}>
+      <View style={styles.section_card_inner_content}>
+        <View style={styles.section_card_inner_content_item}>
+          <View style={styles.donut_chart_container}>
+            <DonutChart
+              data={data}
+              radius={55}
+              donutStrokeWidth={10}
+              arcCornerRadius={0}
+              canvasWidth={30}
+              canvasHeight={5}
+              labelFontSize={10}
+              centerText={`₹${totalBalance}`}
+              fontFamily="PlusJakartaSans-Bold"
+              centerTextFontSize={wp(4)}
+              showLabel={false}
+              centerTextColor="#E63A30"
+            />
+          </View>
+          <View style={styles.section_card_inner_content_item3}>
+            <Text style={styles.section_card_text}>Balance</Text>
+            <Image
+              style={styles.image}
+              source={require("@images/dashboard/balanceicon.png")}
+            />
+          </View>
+        </View>
+      </View>
+    </Card>
+  );
+};
 
 export default Debtbalance;
 
@@ -82,8 +98,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: "4%",
   },
-  donut_chart_container: {
-    width: "100%",
-    height: "85%",
-  },
+  donut_chart_container: {},
 });

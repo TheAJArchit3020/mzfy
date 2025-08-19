@@ -63,6 +63,7 @@ const LogExpense = () => {
       result = catagories;
       setCategories(result || []);
     }
+    console.log("result", result);
   };
 
   const handleLogExpense = async () => {

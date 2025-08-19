@@ -9,38 +9,52 @@ import { ChevronRightIcon, ChevronUpIcon } from "react-native-heroicons/solid";
 
 interface RawPoint {
   amount: number;
-  dueDate: string; // ISO
+  dueDate: string;
 }
 
 interface GraphComponentProps {
   width?: number;
   height?: number;
   rawData: RawPoint[];
+  labels?: string[];
 }
 
 const monthNames = [
-  "Jan","Feb","Mar","Apr","May","Jun",
-  "Jul","Aug","Sep","Oct","Nov","Dec"
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 
 const GraphComponent: FC<GraphComponentProps> = memo(
-  ({ width = wp(90), height = hp(25), rawData }) => {
-    // 1️⃣ map your labels: "05 Sep 2025" etc.
-    const labels = rawData.map(pt => {
-      const d = new Date(pt.dueDate);
-      const day = String(d.getDate()).padStart(2, "0");
-      const month = monthNames[d.getMonth()];
-      const year = d.getFullYear();
-      return `${day} ${month} ${year}`;
-    });
+  ({ width = wp(90), height = hp(25), rawData, labels }) => {
+    // Use provided labels or generate default month names
+    console.log("rawData", rawData);
+    const chartLabels =
+      labels ||
+      rawData.map((pt) => {
+        const d = new Date(pt.dueDate);
+        const day = String(d.getDate()).padStart(2, "0");
+        const month = monthNames[d.getMonth()];
+        const year = d.getFullYear();
+        return `${day} ${month} ${year}`;
+      });
 
     // 2️⃣ map your data points
-    const dataPoints = rawData.map(pt => pt.amount);
+    const dataPoints = rawData.map((pt) => pt.amount);
 
     // 3️⃣ build the chart-data shape
     const data = {
-      labels,
-      datasets: [{ data: dataPoints }]
+      labels: chartLabels,
+      datasets: [{ data: dataPoints }],
     };
 
     return (

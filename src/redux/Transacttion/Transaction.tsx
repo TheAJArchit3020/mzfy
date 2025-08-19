@@ -1,44 +1,50 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getTransaction } from "@managers/apis";
+import { getTransaction, logTransaction } from "@managers/apis";
 import axios from "axios";
 import { TransactionState, TransactionData } from "src/commonTypes";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { RootState } from "@reduxjs/toolkit/query";
 
 // Define the initial state
 const initialState: TransactionState = {
   transaction: {
-    _id: "6895aab80f9a12cd257cfdfa",
-    user: "6895aaaa0f9a12cd257cfddb",
+    _id: "",
+    user: "",
     debt: {
-      _id: "6895aab80f9a12cd257cfde4",
-      name: "Credit Card"
+      _id: "",
+      name: "",
     },
-    openingBalance: 19164.93,
-    paymentAmount: 500,
-    principalComponent: 420.15,
-    interestComponent: 79.85,
-    closingBalance: 18744.78,
-    dueDate: "2025-11-15T00:00:00.000Z",
-    status: "upcoming",
+    openingBalance: 0,
+    paymentAmount: 0,
+    principalComponent: 0,
+    interestComponent: 0,
+    closingBalance: 0,
+    dueDate: "",
+    status: "",
     note: "",
-    createdAt: "2025-08-08T07:43:52.350Z",
-    updatedAt: "2025-08-08T07:43:52.350Z",
-    __v: 0
+    createdAt: "",
+    updatedAt: "",
+    __v: 0,
   },
   loading: false,
-  error: null,
+  error: "",
 };
 
 // Create async thunk for fetching transaction data
-export const getTransactionData = createAsyncThunk(
+export const getTransactionData = createAsyncThunk<
+  any,
+  any,
+  { state: any; rejectValue: any }
+>(
   "transaction/getTransactionData",
-  async (transactionId: string, { rejectWithValue }) => {
+  async (transactionId: string, { getState, rejectWithValue }) => {
     try {
-      const token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODliMGU4ZDM3MDg0MzRmMDExZmM0MzAiLCJpYXQiOjE3NTQ5OTIzMDgsImV4cCI6MTc1NzU4NDMwOH0.ImXIM1ZJwGBWYpdD5qCRGuWx4xJ-RoQ1xX9Nh4He5rY"
+      const storetoken = await AsyncStorage.getItem("token");
+      const _token = getState().loginuser?.items[0]?.token;
 
       const response = await axios.get(`${getTransaction}/${transactionId}`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${_token ? _token : storetoken}`,
         },
       });
       console.log("Transaction data:", response.data);
@@ -48,6 +54,39 @@ export const getTransactionData = createAsyncThunk(
         return rejectWithValue(error.response.data.message);
       }
       console.log("get transaction error", error);
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+export const logPayment = createAsyncThunk<
+  any,
+  { transactionId: string; amount: number },
+  { state: any; rejectValue: any }
+>(
+  "transaction/logPayment",
+  async ({ transactionId, amount }, { getState, rejectWithValue }) => {
+    try {
+      const storetoken = await AsyncStorage.getItem("token");
+      const _token = getState().loginuser?.items[0]?.token;
+      console.log("token", storetoken);
+      console.log("api", `${logTransaction}/${transactionId}/log`);
+      const response = await axios.post(
+        `${logTransaction}/${transactionId}/log`,
+        { amountPaid: amount },
+        {
+          headers: {
+            Authorization: `Bearer ${_token ? _token : storetoken}`,
+          },
+        }
+      );
+      console.log("log payment data:", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      console.log("log payment error", error);
+      if (axios.isAxiosError(error) && error.response) {
+        return rejectWithValue(error.response.data.message);
+      }
       return rejectWithValue("Something went wrong");
     }
   }

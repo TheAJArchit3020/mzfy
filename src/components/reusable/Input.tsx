@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 0,
     backgroundColor: "transparent",
-    paddingHorizontal: 5
+    paddingHorizontal: 5,
   },
   label: {
     marginBottom: hp(2),

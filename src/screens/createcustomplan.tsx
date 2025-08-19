@@ -208,7 +208,7 @@ const Createcustomplan: FC = () => {
                     <View style={styles.inputgroup}>
                         <Text style={styles.inputgroup_label}>Extra payment</Text>
                         <Input
-                            value={payoffplanArray?.extraPayments}
+                            //value={payoffplanArray?.extraPayments}
                             onChangeContent={(val) =>
                                 // dispatch({ type: "SET_FIELD", field: "extrapay", value: val })
                                 console.log(val)

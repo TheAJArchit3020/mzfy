@@ -17,9 +17,10 @@ import Button from "@components/reusable/button";
 interface NoteProps {
   onNoteChange?: (note: string) => void;
   initialNote?: string; // Add prop for initial note data
+  saveNote: (note: string) => void;
 }
 
-const Note: FC<NoteProps> = ({ onNoteChange, initialNote }) => {
+const Note: FC<NoteProps> = ({ onNoteChange, initialNote, saveNote }) => {
   const [noteText, setNoteText] = useState("");
   const [savedNote, setSavedNote] = useState("");
   const [isEditing, setIsEditing] = useState(false);
@@ -42,6 +43,7 @@ const Note: FC<NoteProps> = ({ onNoteChange, initialNote }) => {
       setNoteText("");
       setIsEditing(false);
       onNoteChange?.(noteText.trim());
+      saveNote(noteText);
     }
   };
 
@@ -146,7 +148,6 @@ const styles = StyleSheet.create({
     fontSize: wp(4),
     textAlign: "justify",
     fontFamily: "PlusJakartaSans-Bold",
-    paddingLeft: wp(3),
   },
   editButton: {
     borderRadius: wp(10),
