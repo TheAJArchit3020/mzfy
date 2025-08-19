@@ -8,7 +8,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParams } from '@managers/routing';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@redux/store';
-import { deleteUser, fetchUser } from '@redux/user/userSlice';
+import { deleteUser, fetchUser, setField, updateUser, User } from '@redux/user/userSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Input from '@components/reusable/Input';
 import { PencilIcon } from 'react-native-heroicons/solid';
@@ -21,6 +21,10 @@ const Profile: FC = () => {
     const navigation = useNavigation<navProps>();
     const dispatch = useDispatch<AppDispatch>();
     const [editMode, setEditMode] = useState<{ [key: number]: boolean }>({});
+    const currentData = useSelector((state: RootState) => state.user.current) ?? [];
+
+
+    console.log("currentData :", currentData)
 
 
     // ⏰ Get current hour
@@ -65,12 +69,22 @@ const Profile: FC = () => {
     }
 
 
-    const handleEditProfile = (index: number) => {
-        setEditMode(prev => ({
-            ...prev,
-            [index]: !prev[index] // toggle only the clicked one
-        }));
+    const handleEditProfile = (index: number, field: keyof User, value: any) => {
+        setEditMode(prev => {
+            const isCurrentlyEditing = !!prev[index];
+
+            // If it was editing, now user clicked second time → save
+            if (isCurrentlyEditing) {
+                dispatch(updateUser({ [field]: value }));
+            }
+
+            return {
+                ...prev,
+                [index]: !isCurrentlyEditing // toggle edit mode
+            };
+        });
     };
+
 
 
     const handleDeleteAccount = async () => {
@@ -120,26 +134,33 @@ const Profile: FC = () => {
                         </View>
                         <View style={styles.section2_content}>
                             <Text style={styles.label} >Personal Income</Text>
-                            <Input value={USERARRAY?.personalIncome} textHeader={USERARRAY?.selectedCurrency} editable={!!editMode[1]}
+                            <Input value={currentData?.personalIncome != 0 ? currentData?.personalIncome : USERARRAY?.personalIncome} textHeader={USERARRAY?.selectedCurrency} editable={!!editMode[1]}
                                 children={
-                                    <TouchableOpacity onPress={() => handleEditProfile(1)}>
+                                    <TouchableOpacity onPress={() => handleEditProfile(1, "personalIncome", currentData?.personalIncome ?? USERARRAY?.personalIncome)}>
                                         <PencilIcon color={"#fff"} size={24} />
                                     </TouchableOpacity>
                                 }
                                 containerStyle={styles.containerStyle}
                                 style={styles.inputStyle}
+                                onChangeContent={(text) => {
+                                    dispatch(setField({ field: 'personalIncome', value: text }));
+                                }}
                             />
                         </View>
                         <View style={styles.section2_content}>
                             <Text style={styles.label} >Household Income</Text>
-                            <Input value={USERARRAY?.totalHouseholdIncome} textHeader={USERARRAY?.selectedCurrency} editable={!!editMode[2]}
+                            <Input value={currentData?.totalHouseholdIncome !== 0 ? currentData?.totalHouseholdIncome : USERARRAY?.totalHouseholdIncome} textHeader={USERARRAY?.selectedCurrency} editable={!!editMode[2]}
                                 children={
-                                    <TouchableOpacity onPress={() => handleEditProfile(2)}>
+                                    <TouchableOpacity onPress={() => handleEditProfile(2, "totalHouseholdIncome", currentData?.totalHouseholdIncome ?? USERARRAY?.totalHouseholdIncome)}>
                                         <PencilIcon color={"#fff"} size={24} />
                                     </TouchableOpacity>
                                 }
                                 containerStyle={styles.containerStyle}
                                 style={styles.inputStyle}
+                                onChangeContent={(text) => {
+                                    dispatch(setField({ field: 'totalHouseholdIncome', value: text }));
+                                }}
+
                             />
                         </View>
 

@@ -69,6 +69,7 @@ const Login: FC = () => {
             console.log("first resultAction : ", resultAction.payload)
             const payloadData = resultAction?.payload as { detailsExists?: boolean; token?: string; userId?: string };
             const { detailsExists, token, userId } = payloadData;
+            
 
             if (detailsExists) {
                 await dispatch(fetchUser()).unwrap()
@@ -78,12 +79,13 @@ const Login: FC = () => {
                     index: 0,
                 });
             }
-            // on success navigate:
         } catch (err: any) {
             if (err?.status === 401) {
                 navigation.navigate('registrationlayoutscreen', {
                     index: 0
                 })
+            } else if (err?.status === 500) {
+                navigation.navigate('loginscreen')
             }
         }
 

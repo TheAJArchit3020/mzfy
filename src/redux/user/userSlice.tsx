@@ -35,7 +35,7 @@ const initialState: UserState = {
         age: '',
         profession: '',
         currency: '',
-        personalIncome: '',
+        personalIncome: 0,
         totalHouseholdIncome: 0,
         expenseByCategory: {},
         debts: [],
@@ -177,6 +177,46 @@ export const deleteUser = createAsyncThunk<void, void, { state: RootState; rejec
     }
 )
 
+// update user
+export const updateUser = createAsyncThunk<User, Partial<User>, { state: RootState; rejectValue: any }>(
+    'user/updateUser',
+    async (updatedFields, { getState, rejectWithValue }) => {
+
+        const _token = (getState().loginuser?.items[0]?.token)
+        const storetoken = await AsyncStorage.getItem('token')
+
+        try {
+            const resp = await axios.put<User>(
+                registeruseruser,
+                updatedFields,
+                {
+                    headers: {
+                        Authorization: `Bearer ${_token ? _token : storetoken}`,
+                    }
+                }
+            )
+
+            return resp.data
+        } catch (err: any) {
+            if (axios.isAxiosError(err)) {
+
+                const statusCode = err.response?.status
+                const errorData = err.response?.data
+
+                return rejectWithValue({
+                    message: err.message,
+                    status: statusCode,
+                    data: errorData,
+                })
+            } else {
+                // Non-Axios error (e.g. coding bug, thrown manually)
+                console.log("Unexpected error:", err)
+                return rejectWithValue({ message: (err as Error).message })
+            }
+        }
+    }
+)
+
 
 
 const userSlice = createSlice({
@@ -237,6 +277,21 @@ const userSlice = createSlice({
                 state.current = initialState.current
             })
             .addCase(deleteUser.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload as string
+            })
+
+        builder
+            .addCase(updateUser.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(updateUser.fulfilled, (state, action) => {
+                state.loading = false
+                state.items = [action.payload]
+                state.current = action.payload
+            })
+            .addCase(updateUser.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.payload as string
             })
