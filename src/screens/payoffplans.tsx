@@ -99,32 +99,32 @@ const PayoffplansScreen: FC = () => {
   const raw = strategyPlanArray
 
 
-  const strategies = [
-    {
-      title: 'Debt Avalanche',
-      subtitle: 'Prioritize highest interest rate',
-      advantage: 'Fastest payoff and least interest',
-      timeToPayoff: formatDuration(raw[0]?.avalanche?.estimatedDebtFreeDate),
-      interestSaved: `${selectedCurrency} ${raw[0]?.avalanche?.totalInterestPaid?.toLocaleString()}`,
-      value: 'avalanche',
-    },
-    {
-      title: 'Debt Snowball',
-      subtitle: 'Prioritize lowest balance first',
-      advantage: 'The most quick wins',
-      timeToPayoff: formatDuration(raw[0]?.snowball?.estimatedDebtFreeDate),
-      interestSaved: `${selectedCurrency} ${raw[0]?.snowball?.totalInterestPaid?.toLocaleString()}`,
-      value: 'snowball',
-    },
-    {
-      title: 'Custom',
-      subtitle: 'Customized Plan',
-      advantage: 'Customized Plan',
-      timeToPayoff: formatDuration(raw[0]?.custom?.estimatedDebtFreeDate),
-      interestSaved: `${selectedCurrency} ${raw[0]?.custom?.totalInterestPaid?.toLocaleString()}`,
-      value: 'custom',
-    },
-  ];
+  // const strategies = [
+  //   {
+  //     title: 'Debt Avalanche',
+  //     subtitle: 'Prioritize highest interest rate',
+  //     advantage: 'Fastest payoff and least interest',
+  //     timeToPayoff: formatDuration(raw[0]?.avalanche?.estimatedDebtFreeDate),
+  //     interestSaved: `${selectedCurrency} ${raw[0]?.avalanche?.totalInterestPaid?.toLocaleString()}`,
+  //     value: 'avalanche',
+  //   },
+  //   {
+  //     title: 'Debt Snowball',
+  //     subtitle: 'Prioritize lowest balance first',
+  //     advantage: 'The most quick wins',
+  //     timeToPayoff: formatDuration(raw[0]?.snowball?.estimatedDebtFreeDate),
+  //     interestSaved: `${selectedCurrency} ${raw[0]?.snowball?.totalInterestPaid?.toLocaleString()}`,
+  //     value: 'snowball',
+  //   },
+  //   {
+  //     title: 'Custom',
+  //     subtitle: 'Customized Plan',
+  //     advantage: 'Customized Plan',
+  //     timeToPayoff: formatDuration(raw[0]?.custom?.estimatedDebtFreeDate),
+  //     interestSaved: `${selectedCurrency} ${raw[0]?.custom?.totalInterestPaid?.toLocaleString()}`,
+  //     value: 'custom',
+  //   },
+  // ];
 
 
 
@@ -179,12 +179,12 @@ const PayoffplansScreen: FC = () => {
 
 
           {/* section5 */}
-          <View style={styles.cardcontainer4}>
+          {/* <View style={styles.cardcontainer4}>
             <Text style={styles.cardcontainer4_title}>Debt Reduction Timeline</Text>
             <View style={styles.cardcontainer4_inner}>
-              {/* <GraphComponent /> */}
+              <GraphComponent />
             </View>
-          </View>
+          </View> */}
 
           {/* section6 */}
           <Button style={styles.button} >
@@ -196,32 +196,7 @@ const PayoffplansScreen: FC = () => {
 
       {/* log payment popup */}
 
-      <Popup
-        visible={show}
-        onClose2={() => setShow(false)}
-        onClose={handleSelect}
-        containerStyle={styles.popupContainerStyle}
-        buttonText="Select strategy"
-        color1="#006FFF"
-        color2="#006FFF"
-        buttonTextStyle={styles.buttonTextStyle}
-        isDisable={choice === null && true}
-      >
-        {strategies.map(option => (
-          <StrategyRadioCard
-            key={option.value}
-            option={option}
-            selectedValue={choice}
-            onSelect={setChoice}
-            containerStyle={styles.containerStyle}
-            titleStyle={styles.inputgroup_text}
-            subtitleStyle={styles.subtitleStyle}
-            infoLabelStyle={styles.labelStyle}
-            infoValueStyle={styles.descriptionStyle}
-          />
-        ))}
-
-      </Popup>
+     
 
     </>
   );

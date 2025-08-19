@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@redux/store'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { fetchPayoffPlan } from '@redux/payoffplans/payoffplanSlice'
-import { addCustomPlan, fetchCustomPlan } from '@redux/customplan/customplanSlice'
+import { addCustomPlan, fetchCustomPlan, previewCustomPlan } from '@redux/customplan/customplanSlice'
 
 
 
@@ -51,18 +51,26 @@ const Createcustomplan: FC = () => {
     useFocusEffect(
         useCallback(() => {
 
-            const _fetchCustomPlan = async () => {
-                try {
-                    await dispatch(fetchCustomPlan());
-                } catch (error) {
-                    console.error('Error fetchCustomPlan payoff plans:', error);
-                }
-            };
-
             _fetchCustomPlan();
 
         }, [])
     );
+
+    const _fetchCustomPlan = async () => {
+        try {
+            await dispatch(fetchCustomPlan());
+        } catch (error) {
+            console.error('Error fetchCustomPlan payoff plans:', error);
+        }
+    };
+
+    const _fetchPreviewCustomPlan = async (data: any) => {
+        try {
+            await dispatch(previewCustomPlan(data));
+        } catch (error) {
+            console.error('Error fetchCustomPlan payoff plans:', error);
+        }
+    };
 
 
 
@@ -109,17 +117,23 @@ const Createcustomplan: FC = () => {
         }))
         : [];
 
-    const handleSelectedDebtChange = () => {
+    const handleSelectedDebtChange = async () => {
 
         const newExtraPayment = {
             debt: selectedDebt,
             extraAmount: Number(debtAmount),
         };
 
-        setDebtExtraPaymentArray((prev) => [...prev, newExtraPayment]);
-        setDebtAmount('');
-        setSelectedDebt(null);
-        setShow(false);
+        console.log("newExtraPayment : ",newExtraPayment)
+
+        // setDebtExtraPaymentArray((prev) => [...prev, newExtraPayment]);
+
+        // await _fetchPreviewCustomPlan(newExtraPayment);
+        // setDebtAmount('');
+        // setSelectedDebt(null);
+        // setShow(false);
+
+        // await _fetchCustomPlan();
 
     }
 
@@ -212,7 +226,6 @@ const Createcustomplan: FC = () => {
 
             </ScrollView>
 
-            {/* log payment popup */}
             <Popup
                 visible={show}
                 onClose={handleSelectedDebtChange}

@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useRef } from "react";
-import { View, Text, StyleSheet, Animated, Easing } from "react-native";
+import { View, Text, StyleSheet, Animated, Easing, Image } from "react-native";
 import {
   widthToDP as wp,
   heightToDP as hp,
@@ -131,7 +131,9 @@ const Splash: FC = () => {
           },
         ]}
       >
-        <View style={Styles.circle} />
+        <View style={Styles.circle} >
+          <Image source={require("@images/AppIntro/moneezifylogo.png")} style={Styles.logoImage} />
+        </View>
       </Animated.View>
 
       <Animated.Text
@@ -172,6 +174,8 @@ const Styles = StyleSheet.create({
     height: wp(30),
     borderRadius: wp(15),
     backgroundColor: "#FFFFFF",
+    justifyContent: "center",
+    alignItems: "center",
   },
   text: {
     position: "absolute",
@@ -183,6 +187,12 @@ const Styles = StyleSheet.create({
     color: "#FFFFFF",
     fontFamily: "PlusJakartaSans-Bold",
   },
+  logoImage: {
+    width: wp(25),
+    height: wp(25),
+    borderRadius: wp(15),
+    resizeMode: "contain",
+  }
 });
 
 export default Splash;
