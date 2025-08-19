@@ -38,6 +38,7 @@ const DashboardScreen: FC = () => {
   const dashboardData = useSelector((state: RootState) => state.dashBoard);
   const userDetails = useSelector((state: RootState) => state.user.items[0]);
 
+
   const [debtFreeDate, setDebtFreeDate] = useState<DebtCountDownType>({
     year: 0,
     month: 0,
@@ -166,6 +167,7 @@ const DashboardScreen: FC = () => {
 
         <View style={styles.section4}>
           <Debtbalance data={donutData} />
+
           <Debtpaid data={dashboardData.data || 0} />
         </View>
         <View style={styles.section7}>

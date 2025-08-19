@@ -7,14 +7,19 @@ import DebtsScreen from "./debts";
 import PayoffplansScreen from "./payoffplans";
 import LearnScreen from "./learn";
 import Expenses from "./Expenses";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@redux/store";
 import { fetchUser } from "@redux/user/userSlice";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParams } from "@managers/routing";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
+type navprops = NativeStackNavigationProp<RootStackParams>;
 
 const Layout: React.FC = () => {
 
+  const navigation = useNavigation<navprops>();
   const dispatch = useDispatch<AppDispatch>();
   const [tab, setTab] = useState(0);
   const tabs = ["Dashboard", "Debts", "Pay off Plan", "Expenses"];
@@ -30,6 +35,10 @@ const Layout: React.FC = () => {
       await dispatch(fetchUser()).unwrap()
     } catch (err: any) {
       console.log("Error adding user:", err);
+      if (err?.status === 401) {
+        navigation.navigate('splashscreen');
+        await AsyncStorage.removeItem('token');
+      }
     }
 
   }

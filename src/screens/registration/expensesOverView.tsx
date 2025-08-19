@@ -23,7 +23,7 @@ const ExpensesOverView: FC = () => {
   const navigation = useNavigation<navProps>();
   const userData = useSelector((state: RootState) => state.user.current)
 
-  console.log("userData : ", userData?.expenseByCategory)
+  console.log("userData : ", userData)
 
   const totalMonthlyExpense = (expenseByCategory: any) =>
     ["food", "health", "investment", "miscellaneous"]
@@ -35,7 +35,7 @@ const ExpensesOverView: FC = () => {
     [userData?.expenseByCategory]
   );
 
-  const balance = userData?.personalIncome - total;
+  const balance = (Number(userData?.personalIncome) + Number(userData?.totalHouseholdIncome)) - total;
 
 
 

@@ -182,7 +182,7 @@ const Profile: FC = () => {
                             <Image source={require('@images/profile/logout.png')} style={styles.buttonimage} />
                             <Text style={styles.buttontext}>Log out</Text>
                         </Button>
-                        <Button style={styles.deletebutton}>
+                        <Button style={styles.deletebutton} onPress={handleDeleteAccount} >
                             <Image source={require('@images/profile/bin.png')} style={styles.buttonimage} />
                             <Text style={styles.buttontext}>Delete account</Text>
                         </Button>

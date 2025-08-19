@@ -30,7 +30,6 @@ const Splash: FC = () => {
   const GetToken = async () => {
 
     const token = await AsyncStorage.getItem('token');
-    console.log("token : ", token)
 
     if (token) {
       await dispatch(fetchUser());

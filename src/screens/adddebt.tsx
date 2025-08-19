@@ -131,7 +131,6 @@ const DebtAdd: FC = () => {
       },
     ];
 
-    console.log("newDebts : ", newDebts)
 
     // write back into Redux
     dispatch(setField({ field: "debts", value: newDebts }));
@@ -147,7 +146,6 @@ const DebtAdd: FC = () => {
       handleSave();
     } else {
 
-      console.log("form : ", form)
       try {
         await dispatch(addDebts(form)).unwrap();
         navigation.goBack();
@@ -299,7 +297,6 @@ const DebtAdd: FC = () => {
                     setShowDatePicker(false);
                     if (date) {
 
-                      console.log("date : ", date)
                       formDispatch({
                         type: "SET_FIELD",
                         field: "nextDueDate",

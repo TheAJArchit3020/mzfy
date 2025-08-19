@@ -56,6 +56,8 @@ export const addUser = createAsyncThunk<User, User, { state: RootState; rejectVa
 
         const _token = (getState().loginuser?.items[0]?.token)
 
+        console.log("_token : ", _token)
+
 
         try {
             const resp = await axios.post<User>(
@@ -64,6 +66,7 @@ export const addUser = createAsyncThunk<User, User, { state: RootState; rejectVa
                 {
                     headers: {
                         Authorization: `Bearer ${_token}`,
+                        // Authorization: `Bearer ${token}`,
                     }
                 }
             )
@@ -142,7 +145,7 @@ export const deleteUser = createAsyncThunk<void, void, { state: RootState; rejec
         const storetoken = await AsyncStorage.getItem('token')
 
         try {
-            await axios.delete(
+            await axios.post(
                 deleteuser,
                 {
                     headers: {
