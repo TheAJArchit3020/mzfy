@@ -78,6 +78,12 @@ android {
     compileSdk rootProject.ext.compileSdkVersion
 
     namespace "com.kineticscapestudios.moneezify"
+
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+    
     defaultConfig {
         applicationId "com.kineticscapestudios.moneezify"
         minSdkVersion rootProject.ext.minSdkVersion

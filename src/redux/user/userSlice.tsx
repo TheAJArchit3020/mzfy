@@ -144,9 +144,12 @@ export const deleteUser = createAsyncThunk<void, void, { state: RootState; rejec
         const _token = (getState().loginuser?.items[0]?.token)
         const storetoken = await AsyncStorage.getItem('token')
 
+        console.log("_token : ", _token)
+        console.log("storetoken : ", storetoken)
+
         try {
             await axios.post(
-                deleteuser,
+                deleteuser, {},
                 {
                     headers: {
                         Authorization: `Bearer ${_token ? _token : storetoken}`,
