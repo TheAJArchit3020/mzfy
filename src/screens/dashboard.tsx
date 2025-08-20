@@ -35,7 +35,7 @@ const DashboardScreen: FC = () => {
   const navigation = useNavigation<navprops>();
   const [show, setShow] = useState(false);
   const userData = useSelector((state: RootState) => state.user);
-  const [logPaymentAmount, setLogPaymentAmount] = useState<String>();
+  const [logPaymentAmount, setLogPaymentAmount] = useState<String>("0");
   const dashboardData = useSelector((state: RootState) => state.dashBoard);
   const [selectedTrasactionId, setSelectedTransactionId] = useState<string>("");
 
@@ -175,7 +175,9 @@ const DashboardScreen: FC = () => {
               source={require("@images/dashboard/rightarrow.png")}
               style={{ width: 20, height: 20 }}
             /> */}
-            <Text style={styles.section1_2_text}>S</Text>
+            <Text style={styles.section1_2_text}>
+              {userData.current.name[0]}
+            </Text>
           </TouchableOpacity>
         </View>
 

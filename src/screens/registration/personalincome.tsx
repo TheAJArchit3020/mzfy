@@ -10,29 +10,42 @@ import { setField } from "@redux/user/userSlice";
 import { RootState } from "@redux/store";
 
 const IncomeDetails: FC = () => {
-
-  const dispatch = useDispatch()
-  const income = useSelector((state: RootState) => state.user.current.personalIncome)
-  const totalincome = useSelector((state: RootState) => state.user.current.totalHouseholdIncome)
+  const dispatch = useDispatch();
+  const income = useSelector(
+    (state: RootState) => state.user.current.personalIncome
+  );
+  const totalincome = useSelector(
+    (state: RootState) => state.user.current.totalHouseholdIncome
+  );
+  const currency = useSelector(
+    (state: RootState) => state.user.current.currency
+  );
 
   const [selectedOption, setSelectedOption] = useState<string>("");
 
   const OPTIONS = ["Yes", "No"];
 
+  const [touched, setTouched] = useState(false);
+  const empty = (income ?? "").trim().length === 0;
+
   return (
     <View style={styles.container}>
       <Input
         value={income}
-        onChangeContent={(val: any) =>
-          dispatch(setField({ field: 'personalIncome', value: val }))
-        }
-        placeholder="Eg. ₹ 30,000"
-        placeholderTextColor={'#C6C6C6'}
+        onChangeContent={(val: any) => {
+          if (!touched) setTouched(true);
+          dispatch(setField({ field: "personalIncome", value: val ?? 0 }));
+        }}
+        placeholder={`Eg. ${currency} 30,000`}
+        placeholderTextColor={"#C6C6C6"}
         label="Personal income"
         type="number"
         style={styles.input}
         containerStyle={styles.inputContainer}
       />
+      {touched && empty && (
+        <Text style={styles.error}>This field is required.</Text>
+      )}
 
       <Text style={styles.questionText}>
         Do you want to consider only your personal income?
@@ -63,10 +76,12 @@ const IncomeDetails: FC = () => {
         <Input
           value={totalincome}
           onChangeContent={(val: any) =>
-            dispatch(setField({ field: 'totalHouseholdIncome', value: val }))
+            dispatch(
+              setField({ field: "totalHouseholdIncome", value: val ?? 0 })
+            )
           }
           placeholder="Eg. ₹ 30,000"
-          placeholderTextColor={'#C6C6C6'}
+          placeholderTextColor={"#C6C6C6"}
           label="Total income"
           type="number"
           containerStyle={styles.inputContainer}
@@ -86,7 +101,7 @@ const styles = StyleSheet.create({
   },
   input: {
     fontFamily: "PlusJakartaSans-Bold",
-    fontSize: wp(3.5)
+    fontSize: wp(3.5),
   },
   inputWrapperStyle: {
     paddingVertical: hp(1),
@@ -131,6 +146,11 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: wp(4),
     fontFamily: "PlusJakartaSans-Regular",
+  },
+  error: {
+    color: "#FF6B6B",
+    fontSize: 16,
+    fontFamily: "PlusJakartaSans-Bold",
   },
 });
 
