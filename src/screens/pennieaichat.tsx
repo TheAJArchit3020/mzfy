@@ -6,8 +6,13 @@ import Button from '@components/reusable/button'
 import { PaperAirplaneIcon } from 'react-native-heroicons/solid'
 import LottieView from "lottie-react-native";
 import { heightToDP } from 'react-native-responsive-screens'
+import { AppDispatch } from '@redux/store'
+import { useDispatch } from 'react-redux'
+import { addChat } from '@redux/chat/chatSlices'
 
 const Pennieaichat: FC = () => {
+
+    const dispatch = useDispatch<AppDispatch>();
 
     const [inputValue, setInputValue] = React.useState('');
     const [selectedButton, setSelectedButton] = React.useState('');
@@ -47,33 +52,50 @@ const Pennieaichat: FC = () => {
 
     const handleSend = () => {
         if (!inputValue.trim()) return;
-
-        setMessages(prev => [
-            ...prev,
-            { text: inputValue.trim(), sender: 'user' },
-            { sender: 'bot', typing: true }
-        ]);
-
-
-        // Simulate bot response after delay
-        setTimeout(() => {
-            setMessages(prev => {
-                const newMessages = [...prev];
-                // Remove typing placeholder
-                if (newMessages.length && newMessages[newMessages.length - 1].typing) {
-                    newMessages.pop();
-                }
-                // Add actual bot response
-                newMessages.push({
-                    text: `hgdjah hjasdjhsag dhgsajhdg gdjhsa hsgdjhsga jdgjash sahgdjhsagd hgdjhsajd jdgj gsjhdgjsahdgjhsdjhg jdgj sgdjhas dhgsjdhgsaj dgjha sdjgajsdgjashgdjagd jg dgshgdjhasgdjhsag jdgsajdgjsahgdj sagdjs`,
-                    sender: 'bot'
-                });
-                return newMessages;
-            });
-        }, 1000);
-
+        chathandler();
         setInputValue('');
     };
+
+    const chathandler = async () => {
+        try {
+            // 1. Push user message + typing placeholder
+            setMessages(prev => [
+                ...prev,
+                { text: inputValue, sender: 'user' },
+                { sender: 'bot', typing: true }
+            ]);
+
+            const res = await dispatch(addChat({ message: inputValue }));
+
+            if (res.meta.requestStatus === 'fulfilled') {
+                const answer = res.payload.answer; // <-- from API response
+
+                setMessages(prev => {
+                    const newMessages = [...prev];
+
+                    // Remove typing placeholder (last one)
+                    if (newMessages.length && newMessages[newMessages.length - 1].typing) {
+                        newMessages.pop();
+                    }
+
+                    // Add bot reply
+                    newMessages.push({
+                        text: answer,
+                        sender: 'bot',
+                    });
+
+                    return newMessages;
+                });
+
+                console.log("Chat added successfully:", res.payload);
+            } else {
+                console.log("Failed to add chat:", res.payload);
+            }
+        } catch (error) {
+            console.error("Error adding chat:", error);
+        }
+    };
+
 
 
     const TypingDots = () => {
@@ -131,7 +153,7 @@ const Pennieaichat: FC = () => {
                 <View style={styles.container}>
                     {
                         messages && messages.length > 0 ? (
-                            <FlatList 
+                            <FlatList
                                 ref={flatListRef}
                                 data={messages}
                                 keyExtractor={(_, index) => index.toString()}
@@ -157,7 +179,7 @@ const Pennieaichat: FC = () => {
 
                             <View style={styles.section1} >
                                 <View style={styles.logowrapper} >
-                                    <Image source={require("@images/pennieai/pennielogo.png")} style={styles.image} />
+                                    <Image source={require("@images/pennieai/aiimage.png")} style={styles.image} />
                                 </View>
                                 <Text style={styles.text1}>Pennie ai</Text>
                                 <Text style={styles.text2}>Our AI is here 24/7 to guide you — from tracking payments to planning your financial future, one smart step at a time.</Text>
@@ -215,17 +237,17 @@ const styles = StyleSheet.create({
         marginBottom: 70
     },
     logowrapper: {
-        backgroundColor: "#32426A",
-        width: 80,
-        height: 80,
-        borderRadius: 40,
-        justifyContent: "center",
-        alignItems: "center"
+        // backgroundColor: "#32426A",
+        // width: 80,
+        // height: 80,
+        // borderRadius: 40,
+        // justifyContent: "center",
+        // alignItems: "center"
     },
     image: {
-        width: 50,
-        height: 50,
-        resizeMode: 'contain'
+        width: 100,
+        height: 100,
+        // resizeMode: 'contain'
     },
     text1: {
         color: "#fff",

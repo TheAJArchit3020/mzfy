@@ -25,6 +25,7 @@ import Debtprogress from "@components/dashboard/debtprogress";
 import { dashboard } from "../managers/apis";
 import { DebtCountDownType } from "src/commonTypes";
 import { DebtChartDataItem, DonutDataItem } from "src/commonTypes";
+import Aimodal from "@components/chatai/aimodal";
 
 type navprops = NativeStackNavigationProp<RootStackParams>;
 
@@ -190,7 +191,9 @@ const DashboardScreen: FC = () => {
         </View>
       </ScrollView>
 
-      <TouchableOpacity
+      <Aimodal style={styles.aiContainer} imagestyle={styles.aiimagestyle} />
+
+      {/* <TouchableOpacity
         style={styles.section6}
         onPress={() => {
           navigation.navigate("adddebtscreen", {
@@ -199,7 +202,7 @@ const DashboardScreen: FC = () => {
         }}
       >
         <Text style={styles.section6_text}>+</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       {/* log payment popup */}
       <Popup
@@ -349,5 +352,13 @@ const styles = StyleSheet.create({
   },
   inputWrapperStyle: {
     marginHorizontal: 20,
+  },
+  aiContainer: {
+    zIndex: 1,
+    backgroundColor: "transparent",
+  },
+  aiimagestyle: {
+    width: 70,
+    height: 70,
   },
 });
