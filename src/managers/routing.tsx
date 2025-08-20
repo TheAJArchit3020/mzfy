@@ -46,7 +46,7 @@ const Routing: FC = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
-                initialRouteName="splashscreen"
+                initialRouteName="adddebtscreen"
                 screenOptions={{
                     headerShown: false,
                 }}

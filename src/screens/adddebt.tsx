@@ -141,7 +141,58 @@ const DebtAdd: FC = () => {
 
   };
 
+  type Touched = Record<keyof DebtForm, boolean>;
+
+  const [touched, setTouched] = useState<Touched>({
+    name: false,
+    creditorName: false,
+    principal: false,
+    balance: false,
+    minPaymentAmount: false,
+    apr: false,
+    nextDueDate: false,
+    tagColor: false,
+  });
+
+  const markTouched = (field: keyof DebtForm) =>
+    setTouched(prev => ({ ...prev, [field]: true }));
+
+  const touchAll = () =>
+    setTouched({
+      name: true,
+      creditorName: true,
+      principal: true,
+      balance: true,
+      minPaymentAmount: true,
+      apr: true,
+      nextDueDate: true,
+      tagColor: true,
+    });
+
+
+  const errors = React.useMemo(() => {
+    const e: Record<string, string> = {};
+
+    if (!form.name.trim()) e.name = "Debt name is required.";
+    if (!form.creditorName.trim()) e.creditorName = "Creditor name is required.";
+    if (!form.principal || form.principal <= 0) e.principal = "Principal is required.";
+    if (!form.balance || form.balance <= 0) e.balance = "Balance is required.";
+    if (!form.minPaymentAmount || form.minPaymentAmount <= 0) e.minPaymentAmount = "Monthly minimum is required.";
+    if (!form.apr || String(form.apr).trim() === "") e.apr = "APR is required.";
+    if (!form.nextDueDate) e.nextDueDate = "Next due date is required.";
+    if (!form.tagColor) e.tagColor = "Tag colour is required.";
+
+    return e;
+  }, [form]);
+
+  const isFormValid = React.useMemo(
+    () => Object.keys(errors).length === 0,
+    [errors]
+  );
+
+
   const submitFormHandler = async () => {
+    if (!isFormValid) return;
     if (route?.params?.screen === 1) {
       handleSave();
     } else {
@@ -184,7 +235,10 @@ const DebtAdd: FC = () => {
                 }
                 placeholder="Eg.Education Loan"
                 placeholderTextColor={"#C6C6C6"}
+                onBlur={() => markTouched("name")}
               />
+              {touched.name && errors.name ? <Text style={styles.errorText}>{errors.name}</Text> : null}
+
               <Input
                 label="Creditor Name"
                 value={form.creditorName}
@@ -197,7 +251,9 @@ const DebtAdd: FC = () => {
                 }
                 placeholder="Eg.Axis Bank"
                 placeholderTextColor={"#C6C6C6"}
+                onBlur={() => markTouched("creditorName")}
               />
+              {touched.creditorName && errors.creditorName ? <Text style={styles.errorText}>{errors.creditorName}</Text> : null}
               <Input
                 label="Principal"
                 value={form.principal}
@@ -209,8 +265,10 @@ const DebtAdd: FC = () => {
                   })
                 }
                 placeholderTextColor={"#C6C6C6"}
+                onBlur={() => markTouched("principal")}
                 textHeader={currency ? currency : currency2}
               />
+              {touched.principal && errors.principal ? <Text style={styles.errorText}>{errors.principal}</Text> : null}
               <Input
                 label="Balance"
                 value={form.balance}
@@ -219,10 +277,12 @@ const DebtAdd: FC = () => {
                 }
                 textHeader={currency ? currency : currency2}
               />
+              {touched.principal && errors.principal ? <Text style={styles.errorText}>{errors.balance}</Text> : null}
               <Input
                 label="Monthly Minimum (EMI)"
                 value={form.minPaymentAmount}
                 placeholderTextColor={"#C6C6C6"}
+                onBlur={() => markTouched("minPaymentAmount")}
                 onChangeContent={(val) =>
                   formDispatch({
                     type: "SET_FIELD",
@@ -232,6 +292,7 @@ const DebtAdd: FC = () => {
                 }
                 textHeader={currency ? currency : currency2}
               />
+              {touched.minPaymentAmount && errors.minPaymentAmount ? <Text style={styles.errorText}>{errors.minPaymentAmount}</Text> : null}
               <View style={styles.aprContainer}>
                 <Input
                   label="APR"
@@ -250,6 +311,7 @@ const DebtAdd: FC = () => {
                   }
                   placeholder="Eg. 8"
                   placeholderTextColor={"#C6C6C6"}
+                  onBlur={() => markTouched("apr")}
                   children={
                     <Text
                       style={{
@@ -262,6 +324,7 @@ const DebtAdd: FC = () => {
                     </Text>
                   }
                 />
+                {touched.apr && errors.apr ? <Text style={styles.errorText}>{errors.apr}</Text> : null}
                 {showAprInfo && (
                   <View style={styles.aprInfoContainer}>
                     <Text style={styles.aprInfoText}>
@@ -278,6 +341,7 @@ const DebtAdd: FC = () => {
                 placeholder="Eg.02/08/2025"
                 editable={false}
                 placeholderTextColor={"#C6C6C6"}
+                onBlur={() => markTouched("nextDueDate")}
                 children={
                   <TouchableOpacity onPress={() => setShowDatePicker(true)}>
                     <CalendarDaysIcon
@@ -288,6 +352,7 @@ const DebtAdd: FC = () => {
                   </TouchableOpacity>
                 }
               />
+              {touched.nextDueDate && errors.nextDueDate ? <Text style={styles.errorText}>{errors.nextDueDate}</Text> : null}
               {showDatePicker && Platform.OS === "android" && (
                 <DateTimePicker
                   value={form.nextDueDate ? new Date(form.nextDueDate) : new Date()}
@@ -342,6 +407,7 @@ const DebtAdd: FC = () => {
                 onChangeContent={() => { }}
                 placeholder="Select a tag colour"
                 placeholderTextColor={"#C6C6C6"}
+                onBlur={() => markTouched("tagColor")}
                 editable={false}
                 children={
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -363,6 +429,7 @@ const DebtAdd: FC = () => {
                   </View>
                 }
               />
+              {touched.tagColor && errors.tagColor ? <Text style={styles.errorText}>{errors.tagColor}</Text> : null}
               <Modal visible={showColorPicker} transparent animationType="fade">
                 <View style={styles.modalBg}>
                   <View style={styles.colorPickerContainer}>
@@ -389,7 +456,8 @@ const DebtAdd: FC = () => {
                   </View>
                 </View>
               </Modal>
-              <Button onPress={submitFormHandler} style={styles.saveButton}>
+              <Button onPress={submitFormHandler} disabled={!isFormValid} style={[styles.saveButton, !isFormValid && styles.saveButtonDisabled]}
+              >
                 <Text style={styles.buttonText}>Save</Text>
               </Button>
               <Button onPress={() => formDispatch({ type: "RESET" })} style={styles.cancelButton}>
@@ -437,7 +505,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    marginTop: hp(12),
+    marginTop: hp(10),
   },
   cancelButton: {
     marginTop: hp(2),
@@ -498,6 +566,20 @@ const styles = StyleSheet.create({
     fontFamily: "PlusJakartaSans-Bold",
     textAlign: "left",
   },
+  errorText: {
+    color: "red",
+    fontSize: wp(3),
+    fontFamily: "PlusJakartaSans-Bold",
+    marginTop: hp(-1),
+    marginBottom: hp(1.5),
+
+  },
+  saveButtonDisabled: {
+    opacity: 0.5,
+  },
+  formgroup: {
+    flexDirection: "column",
+  }
 });
 
 export default DebtAdd;

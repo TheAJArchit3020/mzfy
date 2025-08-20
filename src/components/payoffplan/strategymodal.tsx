@@ -1,5 +1,8 @@
 // components/StrategyRadioCard.tsx
 import Customstrategydropdown from '@components/strategy/customstrategydropdown';
+import { useFocusEffect } from '@react-navigation/native';
+import { AppDispatch, RootState } from '@redux/store';
+import { fetchAllCustomStrategy } from '@redux/strategies/strategySlice';
 import React, { useState } from 'react';
 import {
     View,
@@ -10,6 +13,7 @@ import {
     TextStyle,
     Platform,
 } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 export type StrategyOption = {
@@ -32,6 +36,8 @@ type Props = {
     infoLabelStyle?: TextStyle;
     infoValueStyle?: TextStyle;
     onClose2?: () => void;
+    customPlan: any
+    setCustomPlan: any
 };
 
 const StrategyRadioCard: React.FC<Props> = ({
@@ -43,11 +49,34 @@ const StrategyRadioCard: React.FC<Props> = ({
     subtitleStyle,
     infoLabelStyle,
     infoValueStyle,
-    onClose2
+    onClose2,
+    customPlan,
+    setCustomPlan
 }) => {
-    const [customPlan, setCustomPlan] = useState('')
+    const dispatch = useDispatch<AppDispatch>();
     const isSelected = selectedValue === option.value;
     const disabled = !!option.disabled;
+
+    useFocusEffect(
+        React.useCallback(() => {
+            getCustomPlan();
+        }, [])
+    );
+
+
+    const getCustomPlan = async () => {
+        try {
+            await dispatch(fetchAllCustomStrategy())
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
+
+    const customPlansArray = useSelector((state: RootState) => state.strategy?.customitems[0] ?? [])
+    console.log("customPlansArray : ", customPlansArray?.plans)
+
+
 
     interface CustomOption {
         id: number;
@@ -55,12 +84,13 @@ const StrategyRadioCard: React.FC<Props> = ({
         value: string;
     }
 
-    const customOptions: CustomOption[] = [
-        { id: 1, label: "Custom plan 1", value: "Custom1" },
-        { id: 2, label: "Custom2", value: "Custom2" },
-
-
-    ];
+    const customOptions: CustomOption[] = (customPlansArray?.plans ?? []).map(
+        (plan: any, index: number) => ({
+            id: index + 1,
+            label: plan.name,
+            value: plan.id,
+        })
+    );
 
     return (
         <Pressable
@@ -105,6 +135,7 @@ const StrategyRadioCard: React.FC<Props> = ({
                     onChange={(val: any) => setCustomPlan(val)}
                     placeholder="custom plan"
                     maxheight={140}
+                    onSelect={onSelect}
                 />
             )}
 

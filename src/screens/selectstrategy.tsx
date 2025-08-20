@@ -1,8 +1,8 @@
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { FC, useEffect, useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import Header from '@components/reusable/header'
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import Card from '@components/reusable/card'
 import { heightToDP, widthToDP } from 'react-native-responsive-screens'
 import Dropdown from '@components/reusable/dropdown'
@@ -10,9 +10,10 @@ import Customstrategydropdown from '@components/strategy/customstrategydropdown'
 import Button from '@components/reusable/button'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParams } from '@managers/routing'
-import { useDispatch } from 'react-redux'
-import { AppDispatch } from '@redux/store'
-import { addStrategy } from '@redux/strategies/strategySlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '@redux/store'
+import { addStrategy, fetchAllCustomStrategy, fetchStrategy } from '@redux/strategies/strategySlice'
+import { formatDuration } from '@components/reusable/formatdate'
 
 
 interface CustomOption {
@@ -75,40 +76,75 @@ const Selectstrategy: FC = () => {
         await dispatch(addStrategy(value))
     }
 
+    useFocusEffect(
+        React.useCallback(() => {
+            const fetchPayoffPlans = async () => {
+                try {
+                    await dispatch(fetchStrategy()).unwrap();
+                    await dispatch(fetchAllCustomStrategy()).unwrap();
+                } catch (error) {
+                    console.error('Error fetching payoff plans:', error);
+                }
+            };
+
+            fetchPayoffPlans();
+        }, [])
+    )
+
+    const strategyPlanArray = useSelector((state: RootState) => state?.strategy?.items[0]) ?? [];
+    const strategyAllCustomPlanArray = useSelector((state: RootState) => state?.strategy) ?? [];
+    const currentCurrency = useSelector((state: RootState) => state.user?.current?.selectedCurrency)
+    const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
+
+    console.log("strategyAllCustomPlanArray : ", strategyAllCustomPlanArray)
+
+    const raw = strategyPlanArray
+
+
     const STRATEGIES: Strategy[] = [
-        {
-            key: 'Moneezify plan',
-            title: 'moneezify',
-            advantage: 'Fastest payoff and least interest',
-            payoffTime: '28 Days',
-            interestSaved: '1500',
-            hasCrown: true,
-        },
+        // {
+        //     key: 'Moneezify plan',
+        //     title: 'moneezify',
+        //     advantage: 'Fastest payoff and least interest',
+        //     payoffTime: '28 Days',
+        //     interestSaved: '1500',
+        //     hasCrown: true,
+        // },
         {
             key: 'Debt Avalanche',
             title: 'avalanche',
             advantage: 'Fastest payoff and least interest ',
-            payoffTime: '28 Days',
-            interestSaved: '1500',
+            payoffTime: formatDuration(raw[0]?.avalanche?.estimatedDebtFreeDate),
+            interestSaved: `${currentCurrency ? currentCurrency : selectedCurrency} ${raw[0]?.avalanche?.totalInterestPaid?.toLocaleString()}`,
             subtitle: '(Prioritize highest interest rate)'
         },
         {
             key: 'Debt Snowball',
             title: 'snowball',
             advantage: 'The most quick wins',
-            payoffTime: '28 Days',
-            interestSaved: '1500',
+            payoffTime: formatDuration(raw[0]?.snowball?.estimatedDebtFreeDate),
+            interestSaved: `${currentCurrency ? currentCurrency : selectedCurrency} ${raw[0]?.snowball?.totalInterestPaid?.toLocaleString()}`,
             subtitle: '(Prioritize lowest balance first)'
+        },
+        {
+            key: 'Hybrid',
+            title: 'Hybrid',
+            advantage: 'Hybrid Plan',
+            payoffTime: formatDuration(raw[0]?.hybrid?.estimatedDebtFreeDate),
+            interestSaved: `${currentCurrency ? currentCurrency : selectedCurrency} ${raw[0]?.hybrid?.totalInterestPaid?.toLocaleString()}`,
+            subtitle: '(Hybrid Plan)'
+
         },
         {
             key: 'Custom',
             title: 'Custom',
             advantage: 'Customized Plan',
-            payoffTime: '3 yrs 2 mos',
-            interestSaved: '1500',
+            payoffTime: formatDuration(raw[0]?.custom?.estimatedDebtFreeDate),
+            interestSaved: `${selectedCurrency} ${raw[0]?.custom?.totalInterestPaid?.toLocaleString()}`,
             subtitle: '(Customized Plan)'
 
         },
+
     ]
 
 
@@ -180,7 +216,7 @@ const Selectstrategy: FC = () => {
                                 </View>
 
                                 {/* replicate your original divider placement */}
-                                {idx === 0 || idx === 1 || idx === 2 ? <View style={styles.divider} /> : null}
+                                {idx !== 3 ? <View style={styles.divider} /> : null}
                             </View>
                         )
                     })}
@@ -192,6 +228,7 @@ const Selectstrategy: FC = () => {
                     </Button>
                 </View>
             </View>
+
         </LinearGradient>
     )
 }
@@ -305,6 +342,10 @@ const styles = StyleSheet.create({
     },
     buttonWrapper: {
         flex: 1,
-        justifyContent: "flex-end"
+        justifyContent: "flex-end",
+        // marginTop: heightToDP(4),
+    },
+    scrollview: {
+        flexGrow: 1,
     }
 })

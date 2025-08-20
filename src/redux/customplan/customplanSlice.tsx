@@ -5,7 +5,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import axios from 'axios'
 
 export interface CustomPlan {
-    name: string
+    name?: string
     debtOrder: any
     extraPayments: any
 }
@@ -115,7 +115,7 @@ export const fetchCustomPlan = createAsyncThunk<CustomPlan, void, { state: RootS
     }
 )
 
-export const previewCustomPlan = createAsyncThunk<CustomPlan, CustomPlan, { state: RootState; rejectValue: any }>(
+export const previewCustomPlan = createAsyncThunk<CustomPlan, any, { state: RootState; rejectValue: any }>(
     'customplan/previewCustomPlan',
     async (CustomPlan, { getState, rejectWithValue }) => {
 

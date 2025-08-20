@@ -21,6 +21,7 @@ export const getLogExpenseCatogories = `${baseurl}/categories`;
 export const addCategory = `${baseurl}/categories`;
 export const logtransaction = `${baseurl}/transaction`;
 export const getstrategy = `${baseurl}/plan/outcomes`;
+export const getallcustomplans = `${baseurl}/custom-plans/all`;
 
 
 // export const loginuser = `${baseurl}/auth/googleSignIn`

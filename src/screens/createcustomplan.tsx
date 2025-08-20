@@ -1,5 +1,5 @@
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React, { FC, useCallback, useReducer, useState } from 'react'
+import React, { FC, useCallback, useEffect, useReducer, useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import Header from '@components/reusable/header'
 import DraggablePayoffcard from '@components/payoffplan/dragablepayoffcard'
@@ -41,8 +41,30 @@ const Createcustomplan: FC = () => {
 
 
 
+    useEffect(() => {
+        if (debtExtraPaymentArray.length > 0) {
+            _fetchPreviewCustomPlan()
+        }
+    }, [debtExtraPaymentArray]);
 
+    const _getDebtIds = payoffCustomplanArray?.debtOrder?.map((item: any) => item.id) || [];
+    console.log("_getDebtIds : ", _getDebtIds)
 
+    const _fetchPreviewCustomPlan = async () => {
+
+        console.log({
+            debtOrder: debtArray?.length > 0 ? debtArray : _getDebtIds,
+            extraPayments: debtExtraPaymentArray,
+        })
+        try {
+            await dispatch(previewCustomPlan({
+                debtOrder: debtArray?.length > 0 ? debtArray : _getDebtIds,
+                extraPayments: debtExtraPaymentArray,
+            }));
+        } catch (error) {
+            console.error('Error fetchCustomPlan payoff plans:', error);
+        }
+    };
 
 
 
@@ -51,27 +73,21 @@ const Createcustomplan: FC = () => {
     useFocusEffect(
         useCallback(() => {
 
+            const _fetchCustomPlan = async () => {
+                try {
+                    await dispatch(fetchCustomPlan());
+                } catch (error) {
+                    console.error('Error fetchCustomPlan payoff plans:', error);
+                }
+            };
+
             _fetchCustomPlan();
 
         }, [])
     );
 
-    const _fetchCustomPlan = async () => {
-        try {
-            await dispatch(fetchCustomPlan());
-        } catch (error) {
-            console.error('Error fetchCustomPlan payoff plans:', error);
-        }
-    };
-
-    const _fetchPreviewCustomPlan = async (data: any) => {
-        try {
-            await dispatch(previewCustomPlan(data));
-        } catch (error) {
-            console.error('Error fetchCustomPlan payoff plans:', error);
-        }
-    };
-
+    const previewCustomplanArray = useSelector((state: RootState) => state?.customplan?.previewCustomData) ?? [];
+    console.log("previewCustomplanArray : ", previewCustomplanArray)
 
 
 
@@ -117,23 +133,17 @@ const Createcustomplan: FC = () => {
         }))
         : [];
 
-    const handleSelectedDebtChange = async () => {
+    const handleSelectedDebtChange = () => {
 
         const newExtraPayment = {
             debt: selectedDebt,
             extraAmount: Number(debtAmount),
         };
 
-        console.log("newExtraPayment : ",newExtraPayment)
-
-        // setDebtExtraPaymentArray((prev) => [...prev, newExtraPayment]);
-
-        // await _fetchPreviewCustomPlan(newExtraPayment);
-        // setDebtAmount('');
-        // setSelectedDebt(null);
-        // setShow(false);
-
-        // await _fetchCustomPlan();
+        setDebtExtraPaymentArray((prev) => [...prev, newExtraPayment]);
+        setDebtAmount('');
+        setSelectedDebt(null);
+        setShow(false);
 
     }
 
@@ -226,6 +236,7 @@ const Createcustomplan: FC = () => {
 
             </ScrollView>
 
+            {/* log payment popup */}
             <Popup
                 visible={show}
                 onClose={handleSelectedDebtChange}

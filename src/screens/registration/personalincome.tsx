@@ -21,7 +21,8 @@ const IncomeDetails: FC = () => {
   const OPTIONS = ["Yes", "No"];
 
   const [touched, setTouched] = useState(false);
-  const empty = (income ?? '').trim().length === 0;
+  const empty = income == null || income === 0;
+
 
   return (
     <View style={styles.container}>

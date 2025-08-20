@@ -1,4 +1,4 @@
-import { getstrategy, registeruseruser, selectstrategy } from '@managers/apis'
+import { getallcustomplans, getstrategy, registeruseruser, selectstrategy } from '@managers/apis'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { RootState } from '@redux/store'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
@@ -11,6 +11,7 @@ export interface Strategy {
 interface StrategyState {
     current: Strategy
     items: Strategy[]
+    customitems: Strategy[]
     loading: boolean
     error: string | null
 }
@@ -20,6 +21,7 @@ const initialState: StrategyState = {
         strategy: '',
     },
     items: [],
+    customitems: [],
     loading: false,
     error: null,
 }
@@ -107,6 +109,45 @@ export const fetchStrategy = createAsyncThunk<Strategy, void, { state: RootState
     }
 )
 
+export const fetchAllCustomStrategy = createAsyncThunk<Strategy, void, { state: RootState; rejectValue: any }>(
+    'strategy/fetchAllCustomStrategy',
+    async (_: void, { getState, rejectWithValue }) => {
+
+        const _token = (getState().loginuser?.items[0]?.token)
+        const storetoken = await AsyncStorage.getItem('token')
+
+
+        try {
+            const resp = await axios.get<Strategy>(
+                getallcustomplans,
+                {
+                    headers: {
+                        Authorization: `Bearer ${_token ? _token : storetoken}`,
+                    }
+                }
+            )
+            console.log("fetch Strategy resp : ", resp)
+            return resp.data
+        } catch (err: any) {
+            if (axios.isAxiosError(err)) {
+
+                const statusCode = err.response?.status
+                const errorData = err.response?.data
+
+                return rejectWithValue({
+                    message: err.message,
+                    status: statusCode,
+                    data: errorData,
+                })
+            } else {
+                // Non-Axios error (e.g. coding bug, thrown manually)
+                console.log("Unexpected error:", err)
+                return rejectWithValue({ message: (err as Error).message })
+            }
+        }
+    }
+)
+
 const strategySlice = createSlice({
     name: 'strategy',
     initialState,
@@ -149,6 +190,21 @@ const strategySlice = createSlice({
                 state.current = initialState.current
             })
             .addCase(fetchStrategy.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload as string
+            })
+
+        // fetch strategy data
+        builder
+            .addCase(fetchAllCustomStrategy.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(fetchAllCustomStrategy.fulfilled, (state, action) => {
+                state.loading = false
+                state.customitems = [action.payload]
+            })
+            .addCase(fetchAllCustomStrategy.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.payload as string
             })

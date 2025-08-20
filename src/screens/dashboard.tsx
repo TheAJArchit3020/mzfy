@@ -170,7 +170,7 @@ const DashboardScreen: FC = () => {
 
           <Debtpaid data={dashboardData.data || 0} />
         </View>
-        {/* <View style={styles.section7}>
+        <View style={styles.section7}>
           <Nextduedate
             data={
               dashboardData.data?.upcomingTransactions.slice(
@@ -180,7 +180,7 @@ const DashboardScreen: FC = () => {
             }
             logpopupHandler={logpopupHandler}
           />
-        </View> */}
+        </View>
         <View style={styles.section5}>
           <Text style={styles.section5_text}>Upcoming Transactions</Text>
           <UpcomingDebtsWithScrollbar

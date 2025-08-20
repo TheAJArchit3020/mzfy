@@ -16,22 +16,6 @@ import { fetchPayoffPlan } from '@redux/payoffplans/payoffplanSlice';
 import { addStrategy, fetchStrategy } from '@redux/strategies/strategySlice';
 import { formatDuration } from '@components/reusable/formatdate';
 
-type StrategyKey = "ai" | "avalanche" | "snowball" | "custom";
-
-interface StrategyNode {
-  estimatedDebtFreeDate?: string;
-  totalInterestPaid?: number;
-  totalSavings?: number;
-}
-
-interface Strategy {
-  ai?: StrategyNode;
-  avalanche?: StrategyNode;
-  snowball?: StrategyNode;
-  custom?: StrategyNode;
-  // meta fields you may have: _id, user, createdAt, updatedAt, etc.
-}
-
 
 const PayoffplansScreen: FC = () => {
 
@@ -39,10 +23,11 @@ const PayoffplansScreen: FC = () => {
   const [show, setShow] = useState(false);
   const [choice, setChoice] = useState<string | null>(null);
   const strategypopupHandler = () => setShow(true);
+  const [customPlan, setCustomPlan] = useState('')
 
 
   const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
-
+  console.log("first", customPlan)
 
   const handleSelect = async () => {
     if (choice) {
@@ -78,6 +63,8 @@ const PayoffplansScreen: FC = () => {
 
   const payoffplanArray = useSelector((state: RootState) => state?.payoffplan?.items[0]) ?? [];
 
+  console.log("payoffplanArray : ", payoffplanArray)
+
 
   const __date = payoffplanArray?.estimatedDebtFreeDate
 
@@ -95,36 +82,54 @@ const PayoffplansScreen: FC = () => {
     ((monthNumber) - (now.getUTCMonth() + 1))
 
   const strategyPlanArray = useSelector((state: RootState) => state?.strategy?.items[0]) ?? [];
+  const customPlansArray = useSelector((state: RootState) => state.strategy?.customitems[0] ?? [])
+
+  const filteredCustomPlans = customPlansArray?.plans?.filter((plan: any) => plan.id === payoffplanArray?.strategy) || [];
+
+  console.log("filteredCustomPlans : ", filteredCustomPlans[0]?.name)
+
+  console.log("customPlansArray : ", customPlansArray?.plans)
 
   const raw = strategyPlanArray
 
 
-  // const strategies = [
-  //   {
-  //     title: 'Debt Avalanche',
-  //     subtitle: 'Prioritize highest interest rate',
-  //     advantage: 'Fastest payoff and least interest',
-  //     timeToPayoff: formatDuration(raw[0]?.avalanche?.estimatedDebtFreeDate),
-  //     interestSaved: `${selectedCurrency} ${raw[0]?.avalanche?.totalInterestPaid?.toLocaleString()}`,
-  //     value: 'avalanche',
-  //   },
-  //   {
-  //     title: 'Debt Snowball',
-  //     subtitle: 'Prioritize lowest balance first',
-  //     advantage: 'The most quick wins',
-  //     timeToPayoff: formatDuration(raw[0]?.snowball?.estimatedDebtFreeDate),
-  //     interestSaved: `${selectedCurrency} ${raw[0]?.snowball?.totalInterestPaid?.toLocaleString()}`,
-  //     value: 'snowball',
-  //   },
-  //   {
-  //     title: 'Custom',
-  //     subtitle: 'Customized Plan',
-  //     advantage: 'Customized Plan',
-  //     timeToPayoff: formatDuration(raw[0]?.custom?.estimatedDebtFreeDate),
-  //     interestSaved: `${selectedCurrency} ${raw[0]?.custom?.totalInterestPaid?.toLocaleString()}`,
-  //     value: 'custom',
-  //   },
-  // ];
+  const strategies = [
+    {
+      title: 'Debt Avalanche',
+      subtitle: 'Prioritize highest interest rate',
+      advantage: 'Fastest payoff and least interest',
+      timeToPayoff: formatDuration(raw[0]?.avalanche?.estimatedDebtFreeDate),
+      interestSaved: `${selectedCurrency} ${raw[0]?.avalanche?.totalInterestPaid?.toLocaleString()}`,
+      value: 'avalanche',
+    },
+    {
+      title: 'Debt Snowball',
+      subtitle: 'Prioritize lowest balance first',
+      advantage: 'The most quick wins',
+      timeToPayoff: formatDuration(raw[0]?.snowball?.estimatedDebtFreeDate),
+      interestSaved: `${selectedCurrency} ${raw[0]?.snowball?.totalInterestPaid?.toLocaleString()}`,
+      value: 'snowball',
+    },
+    {
+      key: 'Hybrid',
+      title: 'Hybrid',
+      advantage: 'Hybrid Plan',
+      timeToPayoff: formatDuration(raw[0]?.hybrid?.estimatedDebtFreeDate),
+      interestSaved: `${selectedCurrency} ${raw[0]?.hybrid?.totalInterestPaid?.toLocaleString()}`,
+      subtitle: '(Hybrid Plan)',
+      value: 'Hybrid',
+    },
+    {
+      title: 'Custom',
+      subtitle: 'Customized Plan',
+      advantage: 'Customized Plan',
+      timeToPayoff: formatDuration(raw[0]?.custom?.estimatedDebtFreeDate),
+      interestSaved: `${selectedCurrency} ${raw[0]?.custom?.totalInterestPaid?.toLocaleString()}`,
+      value: 'custom',
+    },
+  ];
+
+
 
 
 
@@ -136,7 +141,8 @@ const PayoffplansScreen: FC = () => {
         <View style={styles.container}>
 
           {/* section1 */}
-          <Strategycard title={`Debt ${payoffplanArray?.strategy}`} subtitle={`Debt ${payoffplanArray?.strategy}`} onPress={strategypopupHandler} />
+          <Strategycard
+            title={`Debt ${filteredCustomPlans?.length > 0 ? filteredCustomPlans[0]?.name : payoffplanArray?.strategy}`} subtitle={`Debt ${filteredCustomPlans?.length > 0 ? filteredCustomPlans[0]?.name : payoffplanArray?.strategy}`} onPress={strategypopupHandler} />
 
           {/* section2 */}
           <View style={styles.cardcontainer}>
@@ -160,31 +166,25 @@ const PayoffplansScreen: FC = () => {
           <View style={styles.cardcontainer3}>
             <Text style={styles.cardcontainer3_title}>Order Wise Debt payoff</Text>
             <View style={styles.cardcontainer3_inner}>
-              <Payoffcard data={payoffplanArray?.debtOrder} source={require('@images/payoffplan/rightarrowwhite.png')} />
+              {Array.isArray(payoffplanArray?.debtOrder) && payoffplanArray.debtOrder.length > 0 ? (
+
+                <Payoffcard data={payoffplanArray?.debtOrder} source={require('@images/payoffplan/rightarrowwhite.png')} />
+              ) : (
+
+                <Text style={{ color: '#fff', textAlign: 'center' }}>No order wise debt</Text>
+              )
+              }
             </View>
           </View>
 
-          {/* <View style={styles.cardcontainer3}>
-            <View style={styles.cardcontainer3_content}>
-              <Text style={styles.cardcontainer3_title}>Order Wise Debt payoff</Text>
-              <View style={styles.info_content}>
-                <Image source={require('@images/payoffplan/info.png')} style={styles.infoimage} />
-                <Text style={styles.info_text}>You can Arrange debts your way</Text>
-              </View>
-            </View>
-            <View style={styles.cardcontainer3_inner}>
-              <DraggablePayoffcard data={data} source={require('@images/payoffplan/edit.png')} />
-            </View>
-          </View> */}
-
 
           {/* section5 */}
-          {/* <View style={styles.cardcontainer4}>
+          <View style={styles.cardcontainer4}>
             <Text style={styles.cardcontainer4_title}>Debt Reduction Timeline</Text>
             <View style={styles.cardcontainer4_inner}>
-              <GraphComponent />
+              {/* <GraphComponent /> */}
             </View>
-          </View> */}
+          </View>
 
           {/* section6 */}
           <Button style={styles.button} >
@@ -196,7 +196,34 @@ const PayoffplansScreen: FC = () => {
 
       {/* log payment popup */}
 
-     
+      <Popup
+        visible={show}
+        onClose2={() => setShow(false)}
+        onClose={handleSelect}
+        containerStyle={styles.popupContainerStyle}
+        buttonText="Select strategy"
+        color1="#006FFF"
+        color2="#006FFF"
+        buttonTextStyle={styles.buttonTextStyle}
+        isDisable={choice === null && true}
+      >
+        {strategies?.map(option => (
+          <StrategyRadioCard
+            key={option.value}
+            option={option}
+            selectedValue={choice}
+            onSelect={setChoice}
+            containerStyle={styles.containerStyle}
+            titleStyle={styles.inputgroup_text}
+            subtitleStyle={styles.subtitleStyle}
+            infoLabelStyle={styles.labelStyle}
+            infoValueStyle={styles.descriptionStyle}
+            customPlan={customPlan}
+            setCustomPlan={setCustomPlan}
+          />
+        ))}
+
+      </Popup>
 
     </>
   );

@@ -37,6 +37,7 @@ interface DropdownProps {
     label?: string;
     maxheight?: any;
     onClose2?: () => void;
+    onSelect: any
 }
 
 type navProps = NativeStackNavigationProp<RootStackParams>
@@ -49,7 +50,8 @@ const CustomStrategyDropdown: React.FC<DropdownProps> = ({
     style,
     label,
     maxheight = 130,
-    onClose2
+    onClose2,
+    onSelect
 }) => {
     const navigation = useNavigation<navProps>()
     const [visible, setVisible] = useState(false);
@@ -185,6 +187,7 @@ const CustomStrategyDropdown: React.FC<DropdownProps> = ({
                                         onPress={() => {
                                             onChange && onChange(item.value);
                                             setVisible(false);
+                                            onSelect(item.value);
                                         }}
                                         activeOpacity={0.7}
                                     >
