@@ -15,6 +15,7 @@ import LinearGradient from "react-native-linear-gradient";
 export interface PopupProps {
   visible: boolean
   onClose: () => void
+    onConfirm?: () => void
   onClose2?: () => void
   title?: string
   children: ReactNode
@@ -30,6 +31,7 @@ export interface PopupProps {
 const Popup: React.FC<PopupProps> = ({
   visible,
   onClose,
+    onConfirm,
   onClose2,
   title,
   children,
@@ -64,7 +66,7 @@ const Popup: React.FC<PopupProps> = ({
             start={{ x: 1, y: 0 }}
             end={{ x: 0, y: 1 }}
           >
-            <TouchableOpacity onPress={onClose} disabled={isDisable} style={[styles.closeButton, isDisable && { backgroundColor: "#666666" }]}>
+            <TouchableOpacity onPress={onConfirm ? onConfirm : onClose} disabled={isDisable} style={[styles.closeButton, isDisable && { backgroundColor: "#666666" }]}>
               <Text style={[styles.closeButtonText, buttonTextStyle]}>{buttonText}</Text>
             </TouchableOpacity>
           </LinearGradient>

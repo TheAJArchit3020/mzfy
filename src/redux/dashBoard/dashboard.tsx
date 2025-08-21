@@ -30,19 +30,22 @@ interface DashboardSummary {
   payoffPct: number;
   totalBalance: number;
   totalDebtPaid: number;
-  upcomingTransactions: UpcomingTransaction[];
+  upcomingTransactions: [];
   updatedAt: string;
 }
 
 // ✅ Async thunk
-export const fetchDashboardSummary = createAsyncThunk<DashboardSummary, void, { state: RootState; rejectValue: any }>(
+export const fetchDashboardSummary = createAsyncThunk<
+  DashboardSummary,
+  void,
+  { state: RootState; rejectValue: any }
+>(
   "dashboard/fetchDashboardSummary",
   async (_, { getState, rejectWithValue }) => {
-
-    const _token = (getState().loginuser?.items[0]?.token)
-    const storetoken = await AsyncStorage.getItem('token')
+    const _token = getState().loginuser?.items[0]?.token;
+    console.log("token", _token);
+    const storetoken = await AsyncStorage.getItem("token");
     try {
-
       const response = await axios.get(dashboard, {
         headers: {
           Authorization: `Bearer ${_token ? _token : storetoken}`,

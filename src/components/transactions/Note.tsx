@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -16,19 +16,34 @@ import Button from "@components/reusable/button";
 
 interface NoteProps {
   onNoteChange?: (note: string) => void;
+  initialNote?: string; // Add prop for initial note data
+  saveNote: (note: string) => void;
 }
 
-const Note: FC<NoteProps> = ({ onNoteChange }) => {
+const Note: FC<NoteProps> = ({ onNoteChange, initialNote, saveNote }) => {
   const [noteText, setNoteText] = useState("");
   const [savedNote, setSavedNote] = useState("");
   const [isEditing, setIsEditing] = useState(false);
 
+  // Initialize with initial note data if provided
+  useEffect(() => {
+    if (initialNote && initialNote.trim()) {
+      setSavedNote(initialNote.trim());
+      setIsEditing(false);
+    } else {
+      // If note is empty or whitespace, show input field
+      setSavedNote("");
+      setIsEditing(true);
+    }
+  }, [initialNote]);
+
   const handleSaveNote = () => {
     if (noteText.trim()) {
-      setSavedNote(noteText);
+      setSavedNote(noteText.trim());
       setNoteText("");
       setIsEditing(false);
-      onNoteChange?.(noteText);
+      onNoteChange?.(noteText.trim());
+      saveNote(noteText);
     }
   };
 
@@ -133,7 +148,6 @@ const styles = StyleSheet.create({
     fontSize: wp(4),
     textAlign: "justify",
     fontFamily: "PlusJakartaSans-Bold",
-    paddingLeft: wp(3),
   },
   editButton: {
     borderRadius: wp(10),

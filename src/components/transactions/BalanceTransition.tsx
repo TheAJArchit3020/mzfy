@@ -14,12 +14,14 @@ const BalanceTransition: FC<BalanceTransitionProps> = ({
   openingBalance,
   closingBalance,
 }) => {
+  console.log("Opening Balance:", openingBalance)
+    console.log("Closing Balance:", closingBalance);
   return (
     <View style={styles.container}>
       <View style={styles.balanceRow}>
         <View style={styles.balanceSection}>
           <Text style={styles.label}>Opening Balance</Text>
-          <Text style={styles.amount}>₹{openingBalance.toLocaleString()}</Text>
+          <Text style={styles.amount}>₹{openingBalance?.toString()}</Text>
         </View>
 
         <View style={styles.arrowContainer}>
@@ -32,7 +34,7 @@ const BalanceTransition: FC<BalanceTransitionProps> = ({
 
         <View style={styles.balanceSection}>
           <Text style={styles.label}>Closing Balance</Text>
-          <Text style={styles.amount}>₹{closingBalance.toLocaleString()}</Text>
+          <Text style={styles.amount}>₹{closingBalance?.toString()}</Text>
         </View>
       </View>
     </View>
@@ -64,7 +66,7 @@ const styles = StyleSheet.create({
   },
   amount: {
     color: "#FFFFFF",
-    fontSize: wp(7),
+    fontSize: wp(6),
     fontFamily: "PlusJakartaSans-Bold",
     fontWeight: "bold",
   },

@@ -1,5 +1,5 @@
 // DonutChart.tsx
-import React, { FC } from "react";
+import React, { FC, useRef } from "react";
 import { View, StyleProp, ViewStyle } from "react-native";
 import Svg, {
   G,
@@ -28,6 +28,7 @@ export interface DonutChartProps {
   fontFamily?: string;
   arcCornerRadius?: number;
   showLabel?: boolean;
+  singleLineLabel?: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -48,11 +49,12 @@ const DonutChart: FC<DonutChartProps> = ({
   fontFamily,
   arcCornerRadius = 4,
   showLabel = true,
+  singleLineLabel = false,
   style,
 }) => {
   type ArcDatum = PieArcDatum<DonutDataItem>;
   const total = data.reduce((sum, d) => sum + d.value, 0);
-
+  const lastOffsetRef = useRef(0);
   const sectionArcs: ArcDatum[] = pie<DonutDataItem>()
     .value((d) => d.value)
     .sort(null)(data);
@@ -60,26 +62,31 @@ const DonutChart: FC<DonutChartProps> = ({
   const arcGen: ArcGenerator<any, ArcDatum> = arc<ArcDatum>()
     .innerRadius(radius - donutStrokeWidth)
     .outerRadius(radius)
-    .cornerRadius(arcCornerRadius);
+    .cornerRadius(arcCornerRadius)
+    .padAngle(0.02)
+    .padRadius(radius);
 
-  const donutSize = radius * 1.5 + donutStrokeWidth * 2;
+  const donutSize = radius * 2 + donutStrokeWidth * 2;
 
   const buffer = labelOffset + 20;
 
   const svgWidth = donutSize + buffer * 0.3 + canvasWidth;
   const svgHeight = donutSize + canvasHeight;
   const centerX = svgWidth / 2;
-  const centerY = svgHeight / 2.5;
+  const centerY = svgHeight / 2;
 
+  console.log("pieChart Data: ", data);
   return (
     <View style={[{ overflow: "visible" }, style]}>
-      <Svg width="100%" height="100%" viewBox={`0 0 ${svgWidth} ${svgHeight}`}>
+      <Svg width={svgWidth} height={svgHeight}>
         <G transform={`translate(${centerX}, ${centerY})`}>
           {sectionArcs.map((slice, i) => {
-            console.log("slice index: ", slice.index);
-            console.log("slice start Angle: ", slice.startAngle);
-            console.log("slice end Angle: ", slice.endAngle);
-            const midAngle = (slice.startAngle + slice.endAngle) / 2 - 1.5708;
+            // Modiefied bleow logic to prevent lable overlaps if all values are 0
+            let midAngle = (slice.startAngle + slice.endAngle) / 2 - 1.5708;
+            let prevOffset = lastOffsetRef.current;
+            let currentOffset = prevOffset + 0.5;
+            lastOffsetRef.current = currentOffset;
+            midAngle += currentOffset;
 
             console.log("mid Angle: ", midAngle);
 
@@ -87,7 +94,7 @@ const DonutChart: FC<DonutChartProps> = ({
             const x0 = Math.cos(midAngle) * midRadius;
             const y0 = Math.sin(midAngle) * midRadius;
 
-            const c = 15;
+            const c = 6;
             const x1 = Math.cos(midAngle) * (radius + c);
             const y1 = Math.sin(midAngle) * (radius + c);
 
@@ -99,6 +106,8 @@ const DonutChart: FC<DonutChartProps> = ({
             const text = `${data[i].label}`;
             const line1 = `${data[i].line1}`;
             const line2 = `${data[i].line2}`;
+
+            console.log("slice", slice);
             return (
               <G key={i}>
                 <Path d={arcGen(slice) || undefined} fill={data[i].color} />
@@ -123,13 +132,22 @@ const DonutChart: FC<DonutChartProps> = ({
                       fill={labelFontColor}
                       textAnchor={isRight ? "start" : "end"}
                       alignmentBaseline="middle"
+                      {...(fontFamily ? { fontFamily: fontFamily } : {})}
                     >
-                      <TSpan x={x2 + (isRight ? 4 : -4)} dy="0">
-                        {line1}
-                      </TSpan>
-                      <TSpan x={x2 + (isRight ? 4 : -4)} dy={labelFontSize}>
-                        {line2}
-                      </TSpan>
+                      {singleLineLabel ? (
+                        <TSpan x={x2 + (isRight ? 4 : -4)} dy="0">
+                          {text}
+                        </TSpan>
+                      ) : (
+                        <>
+                          <TSpan x={x2 + (isRight ? 4 : -4)} dy="0">
+                            {line1}
+                          </TSpan>
+                          <TSpan x={x2 + (isRight ? 4 : -4)} dy={labelFontSize}>
+                            {line2}
+                          </TSpan>
+                        </>
+                      )}
                     </SvgText>
                   </>
                 )}

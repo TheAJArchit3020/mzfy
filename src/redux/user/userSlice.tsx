@@ -21,10 +21,10 @@ export interface User {
 }
 
 interface UserState {
-    current: User
-    items: User[]
-    loading: boolean
-    error: string | null
+  current: User;
+  items: User[];
+  loading: boolean;
+  error: string | null;
 }
 
 const initialState: UserState = {
@@ -46,9 +46,9 @@ const initialState: UserState = {
 }
 
 type SetFieldPayload = {
-    field: keyof User
-    value: any
-}
+  field: keyof User;
+  value: any;
+};
 
 export const addUser = createAsyncThunk<User, User, { state: RootState; rejectValue: any }>(
     'user/addUser',
@@ -80,19 +80,18 @@ export const addUser = createAsyncThunk<User, User, { state: RootState; rejectVa
                 const statusCode = err.response?.status
                 const errorData = err.response?.data
 
-                return rejectWithValue({
-                    message: err.message,
-                    status: statusCode,
-                    data: errorData,
-                })
-            } else {
-                // Non-Axios error (e.g. coding bug, thrown manually)
-                console.log("Unexpected error:", err)
-                return rejectWithValue({ message: (err as Error).message })
-            }
-        }
+      return rejectWithValue({
+        message: err.message,
+        status: statusCode,
+        data: errorData,
+      });
+    } else {
+      // Non-Axios error (e.g. coding bug, thrown manually)
+      console.log("Unexpected error:", err);
+      return rejectWithValue({ message: (err as Error).message });
     }
-)
+  }
+});
 // fetch user....
 export const fetchUser = createAsyncThunk<User, void, { state: RootState; rejectValue: any }>(
     'user/fetchUser',
@@ -220,34 +219,34 @@ export const updateUser = createAsyncThunk<User, Partial<User>, { state: RootSta
 
 
 const userSlice = createSlice({
-    name: 'user',
-    initialState,
-    reducers: {
-        /** Generic setter for any User field */
-        setField(state, action: PayloadAction<SetFieldPayload>) {
-            const { field, value } = action.payload
-            state.current[field] = value
-        },
-        /** Reset the current form back to blank */
-        resetCurrent(state) {
-            state.current = initialState.current
-        },
+  name: "user",
+  initialState,
+  reducers: {
+    /** Generic setter for any User field */
+    setField(state, action: PayloadAction<SetFieldPayload>) {
+      const { field, value } = action.payload;
+      state.current[field] = value;
     },
-    extraReducers: (builder) => {
-        builder
-            .addCase(addUser.pending, (state) => {
-                state.loading = true
-                state.error = null
-            })
-            .addCase(addUser.fulfilled, (state, action) => {
-                state.loading = false
-                state.items.push(action.payload)
-                state.current = initialState.current
-            })
-            .addCase(addUser.rejected, (state, action) => {
-                state.loading = false
-                state.error = action.payload as string
-            })
+    /** Reset the current form back to blank */
+    resetCurrent(state) {
+      state.current = initialState.current;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(addUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items.push(action.payload);
+        state.current = initialState.current;
+      })
+      .addCase(addUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
 
         // fetch user data
         builder
@@ -298,5 +297,5 @@ const userSlice = createSlice({
     },
 })
 
-export const { setField, resetCurrent } = userSlice.actions
-export default userSlice.reducer
+export const { setField, resetCurrent } = userSlice.actions;
+export default userSlice.reducer;

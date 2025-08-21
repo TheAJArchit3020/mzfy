@@ -70,10 +70,12 @@ const IncomeDetails: FC = () => {
         <Input
           value={totalincome}
           onChangeContent={(val: any) =>
-            dispatch(setField({ field: 'totalHouseholdIncome', value: val }))
+            dispatch(
+              setField({ field: "totalHouseholdIncome", value: val ?? 0 })
+            )
           }
           placeholder="Eg. ₹ 30,000"
-          placeholderTextColor={'#C6C6C6'}
+          placeholderTextColor={"#C6C6C6"}
           label="Total income"
           type="number"
           containerStyle={styles.inputContainer}
@@ -93,7 +95,7 @@ const styles = StyleSheet.create({
   },
   input: {
     fontFamily: "PlusJakartaSans-Bold",
-    fontSize: wp(3.5)
+    fontSize: wp(3.5),
   },
   inputWrapperStyle: {
     paddingVertical: hp(1),

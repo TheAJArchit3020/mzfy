@@ -25,7 +25,9 @@ import { widthToDP } from "react-native-responsive-screens";
 import Debtprogress from "@components/dashboard/debtprogress";
 import { DebtCountDownType } from "src/commonTypes";
 import { DebtChartDataItem, DonutDataItem } from "src/commonTypes";
-import Aimodal from "@components/chatai/aimodal";
+import use from "react";
+import Transaction from "./transaction";
+import { logPayment } from "@redux/Transacttion/Transaction";import Aimodal from "@components/chatai/aimodal";
 import { logTransaction } from "@redux/debts/debtsSlice";
 
 type navprops = NativeStackNavigationProp<RootStackParams>;
@@ -36,11 +38,10 @@ const DashboardScreen: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<navprops>();
   const [show, setShow] = useState(false);
-  const [logAmount, setLogAmount] = useState('')
-  const [selectedDueTransaction, setSelectedDueTransaction] = useState('');
-
-  
-
+  const userData = useSelector((state: RootState) => state.user);
+  const [logPaymentAmount, setLogPaymentAmount] = useState<String>("0");
+  const dashboardData = useSelector((state: RootState) => state.dashBoard);
+  const [selectedTrasactionId, setSelectedTransactionId] = useState<string>("");
 
   const [debtFreeDate, setDebtFreeDate] = useState<DebtCountDownType>({
     year: 0,
@@ -67,9 +68,12 @@ const DashboardScreen: FC = () => {
   useEffect(() => {
     adjustedDate();
     transformDebtData(dashboardData?.data?.balanceByDebt || []);
+    console.log("dashboardData", dashboardData);
   }, [dashboardData]);
 
-  const logpopupHandler = () => {
+  const logpopupHandler = (id: string) => {
+    console.log("id", id);
+    setSelectedTransactionId(id);
     setShow(true);
   };
 
@@ -86,8 +90,6 @@ const DashboardScreen: FC = () => {
       return "Good Evening";
     }
   };
-
-
 
   const adjustedDate = () => {
     if (!dashboardData.data?.debtFreeDate) return null;
@@ -129,8 +131,37 @@ const DashboardScreen: FC = () => {
       value: parseFloat(debt.balance),
       color: debt.color,
     }));
-
     setDonutData(formatted);
+  };
+
+  const handleSeprateTrasactionNavigation = (id: string) => {
+    navigation.navigate("Transaction", { id: id });
+  };
+
+  const handleConfirm = async () => {
+    console.log(
+      "Confirmed amount:",
+      selectedTrasactionId,
+      " ",
+      " amount",
+      logPaymentAmount
+    );
+    try {
+      const response = await dispatch(
+        logPayment({
+          transactionId: selectedTrasactionId,
+          amount: Number(logPaymentAmount),
+        })
+      ).unwrap();
+
+      if (response) {
+        setShow(false);
+        setLogPaymentAmount("0");
+        fetchDashboardSummary();
+      }
+    } catch (error) {
+      console.error("Failed to log payment:", error);
+    }
   };
 
   const LogTransactionHandler = async () => {
@@ -186,6 +217,7 @@ const DashboardScreen: FC = () => {
 
         <View style={styles.section3}>
           {<Debtprogress percent={dashboardData.data?.payoffPct || 0} />}
+          {<Debtprogress percent={dashboardData.data?.payoffPct || 0} />}
         </View>
 
         <View style={styles.section4}>
@@ -195,9 +227,13 @@ const DashboardScreen: FC = () => {
         </View>
         <View style={styles.section7}>
           <Nextduedate
-            data={dashboardData?.data?.upcomingTransactions}
-            logpopupHandler={logpopupHandler}
-            setSelectedDueTransaction={setSelectedDueTransaction}
+            data={
+              dashboardData.data?.upcomingTransactions.slice(
+                0,
+                dashboardData.data?.balanceByDebt.length
+              ) || []
+            }
+            logpopupHandler={(id) => logpopupHandler(id)}
           />
         </View>
         <View style={styles.section5}>
@@ -205,6 +241,7 @@ const DashboardScreen: FC = () => {
           <UpcomingDebtsWithScrollbar
             data={dashboardData?.data?.upcomingTransactions || []}
             style={styles.cardstyle1}
+            onArrowPress={handleSeprateTrasactionNavigation}
           />
         </View>
       </ScrollView>
@@ -216,7 +253,11 @@ const DashboardScreen: FC = () => {
         visible={show}
         title="Paid amount"
         onClose={LogTransactionHandler}
-        onClose2={() => setShow(false)}
+        onClose2={() => {
+          setShow(false);
+          setLogPaymentAmount("0");
+        }}
+        onConfirm={handleConfirm}
         titleStyle={styles.popuptitle}
         containerStyle={styles.popupContainerStyle}
       >

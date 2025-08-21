@@ -49,6 +49,11 @@ const LogExpense = () => {
   const [note, setNote] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const isValid =
+    spentAmount.trim() !== "" &&
+    selectedDate.trim() !== "" &&
+    selectedCategoryID &&
+    note.trim() !== "";
 
   useEffect(() => {
     fetchData();
@@ -63,6 +68,7 @@ const LogExpense = () => {
       result = catagories;
       setCategories(result || []);
     }
+    console.log("result", result);
   };
 
   const handleLogExpense = async () => {
@@ -175,9 +181,13 @@ const LogExpense = () => {
         </View>
         {/* Log Expense Button */}
         <TouchableOpacity
-          style={styles.logButton}
+          style={[
+            styles.logButton,
+            { backgroundColor: isValid ? "#006FFF" : "#888" }, 
+          ]}
           onPress={handleLogExpense}
           activeOpacity={0.8}
+          disabled={!isValid} // disable if not valid
         >
           <Text style={styles.logButtonText}>Log expense</Text>
         </TouchableOpacity>
@@ -204,7 +214,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   inputWrapper: {
-    backgroundColor: "transparent",
     borderWidth: 1,
     borderColor: "#BCBCBC",
     borderRadius: wp(4),

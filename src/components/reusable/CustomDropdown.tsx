@@ -17,7 +17,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "react-native-heroicons/outline";
 import { LogExpenseCategoryItem } from "src/commonTypes";
 
 interface CustomDropdownProps {
-  options: LogExpenseCategoryItem[];
+  options: any[];
   value: string | number | null;
   onChange: (value: any) => void;
   placeholder?: string;
@@ -76,7 +76,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   const [containerHeight, setContainerHeight] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
   const selected = options.find((opt) => opt.name === value);
-
+  console.log("options", options);
   return (
     <View style={styles.container}>
       {label && <Text style={styles.label}>{label}</Text>}
@@ -171,8 +171,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#BCBCBC",
     borderRadius: wp(4),
-    paddingHorizontal: wp(4),
-    paddingVertical: hp(1.5),
+    paddingHorizontal: wp(2),
+    paddingVertical: hp(1),
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   optionText: {
-    fontSize: wp(4.5),
+    fontSize: wp(4),
     color: "#e5e5f7",
     fontFamily: "PlusJakartaSans-Regular",
   },

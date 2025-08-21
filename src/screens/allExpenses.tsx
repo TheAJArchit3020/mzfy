@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Platform,
   ScrollView,
+  Image,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import {
@@ -23,6 +24,9 @@ import Input from "@components/reusable/Input";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { ArrowPathIcon, CalendarDaysIcon } from "react-native-heroicons/solid";
 import { expenseItem } from "src/commonTypes";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@redux/store";
+import { fetchAllExpenses } from "@redux/expenseSlice/expenseSlice";
 
 // Sample data formatted to match expenseItem type
 const expenseData: expenseItem[] = [
@@ -105,30 +109,30 @@ const expenseData: expenseItem[] = [
 ];
 
 const dropdownOptions = [
-  { label: "Current Month", value: "current" },
-  { label: "Last Month", value: "last" },
-  { label: "Select date range", value: "range" },
-  { label: "Select Category", value: "category" },
-];
-
-const categoryOptions = [
-  { label: "Entertainment", value: "entertainment", color: "#3A7BFF" },
-  { label: "Shopping", value: "shopping", color: "#4CAF50" },
-  { label: "Food", value: "food", color: "#FFA500" },
-  { label: "Health", value: "health", color: "#4CAF50" },
-  { label: "Investment", value: "investment", color: "#4CAF50" },
-  { label: "Miscellaneous", value: "miscellaneous", color: "#4CAF50" },
-  { label: "Transportation", value: "transport", color: "#4CAF50" },
-  { label: "Education", value: "education", color: "#4CAF50" },
-  { label: "Utilities", value: "utilities", color: "#4CAF50" },
-  { label: "Rent", value: "rent", color: "#4CAF50" },
-  { label: "Insurance", value: "insurance", color: "#4CAF50" },
-  { label: "Other", value: "other", color: "#4CAF50" },
+  { name: "Current Month", value: "current" },
+  { name: "Last Month", value: "last" },
+  { name: "Select date range", value: "range" },
+  { name: "Select Category", value: "category" },
 ];
 
 const AllExpenses = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const allExpenses = useSelector(
+    (state: RootState) => state.expenses.allExpenses
+  );
+  const categoryOptions = useSelector((state: RootState) =>
+    state.expenses.getCatogories.map((cat) => ({
+      label: cat.name,
+      value: cat._id, // or cat.name.toLowerCase() if you prefer text
+      color: cat.color,
+    }))
+  );
+  console.log("catagoriesData", categoryOptions);
   const [selectedFilter, setSelectedFilter] = useState<string | number | null>(
-    null
+    "current"
+  );
+  const [dateFilter, setDateFilter] = useState<"current" | "last" | "range">(
+    "current"
   );
   const [showDateRangePopup, setShowDateRangePopup] = useState(false);
   const [showCategoryPopup, setShowCategoryPopup] = useState(false);
@@ -142,21 +146,46 @@ const AllExpenses = () => {
   const [categoryContentHeight, setCategoryContentHeight] = useState(0);
   const [categoryContainerHeight, setCategoryContainerHeight] = useState(0);
 
-  const handleFilterChange = (value: string | number | null) => {
-    setSelectedFilter(value);
+  // Map internal filter code to display name used by CustomDropdown
+  const codeToName: Record<string, string> = {
+    current: "Current Month",
+    last: "Last Month",
+    range: "Select date range",
+    category: "Select Category",
+  };
+  const selectedFilterName =
+    (selectedFilter && codeToName[String(selectedFilter)]) || "Current Month";
 
-    if (value === "range") {
+  const handleFilterChange = (value: any) => {
+    const code =
+      value && typeof value === "object" && "value" in value
+        ? value.value
+        : value;
+    setSelectedFilter(code);
+
+    if (code === "current") {
+      setDateFilter("current");
+      setShowDateRangePopup(false);
+    } else if (code === "last") {
+      setDateFilter("last");
+      setShowDateRangePopup(false);
+    } else if (code === "range") {
+      // open date range selector; actual range applied on confirm
       setShowDateRangePopup(true);
-    } else if (value === "category") {
+    } else if (code === "category") {
+      // open category selector; keep existing date filter (default/current/last/range)
       setShowCategoryPopup(true);
     }
   };
 
   const handleResetFilter = () => {
     setSelectedFilter("current");
+    setDateFilter("current");
     setStartDate("");
     setEndDate("");
     setSelectedCategory(null);
+    setShowDateRangePopup(false);
+    setShowCategoryPopup(false);
   };
 
   const handleDateChange = (
@@ -186,7 +215,8 @@ const AllExpenses = () => {
 
   const handleDateRangeConfirm = () => {
     setShowDateRangePopup(false);
-    // Here you can add logic to filter expenses by date range
+    // Apply range mode so API call uses provided dates
+    setDateFilter("range");
     console.log("Date range selected:", { startDate, endDate });
   };
 
@@ -201,7 +231,102 @@ const AllExpenses = () => {
 
   const handleCategorySelect = (categoryValue: string) => {
     setSelectedCategory(categoryValue);
+    setShowCategoryPopup(false);
+    // Default date range to last 1 month when filtering by category
+    const end = new Date();
+    const start = new Date();
+    start.setMonth(start.getMonth() - 1);
+    const toDdMmYyyy = (d: Date) => d.toLocaleDateString("en-GB");
+    setStartDate(toDdMmYyyy(start));
+    setEndDate(toDdMmYyyy(end));
+    setDateFilter("range");
   };
+
+  // Build current month date range ISO strings
+  const getMonthRange = (date: Date) => {
+    const start = new Date(date.getFullYear(), date.getMonth(), 1);
+    const end = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+    return { startDate: start.toISOString(), endDate: end.toISOString() };
+  };
+
+  useEffect(() => {
+    // Build params based on current filter selections
+    const params: { startDate?: string; endDate?: string; category?: string } =
+      {};
+
+    if (dateFilter === "current") {
+      const { startDate, endDate } = getMonthRange(new Date());
+      params.startDate = startDate;
+      params.endDate = endDate;
+    } else if (dateFilter === "last") {
+      const now = new Date();
+      const prevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const { startDate, endDate } = getMonthRange(prevMonth);
+      params.startDate = startDate;
+      params.endDate = endDate;
+    } else if (dateFilter === "range") {
+      // Parse DD/MM/YYYY into ISO
+      const parseDdMmYyyy = (val: string): string | undefined => {
+        if (!val) return undefined;
+        const [dd, mm, yyyy] = val.split("/").map((v) => Number(v));
+        if (!dd || !mm || !yyyy) return undefined;
+        const d = new Date(yyyy, mm - 1, dd, 0, 0, 0, 0);
+        return d.toISOString();
+      };
+      const s = parseDdMmYyyy(startDate);
+      const e = parseDdMmYyyy(endDate);
+      if (s) params.startDate = s;
+      if (e) params.endDate = e;
+    }
+
+    if (selectedCategory) {
+      params.category = selectedCategory as string;
+    }
+
+    dispatch(fetchAllExpenses(params));
+  }, [dispatch, dateFilter, startDate, endDate, selectedCategory]);
+
+  // Transform API data to expenseItem[] for list
+  const expensesData: expenseItem[] = React.useMemo(() => {
+    const groups: Record<
+      string,
+      { date: string; transactions: any[]; ts: number }
+    > = {};
+    const toDateLabel = (dateStr: string) => {
+      const d = new Date(dateStr);
+      const weekday = d.toLocaleDateString("en-US", { weekday: "short" });
+      const day = String(d.getDate());
+      return `${day} ${weekday}`;
+    };
+    (Array.isArray(allExpenses) ? allExpenses : []).forEach((exp: any) => {
+      const dateStr =
+        exp.date || exp.createdAt || exp.updatedAt || new Date().toISOString();
+      const label = toDateLabel(dateStr);
+      if (!groups[label]) {
+        groups[label] = {
+          date: label,
+          transactions: [],
+          ts: new Date(dateStr).getTime(),
+        };
+      }
+      groups[label].transactions.push({
+        id: exp.expense || exp._id || exp.id || "",
+        category:
+          (exp.category && (exp.category.name || exp.category.label)) ||
+          exp.category ||
+          "",
+        item: exp.note || exp.description || exp.item || "",
+        amount: Number(exp.amount) || 0,
+        date: label,
+      });
+    });
+    const arr = Object.values(groups);
+    arr.sort((a, b) => b.ts - a.ts);
+    return arr.map(({ date, transactions }) => ({
+      date,
+      transactions,
+    })) as expenseItem[];
+  }, [allExpenses]);
 
   return (
     <LinearGradient
@@ -217,7 +342,7 @@ const AllExpenses = () => {
       {/* Filter Section */}
       <View style={styles.filterSection}>
         <CustomDropdown
-          value={selectedFilter}
+          value={selectedFilterName}
           showScrollIndicator={false}
           options={dropdownOptions}
           onChange={handleFilterChange}
@@ -228,7 +353,17 @@ const AllExpenses = () => {
 
       {/* Expense List */}
       <View style={styles.expenseListContainer}>
-        <ExpenseByDateList data={expenseData} showScrollIndicator={false} />
+        {expensesData.length > 0 ? (
+          <ExpenseByDateList data={expensesData} showScrollIndicator={false} />
+        ) : (
+          <View style={styles.noDataContainer}>
+            <Image
+              source={require("../assets/images/Expenses/NoData.png")}
+              style={styles.noImage}
+            />
+            <Text style={styles.noDataText}>No data available</Text>
+          </View>
+        )}
       </View>
 
       {/* Reset Filter Button */}
@@ -245,6 +380,7 @@ const AllExpenses = () => {
       <Popup
         visible={showDateRangePopup}
         onClose={() => setShowDateRangePopup(false)}
+        onConfirm={handleDateRangeConfirm}
         title="Starting & End date"
         containerStyle={styles.popupContainer}
         titleStyle={styles.popupTitle}
@@ -300,6 +436,7 @@ const AllExpenses = () => {
       <Popup
         visible={showCategoryPopup}
         onClose={() => setShowCategoryPopup(false)}
+        onConfirm={() => setShowCategoryPopup(false)}
         title="Select category"
         containerStyle={styles.popupContainer}
         titleStyle={styles.popupTitle}
@@ -333,7 +470,7 @@ const AllExpenses = () => {
                     index < categoryOptions.length - 1 &&
                       styles.categoryItemBorder,
                   ]}
-                  onPress={() => handleCategorySelect(category.value)}
+                  onPress={() => handleCategorySelect(category.value || "")}
                   activeOpacity={0.7}
                 >
                   <View
@@ -496,6 +633,24 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: wp(3.5),
     fontWeight: "500",
+  },
+  noDataContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: hp(10),
+  },
+  noImage: {
+    height: hp(15),
+    width: wp(30),
+    resizeMode: "contain",
+    marginTop: hp(3),
+  },
+  noDataText: {
+    fontFamily: "PlusJakartaSans-Bold",
+    color: "#fff",
+    fontSize: wp(5),
+    marginTop: hp(1),
   },
 });
 

@@ -85,8 +85,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: "4%",
   },
-  donut_chart_container: {
-    width: "100%",
-    height: "85%",
-  },
+  donut_chart_container: {},
 });

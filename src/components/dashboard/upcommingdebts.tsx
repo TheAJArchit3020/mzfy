@@ -26,11 +26,12 @@ import { RootState } from "@redux/store";
 // }
 
 interface UpcomingDebtsWithScrollbarProps {
-  data: any
-  style?: any
-  cardStyle?: any
-  sort?: any
-  showicon?: any
+  data: any;
+  style?: any;
+  cardStyle?: any;
+  sort?: any;
+  showicon?: any;
+  onArrowPress: (id: string) => void;
 }
 
 const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
@@ -39,6 +40,7 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
   style,
   sort = true,
   showicon = true,
+  onArrowPress,
 }) => {
 
   const userDetails = useSelector((state: RootState) => state.user?.items[0]);
@@ -71,20 +73,20 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
     scrollableRange > 0 ? (scrollY / scrollableRange) * maxThumbPos : 0;
 
   const onContainerLayout = (e: LayoutChangeEvent) => {
-    const height = e.nativeEvent.layout.height
-    setContainerHeight(height)
-  }
+    const height = e.nativeEvent.layout.height;
+    setContainerHeight(height);
+  };
 
   const onContentSizeChange = (_: number, h: number) => {
-    setContentHeight(h)
-  }
+    setContentHeight(h);
+  };
 
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const offset = e.nativeEvent.contentOffset.y
-    setScrollY(offset)
-  }
+    const offset = e.nativeEvent.contentOffset.y;
+    setScrollY(offset);
+  };
 
-  const scrollViewRef = useRef<ScrollView>(null)
+  const scrollViewRef = useRef<ScrollView>(null);
 
   return (
     <Card style={[styles.card, style]} cardStyle={[styles.innerCard, cardStyle]}>
@@ -175,20 +177,19 @@ export default UpcomingDebtsWithScrollbar;
 
 const styles = StyleSheet.create({
   card: {
-    width: '100%',
+    width: "100%",
     padding: 0,
     height: 200,
   },
   innerCard: {
     padding: 0,
-    justifyContent: 'flex-start',
-    overflow: 'visible',
+    justifyContent: "flex-start",
+    overflow: "visible",
     // backgroundColor: "#2A2A2A"
-
   },
   scrollArea: {
     height: 200,
-    position: 'relative',
+    position: "relative",
   },
   scrollView: {
     flex: 1,
@@ -197,42 +198,41 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   row: {
-    flexDirection: 'row',
+    flexDirection: "row",
     // justifyContent: 'space-between',
-    borderBottomColor: '#C0C0C0',
+    borderBottomColor: "#C0C0C0",
     borderBottomWidth: 0.2,
     paddingTop: 25,
     paddingBottom: 12,
     marginHorizontal: 30,
-
   },
   noBorder: {
     borderBottomWidth: 0,
   },
   text: {
-    color: '#fff',
-    fontFamily: 'PlusJakartaSans-Regular',
+    color: "#fff",
+    fontFamily: "PlusJakartaSans-Regular",
     fontSize: 14,
-    width: '30.33%',
-    textAlign: "center"
+    width: "30.33%",
+    textAlign: "center",
   },
   scrollbarTrack: {
-    position: 'absolute',
+    position: "absolute",
     right: 14,
     width: 2,
-    backgroundColor: '#D9D9D9',
+    backgroundColor: "#D9D9D9",
     borderRadius: 4,
   },
   scrollbarThumb: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     width: 2,
-    backgroundColor: '#006FFF',
+    backgroundColor: "#006FFF",
     borderRadius: 4,
   },
   image: {
     width: 24,
     height: 24,
-    resizeMode: "contain"
+    resizeMode: "contain",
   },
-})
+});
