@@ -1,5 +1,5 @@
 import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { FC } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import Card from '@components/reusable/card'
 import LinearGradient from 'react-native-linear-gradient'
 
@@ -11,6 +11,18 @@ interface strategyProps {
 }
 
 const Strategycard: FC<strategyProps> = ({ title, subtitle, onPress }) => {
+
+    const [showContent, setShowContent] = useState(false);
+
+    useEffect(() => {
+        if (title) {
+            const timer = setTimeout(() => {
+                setShowContent(true);
+            }, 1200);
+
+            return () => clearTimeout(timer); 
+        }
+    }, [title]);
 
 
 
@@ -87,7 +99,7 @@ const styles = StyleSheet.create({
         fontFamily: "PlusJakartaSans-Bold",
         color: "#fff",
         fontSize: 30,
-        textTransform:"capitalize"
+        textTransform: "capitalize"
     },
     section_card_text3: {
         fontStyle: "italic",
@@ -99,7 +111,7 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         overflow: "hidden",
         borderWidth: 0,
-        height: Platform.OS ==='android' ? 175 : 155
+        height: Platform.OS === 'android' ? 175 : 155
     },
     section_card_inner: {
         padding: 0,
