@@ -13,11 +13,11 @@ interface BalanceByDebt {
 }
 
 interface UpcomingTransaction {
-  debtTransaction: string;
-  debtName: string;
-  amount: number;
-  dueDate: string;
-  _id: string;
+  debtTransaction?: string;
+  debtName?: string;
+  amount?: number;
+  dueDate?: string;
+  _id?: string;
 }
 
 interface DashboardSummary {
@@ -49,11 +49,24 @@ export const fetchDashboardSummary = createAsyncThunk<DashboardSummary, void, { 
         },
       });
       return response.data;
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error) && error.response) {
-        return rejectWithValue(error.response.data.message);
+    } catch (err: unknown) {
+      console.log("err res : ", err)
+
+      if (axios.isAxiosError(err)) {
+
+        const statusCode = err.response?.status
+        const errorData = err.response?.data
+
+        return rejectWithValue({
+          message: err.message,
+          status: statusCode,
+          data: errorData,
+        })
+      } else {
+        // Non-Axios error (e.g. coding bug, thrown manually)
+        console.log("Unexpected error:", err)
+        return rejectWithValue({ message: (err as Error).message })
       }
-      return rejectWithValue("Something went wrong");
     }
   }
 );

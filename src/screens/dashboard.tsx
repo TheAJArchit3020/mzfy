@@ -1,4 +1,5 @@
 import {
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -27,6 +28,7 @@ import { DebtCountDownType } from "src/commonTypes";
 import { DebtChartDataItem, DonutDataItem } from "src/commonTypes";
 import Aimodal from "@components/chatai/aimodal";
 import { logTransaction } from "@redux/debts/debtsSlice";
+import Undermaintainence from "@components/reusable/undermaintainence";
 
 type navprops = NativeStackNavigationProp<RootStackParams>;
 
@@ -38,6 +40,7 @@ const DashboardScreen: FC = () => {
   const [show, setShow] = useState(false);
   const [logAmount, setLogAmount] = useState('')
   const [selectedDueTransaction, setSelectedDueTransaction] = useState('');
+  const [showConnection, setShowConnection] = useState(false)
 
   const dashboardData = useSelector((state: RootState) => state.dashBoard);
   const userDetails = useSelector((state: RootState) => state.user.items[0]);
@@ -53,7 +56,12 @@ const DashboardScreen: FC = () => {
 
 
   useEffect(() => {
-    dispatch(fetchDashboardSummary());
+    dispatch(fetchDashboardSummary()).then((result) => {
+      const error = result?.payload?.message
+      if (error === "Network Error") {
+        setShowConnection(true)
+      }
+    })
   }, []);
 
   useEffect(() => {
@@ -139,9 +147,10 @@ const DashboardScreen: FC = () => {
 
 
 
-
   return (
     <View style={styles.container}>
+
+
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={styles.scrollview}
@@ -201,19 +210,8 @@ const DashboardScreen: FC = () => {
           />
         </View>
       </ScrollView>
-
       <Aimodal style={styles.aiContainer} imagestyle={styles.aiimagestyle} />
 
-      {/* <TouchableOpacity
-        style={styles.section6}
-        onPress={() => {
-          navigation.navigate("adddebtscreen", {
-            screen: 2
-          });
-        }}
-      >
-        <Text style={styles.section6_text}>+</Text>
-      </TouchableOpacity> */}
 
       {/* log payment popup */}
       <Popup

@@ -58,6 +58,8 @@ const DebtsScreen: FC = () => {
     completedDebts: []
   };
 
+  console.log("FETCHALLDEBTS : ",FETCHALLDEBTS)
+
   const inProgressList = FETCHALLDEBTS.inProgressDebts;
   const completedList = FETCHALLDEBTS.completedDebts;
 

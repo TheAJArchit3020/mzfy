@@ -15,6 +15,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParams } from "@managers/routing";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fetchAllCustomStrategy } from "@redux/strategies/strategySlice";
+import Undermaintainence from "@components/reusable/undermaintainence";
 
 type navprops = NativeStackNavigationProp<RootStackParams>;
 
@@ -22,7 +23,9 @@ const Layout: React.FC = () => {
 
   const navigation = useNavigation<navprops>();
   const dispatch = useDispatch<AppDispatch>();
+  const [showConnection, setShowConnection] = useState(false)
   const [tab, setTab] = useState(0);
+
   const tabs = ["Dashboard", "Debts", "Pay off Plan", "Expenses"];
 
   useFocusEffect(
@@ -35,7 +38,11 @@ const Layout: React.FC = () => {
     try {
       await dispatch(fetchUser()).unwrap()
     } catch (err: any) {
-      console.log("Error adding user:", err);
+      console.log("Error fetch user:", err);
+
+      if (err.message === "Network Error") setShowConnection(true)
+      else setShowConnection(false)
+
       if (err?.status === 401) {
         navigation.navigate('splashscreen');
         await AsyncStorage.removeItem('token');
@@ -57,15 +64,20 @@ const Layout: React.FC = () => {
       >
         <SegmentButton items={tabs} selectedIndex={tab} onChange={setTab} />
 
-        {tab === 0 ? (
-          <DashboardScreen />
-        ) : tab === 1 ? (
-          <DebtsScreen />
-        ) : tab === 2 ? (
-          <PayoffplansScreen />
-        ) : (
-          <Expenses />
-        )}
+        {showConnection ? (
+          <Undermaintainence />
+        ) :
+          tab === 0 ? (
+            <DashboardScreen />
+          ) : tab === 1 ? (
+            <DebtsScreen />
+          ) : tab === 2 ? (
+            <PayoffplansScreen />
+          ) : (
+            <Expenses />
+          )
+        }
+
       </LinearGradient>
     </View>
   );
