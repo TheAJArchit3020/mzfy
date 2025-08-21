@@ -13,6 +13,7 @@ export interface Debts {
     apr: any
     nextDueDate: any
     tagColor: any
+    payload?: any
 }
 
 export interface AllDebts {

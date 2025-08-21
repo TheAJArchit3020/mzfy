@@ -16,11 +16,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 
 export type StrategyOption = {
-    title: string; // e.g., "Debt Avalanche"
-    subtitle?: string; // e.g., "(Prioritize highest interest rate)"
+    title: string; 
+    subtitle?: string; 
     advantage: string;
-    timeToPayoff: string; // e.g., "28 Days"
-    interestSaved: string; // e.g., "₹1500"
+    timeToPayoff: string; 
+    interestSaved: string; 
     value: string;
     disabled?: boolean;
 };
