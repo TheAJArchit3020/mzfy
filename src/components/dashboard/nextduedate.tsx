@@ -1,10 +1,11 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { FC, useEffect, useMemo } from "react";
+import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import Card from "@components/reusable/card";
 import LinearGradient from "react-native-linear-gradient";
 import { AppDispatch } from "@redux/store";
 import { useDispatch } from "react-redux";
 import { logTransaction } from "@redux/debts/debtsSlice";
+import { heightToDP } from "react-native-responsive-screens";
 
 interface NextduedateProps {
     data?: Array<{ id: string; amount: number; dueDate: string, _id?: string }>
@@ -15,7 +16,17 @@ interface NextduedateProps {
 const Nextduedate: FC<NextduedateProps> = ({ data, logpopupHandler, setSelectedDueTransaction }) => {
 
 
-    console.log("data transcation :: ", data)
+    const [showContent, setShowContent] = useState(false);
+
+    useEffect(() => {
+        if (data) {
+            const timer = setTimeout(() => {
+                setShowContent(true);
+            }, 1200);
+
+            return () => clearTimeout(timer); // cleanup
+        }
+    }, [data]);
 
 
     const startOfDay = (d: Date) => {
@@ -106,46 +117,51 @@ const Nextduedate: FC<NextduedateProps> = ({ data, logpopupHandler, setSelectedD
 
                 return (
                     <Card style={styles.section_card} cardStyle={styles.section_card_inner} key={idx}>
-                        <LinearGradient
-                            colors={cardColors}
-                            locations={[0, 1]}
-                            start={{ x: 1, y: 0 }}
-                            end={{ x: 0, y: 1 }}
-                        >
-                            <View style={styles.section_card_inner_content}>
-                                <View style={styles.section_card_inner_content_item}>
-                                    <View style={styles.grpsection}>
-                                        <View>
-                                            <Text style={[styles.section_card_text1, { color: textcolor }]}>Next</Text>
-                                            <Text style={[styles.section_card_text2, { color: textcolor }]}>Due date</Text>
+
+                        {showContent ? (
+                            <>
+                                <LinearGradient
+                                    colors={cardColors}
+                                    locations={[0, 1]}
+                                    start={{ x: 1, y: 0 }}
+                                    end={{ x: 0, y: 1 }}
+                                >
+                                    <View style={styles.section_card_inner_content}>
+                                        <View style={styles.section_card_inner_content_item}>
+                                            <View style={styles.grpsection}>
+                                                <View>
+                                                    <Text style={[styles.section_card_text1, { color: textcolor }]}>Next</Text>
+                                                    <Text style={[styles.section_card_text2, { color: textcolor }]}>Due date</Text>
+                                                </View>
+                                                <Image source={images} style={styles.image} />
+                                            </View>
+
+                                            <Text style={[styles.section_card_text4, { color: textcolor }]}>
+                                                {dueDate.getDate()}{' '}
+                                                <Text style={[styles.section_card_span, { color: textcolor }]}>
+                                                    {dueDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
+                                                </Text>
+                                            </Text>
+
+                                            <Text style={[styles.section_card_text5, { color: textcolor }]}>
+                                                {item.amount.toLocaleString('en-IN')} /-
+                                            </Text>
                                         </View>
-                                        <Image source={images} style={styles.image} />
                                     </View>
-
-                                    <Text style={[styles.section_card_text4, { color: textcolor }]}>
-                                        {dueDate.getDate()}{' '}
-                                        <Text style={[styles.section_card_span, { color: textcolor }]}>
-                                            {dueDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
-                                        </Text>
-                                    </Text>
-
-                                    <Text style={[styles.section_card_text5, { color: textcolor }]}>
-                                        {item.amount.toLocaleString('en-IN')} /-
-                                    </Text>
-                                </View>
-                            </View>
-                        </LinearGradient>
-                        <LinearGradient
-                            colors={buttonColors}
-                            locations={[0, 1]}
-                            start={{ x: 1, y: 0 }}
-                            end={{ x: 0, y: 1 }}
-                            style={styles.button_gradient}
-                        >
-                            <TouchableOpacity style={styles.logbutton} onPress={logpopupHandler} >
-                                <Text style={[styles.logbutton_text, { color: buttonTextColors }]}>Log Payment</Text>
-                            </TouchableOpacity>
-                        </LinearGradient>
+                                </LinearGradient>
+                                <LinearGradient
+                                    colors={buttonColors}
+                                    locations={[0, 1]}
+                                    start={{ x: 1, y: 0 }}
+                                    end={{ x: 0, y: 1 }}
+                                    style={styles.button_gradient}
+                                >
+                                    <TouchableOpacity style={styles.logbutton} onPress={logpopupHandler} >
+                                        <Text style={[styles.logbutton_text, { color: buttonTextColors }]}>Log Payment</Text>
+                                    </TouchableOpacity>
+                                </LinearGradient>
+                            </>
+                        ) : <ActivityIndicator color={"#fff"} size={"large"} style={{marginVertical: heightToDP(6)}} />}
                     </Card>
                 )
             })}

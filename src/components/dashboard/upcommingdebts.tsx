@@ -1,5 +1,5 @@
 // components/UpcomingDebtsWithScrollbar.tsx
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -10,10 +10,11 @@ import {
   LayoutChangeEvent,
   TouchableOpacity,
   Image,
+  ActivityIndicator,
 } from 'react-native'
 import Card from '@components/reusable/card'
 import { formatDDMMMyyyy } from '@components/reusable/formatdate'
-import { widthToDP } from 'react-native-responsive-screens'
+import { heightToDP, widthToDP } from 'react-native-responsive-screens'
 import { useSelector } from "react-redux";
 import { RootState } from "@redux/store";
 
@@ -46,6 +47,18 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
   const [contentHeight, setContentHeight] = useState(1);
   const [scrollY, setScrollY] = useState(0);
 
+  const [showContent, setShowContent] = useState(false);
+
+  useEffect(() => {
+    if (data) {
+      const timer = setTimeout(() => {
+        setShowContent(true);
+      }, 1200);
+
+      return () => clearTimeout(timer); // cleanup
+    }
+  }, [data]);
+
 
   // Calculate scrollbar dimensions
   const scrollableRange = Math.max(contentHeight - containerHeight, 1);
@@ -75,81 +88,85 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
 
   return (
     <Card style={[styles.card, style]} cardStyle={[styles.innerCard, cardStyle]}>
-      <View style={styles.scrollArea} onLayout={onContainerLayout}>
-        <ScrollView
-          onScroll={onScroll}
-          scrollEventThrottle={16}
-          onContentSizeChange={onContentSizeChange}
-          showsVerticalScrollIndicator={false}
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          nestedScrollEnabled={true}
-          ref={scrollViewRef}
-        >
-          {data?.map((item: any, idx: any) => {
 
-            const isLast = idx === data.length - 1
-            return (
-              <View key={idx}>
-                {sort ?
-                  (<View
-                    style={[
-                      styles.row,
-                      isLast && styles.noBorder,
-                    ]}
-                  >
-                    <Text style={[styles.text, { textAlign: "left" }]}>{formatDDMMMyyyy(item?.dueDate)}</Text>
-
-                    <Text style={styles.text}>
-                      {userDetails?.selectedCurrency} {item.amount.toFixed(0)} /-
-                    </Text>
-                    <Text style={[styles.text, { textAlign: item.debtName ? "right" : "right", paddingRight: item.debtName ? "5%" : "auto" }]}>
-                      {item.name ?? item.debtName}</Text>
-
-                    {showicon && <TouchableOpacity>
-                      <Image source={require('@images/dashboard/rightarrow.png')} style={styles.image} />
-                    </TouchableOpacity>}
-                  </View>)
-                  : (<View
-                    style={[
-                      styles.row,
-                      isLast && styles.noBorder,
-                    ]}
-                  >
-                    <Text style={styles.text}>{formatDDMMMyyyy(item?.dueDate)}</Text>
-                    <Text style={styles.text}></Text>
-                    <Text style={[styles.text]}>
-                      {userDetails?.selectedCurrency} {item.amount} /-
-                    </Text>
-                    {showicon && <TouchableOpacity>
-                      <Image source={require('@images/dashboard/rightarrow.png')} style={styles.image} />
-                    </TouchableOpacity>}
-                  </View>)}
-              </View>
-            )
-          })}
-        </ScrollView>
-
-        {/* Custom scrollbar */}
-        {contentHeight > containerHeight && (
-          <View
-            style={[
-              styles.scrollbarTrack,
-              {
-                height: 120,
-                top: (containerHeight - 120) / 2,
-              },
-            ]}
+      {showContent ? (
+        <View style={styles.scrollArea} onLayout={onContainerLayout}>
+          <ScrollView
+            onScroll={onScroll}
+            scrollEventThrottle={16}
+            onContentSizeChange={onContentSizeChange}
+            showsVerticalScrollIndicator={false}
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollContent}
+            nestedScrollEnabled={true}
+            ref={scrollViewRef}
           >
+            {data?.map((item: any, idx: any) => {
+
+              const isLast = idx === data.length - 1
+              return (
+                <View key={idx}>
+                  {sort ?
+                    (<View
+                      style={[
+                        styles.row,
+                        isLast && styles.noBorder,
+                      ]}
+                    >
+                      <Text style={[styles.text, { textAlign: "left" }]}>{formatDDMMMyyyy(item?.dueDate)}</Text>
+
+                      <Text style={styles.text}>
+                        {userDetails?.selectedCurrency} {item.amount.toFixed(0)} /-
+                      </Text>
+                      <Text style={[styles.text, { textAlign: item.debtName ? "right" : "right", paddingRight: item.debtName ? "5%" : "auto" }]}>
+                        {item.name ?? item.debtName}</Text>
+
+                      {showicon && <TouchableOpacity>
+                        <Image source={require('@images/dashboard/rightarrow.png')} style={styles.image} />
+                      </TouchableOpacity>}
+                    </View>)
+                    : (<View
+                      style={[
+                        styles.row,
+                        isLast && styles.noBorder,
+                      ]}
+                    >
+                      <Text style={styles.text}>{formatDDMMMyyyy(item?.dueDate)}</Text>
+                      <Text style={styles.text}></Text>
+                      <Text style={[styles.text]}>
+                        {userDetails?.selectedCurrency} {item.amount} /-
+                      </Text>
+                      {showicon && <TouchableOpacity>
+                        <Image source={require('@images/dashboard/rightarrow.png')} style={styles.image} />
+                      </TouchableOpacity>}
+                    </View>)}
+                </View>
+              )
+            })}
+          </ScrollView>
+
+          {/* Custom scrollbar */}
+          {contentHeight > containerHeight && (
             <View
               style={[
-                styles.scrollbarThumb,
-                { height: thumbHeight, top: thumbTop },
+                styles.scrollbarTrack,
+                {
+                  height: 120,
+                  top: (containerHeight - 120) / 2,
+                },
               ]}
-            />
-          </View>
-        )}
-      </View>
+            >
+              <View
+                style={[
+                  styles.scrollbarThumb,
+                  { height: thumbHeight, top: thumbTop },
+                ]}
+              />
+            </View>
+          )}
+        </View>
+      ) : <ActivityIndicator color={"#fff"} size={"large"} style={{ marginVertical: heightToDP(10) }} />}
+
     </Card>
   );
 };

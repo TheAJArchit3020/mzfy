@@ -8,6 +8,8 @@ import { RootStackParams } from '@managers/routing'
 import { formatDDMMMyyyy, formatDDMMMyyyy2, formatToDDMMMYYYY } from '@components/reusable/formatdate'
 import { useSelector } from 'react-redux'
 import { RootState } from '@redux/store'
+import { widthToDP } from 'react-native-responsive-screens'
+import Nodata from '@components/reusable/nodata'
 
 
 interface payoffProps {
@@ -51,35 +53,37 @@ const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainersty
     return (
         <>
             <View style={styles.cardcontainer}>
-                {data?.map((item: any, idx: any) => {
+                {data?.length > 0 ? (
+                    data?.map((item: any, idx: any) => {
+                        const percentagePaid = percentPaid(item?.principal, item?.balance, 2);
+                        return (
+                            <Card style={[styles.section_card, cardstyle, { backgroundColor: `${item.tagColor}` }]} cardStyle={[styles.section_card_inner]} key={idx}>
+                                <View style={styles.groupsection}>
+                                    <Text style={styles.groupsection_text1}>{item.name}</Text>
+                                    <Text style={styles.groupsection_text2}> Completes on {formatToDDMMMYYYY(item.nextDueDate) || item.dueDate || formatDDMMMyyyy(item.completionDate || item.estimatedDebtFreeDate || formatDDMMMyyyy2(item.nextDueDate))}</Text>
+                                    <TouchableOpacity style={styles.button} onPress={() => navigateHandler(item.id, item.name)}>
+                                        <Image source={source} style={styles.image} />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={styles.groupsection2}>
+                                    <Text style={styles.groupsection_text1}>Minimun: {item.minPaymentAmount} {currency ? currency : selectedCurrency}</Text>
+                                    <Text style={styles.groupsection_text1}>APR: {item.apr}%</Text>
 
-                    const percentagePaid = percentPaid(item?.principal, item?.balance, 2);
+                                </View>
+                                <View style={styles.groupsection3}>
+                                    <Text style={styles.groupsection_text1}>Payoff Progress</Text>
+                                    <ProgressBar progress={percentagePaid || item.payoffPct || item.payoffProgress} tooltipLabel={`Balance : ${item.balance} ${currency ? currency : selectedCurrency}`} showTooltip={true} style={styles.progressbar} />
+                                    <Text style={styles.groupsection_text1}>{percentagePaid || item?.payoffPct || item.payoffProgress.toFixed(2)} %</Text>
 
+                                </View>
 
-                    return (
-                        <Card style={[styles.section_card, cardstyle, { backgroundColor: `${item.tagColor}` }]} cardStyle={[styles.section_card_inner]} key={idx}>
-                            <View style={styles.groupsection}>
-                                <Text style={styles.groupsection_text1}>{item.name}</Text>
-                                <Text style={styles.groupsection_text2}> Completes on {formatToDDMMMYYYY(item.nextDueDate) || item.dueDate || formatDDMMMyyyy(item.completionDate || item.estimatedDebtFreeDate || formatDDMMMyyyy2(item.nextDueDate))}</Text>
-                                <TouchableOpacity style={styles.button} onPress={() => navigateHandler(item.id, item.name)}>
-                                    <Image source={source} style={styles.image} />
-                                </TouchableOpacity>
-                            </View>
-                            <View style={styles.groupsection2}>
-                                <Text style={styles.groupsection_text1}>Minimun: {item.minPaymentAmount} {currency ? currency : selectedCurrency}</Text>
-                                <Text style={styles.groupsection_text1}>APR: {item.apr}%</Text>
+                            </Card>
+                        )
+                    })
+                ) : (
+                    <Nodata style={{ height: widthToDP(80) }} />
+                )}
 
-                            </View>
-                            <View style={styles.groupsection3}>
-                                <Text style={styles.groupsection_text1}>Payoff Progress</Text>
-                                <ProgressBar progress={percentagePaid || item.payoffPct || item.payoffProgress} tooltipLabel={`Balance : ${item.balance} ${currency ? currency : selectedCurrency}`} showTooltip={true} style={styles.progressbar} />
-                                <Text style={styles.groupsection_text1}>{percentagePaid || item?.payoffPct || item.payoffProgress.toFixed(2)} %</Text>
-
-                            </View>
-
-                        </Card>
-                    )
-                })}
             </View>
         </>
 
@@ -90,7 +94,7 @@ export default Payoffcard
 const styles = StyleSheet.create({
     cardcontainer: {
         flexDirection: "column",
-        gap: 20
+        gap: 20,
     },
     section_card: {
         backgroundColor: "rgba(51, 255, 0, 0.38)",
@@ -104,6 +108,7 @@ const styles = StyleSheet.create({
     section_card_inner: {
         flexDirection: "column",
         // gap: 40
+
     },
     image: {
         width: 20,
@@ -143,5 +148,6 @@ const styles = StyleSheet.create({
     },
     progressbar: {
         flex: 1
-    }
+    },
+
 })

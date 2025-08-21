@@ -37,6 +37,7 @@ const Layout: React.FC = () => {
   const getUserDetails = async () => {
     try {
       await dispatch(fetchUser()).unwrap()
+      setShowConnection(false)
     } catch (err: any) {
       console.log("Error fetch user:", err);
 

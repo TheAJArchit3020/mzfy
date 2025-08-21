@@ -4,13 +4,15 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
-import React, { FC, useCallback, useMemo, useState } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import Debtbalance from "@components/dashboard/debtbalance";
 import Debtpaid from "@components/dashboard/debtpaid";
 import {
   widthToDP as wp,
   heightToDP as hp,
+  heightToDP,
 } from "react-native-responsive-screens";
 import SegmentButton from "@components/reusable/segmentbutton";
 import Input from "@components/reusable/Input";
@@ -58,7 +60,7 @@ const DebtsScreen: FC = () => {
     completedDebts: []
   };
 
-  console.log("FETCHALLDEBTS : ",FETCHALLDEBTS)
+  console.log("FETCHALLDEBTS : ", FETCHALLDEBTS)
 
   const inProgressList = FETCHALLDEBTS.inProgressDebts;
   const completedList = FETCHALLDEBTS.completedDebts;
@@ -88,12 +90,24 @@ const DebtsScreen: FC = () => {
   const visibleList =
     selectedButton === 0 ? filteredInProgress : filteredCompleted;
 
-
+  
   // 4️⃣ build the two button labels
   const buttonLabels = [
     `In Progress (${inProgressList.length})`,
-    `Completed   (${completedList.length})`,
+    `Completed (${completedList.length})`,
   ]
+
+  const [showContent, setShowContent] = useState(false);
+
+  useEffect(() => {
+    if (visibleList) {
+      const timer = setTimeout(() => {
+        setShowContent(true);
+      }, 1200);
+
+      return () => clearTimeout(timer); // cleanup
+    }
+  }, [visibleList]);
 
 
   return (
@@ -131,11 +145,14 @@ const DebtsScreen: FC = () => {
           showsVerticalScrollIndicator={false}
           style={{ marginHorizontal: 10 }}
         >
-          <Payoffcard
-            data={visibleList}
-            source={require("@assets/images/dashboard/rightarrow.png")}
-          // onPress={() => navigation.navigate("particulardebtdetailscreen")}
-          />
+          {showContent ?
+            <Payoffcard
+              data={visibleList}
+              source={require("@assets/images/dashboard/rightarrow.png")}
+            // onPress={() => navigation.navigate("particulardebtdetailscreen")}
+            />
+            : <ActivityIndicator color={"#fff"} size={"large"} style={{ marginVertical: heightToDP(15) }} />
+          }
         </ScrollView>
       </View>
 
@@ -255,7 +272,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
   },
-  aiContainer:{
+  aiContainer: {
     right: wp(2.5),
     bottom: wp(12)
   }

@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
 import Card from "@components/reusable/card";
 
 type debtFreeCountDown = {
@@ -12,34 +12,61 @@ interface DebtcountdownProps {
   data: debtFreeCountDown;
 }
 const Debtcountdown: React.FC<DebtcountdownProps> = ({ data }) => {
+
+  const [showContent, setShowContent] = useState(false);
+
+  useEffect(() => {
+    if (data) {
+      const timer = setTimeout(() => {
+        setShowContent(true);
+      }, 1200);
+
+      return () => clearTimeout(timer); // cleanup
+    }
+  }, [data]);
+
   return (
     <Card style={styles.section_card} cardStyle={styles.section_card_inner}>
       <Text style={styles.section_card_text}>Debt free countdown</Text>
-      <View style={styles.section_card_inner_content}>
-        <View style={styles.section_card_inner_content_item}>
-          <Text style={styles.section_card_inner_content_item_text}>
-            {data.year}
+
+
+      {showContent ? (
+        <>
+          <View style={styles.section_card_inner_content}>
+            <View style={styles.section_card_inner_content_item}>
+              <Text style={styles.section_card_inner_content_item_text}>
+                {data.year}
+              </Text>
+              <Text style={styles.section_card_inner_content_item_text2}>Year</Text>
+            </View>
+            <View style={styles.section_card_inner_content_item}>
+              <Text style={styles.section_card_inner_content_item_text}>
+                {data.month}
+              </Text>
+              <Text style={styles.section_card_inner_content_item_text2}>
+                Month
+              </Text>
+            </View>
+            <View style={styles.section_card_inner_content_item}>
+              <Text style={styles.section_card_inner_content_item_text}>
+                {data.day}
+              </Text>
+              <Text style={styles.section_card_inner_content_item_text2}>Day</Text>
+            </View>
+          </View>
+          <Text style={styles.section_card_text2}>
+            Countdown to financial freedom
           </Text>
-          <Text style={styles.section_card_inner_content_item_text2}>Year</Text>
-        </View>
-        <View style={styles.section_card_inner_content_item}>
-          <Text style={styles.section_card_inner_content_item_text}>
-            {data.month}
-          </Text>
-          <Text style={styles.section_card_inner_content_item_text2}>
-            Month
-          </Text>
-        </View>
-        <View style={styles.section_card_inner_content_item}>
-          <Text style={styles.section_card_inner_content_item_text}>
-            {data.day}
-          </Text>
-          <Text style={styles.section_card_inner_content_item_text2}>Day</Text>
-        </View>
-      </View>
-      <Text style={styles.section_card_text2}>
-        Countdown to financial freedom
-      </Text>
+        </>
+
+      ) :
+        <ActivityIndicator color={"#fff"} size={"large"} style={{ marginVertical: 20 }} />
+
+      }
+
+
+
+
     </Card>
   );
 };

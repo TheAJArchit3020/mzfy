@@ -25,6 +25,7 @@ const CircularProgressbar: React.FC<Props> = ({
 }) => {
   const userDetails = useSelector((state: RootState) => state.user.items[0]);
 
+  console.log("data : ",data)
 
   const radius = (size - strokeWidth) / 2
   const circumference = 2 * Math.PI * radius

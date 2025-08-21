@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { FC, useEffect, useState, useMemo } from "react";
+import React, { FC, useEffect, useState, useMemo, useCallback } from "react";
 import { useDispatch, UseDispatch, useSelector } from "react-redux";
 import { fetchDashboardSummary } from "@redux/dashBoard/dashboard";
 import { AppDispatch, RootState } from "@redux/store";
@@ -16,19 +16,17 @@ import Debtbalance from "@components/dashboard/debtbalance";
 import Debtpaid from "@components/dashboard/debtpaid";
 import Nextduedate from "@components/dashboard/nextduedate";
 import Popup from "@components/reusable/popup";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { RootStackParams } from "@managers/routing";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import UpcomingDebtsWithScrollbar from "@components/dashboard/upcommingdebts";
 import Input from "@components/reusable/Input";
 import { widthToDP } from "react-native-responsive-screens";
 import Debtprogress from "@components/dashboard/debtprogress";
-import { dashboard } from "../managers/apis";
 import { DebtCountDownType } from "src/commonTypes";
 import { DebtChartDataItem, DonutDataItem } from "src/commonTypes";
 import Aimodal from "@components/chatai/aimodal";
 import { logTransaction } from "@redux/debts/debtsSlice";
-import Undermaintainence from "@components/reusable/undermaintainence";
 
 type navprops = NativeStackNavigationProp<RootStackParams>;
 
@@ -40,10 +38,8 @@ const DashboardScreen: FC = () => {
   const [show, setShow] = useState(false);
   const [logAmount, setLogAmount] = useState('')
   const [selectedDueTransaction, setSelectedDueTransaction] = useState('');
-  const [showConnection, setShowConnection] = useState(false)
 
-  const dashboardData = useSelector((state: RootState) => state.dashBoard);
-  const userDetails = useSelector((state: RootState) => state.user.items[0]);
+  
 
 
   const [debtFreeDate, setDebtFreeDate] = useState<DebtCountDownType>({
@@ -54,15 +50,19 @@ const DashboardScreen: FC = () => {
 
   const [donutData, setDonutData] = useState<DonutDataItem[]>([]);
 
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(fetchDashboardSummary())
+    }, [])
+  );
 
-  useEffect(() => {
-    dispatch(fetchDashboardSummary()).then((result) => {
-      const error = result?.payload?.message
-      if (error === "Network Error") {
-        setShowConnection(true)
-      }
-    })
-  }, []);
+  const dashboardData = useSelector((state: RootState) => state.dashBoard);
+  const userDetails = useSelector((state: RootState) => state.user.items[0]);
+
+
+  console.log("dashboardData : ", dashboardData)
+
+
 
   useEffect(() => {
     adjustedDate();
@@ -149,8 +149,6 @@ const DashboardScreen: FC = () => {
 
   return (
     <View style={styles.container}>
-
-
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={styles.scrollview}

@@ -1,5 +1,5 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
-import React, { FC } from 'react'
+import { ActivityIndicator, Image, StyleSheet, Text, View } from 'react-native'
+import React, { FC, useEffect, useState } from 'react'
 import Card from '@components/reusable/card'
 import { useSelector } from 'react-redux'
 import { RootState } from '@redux/store'
@@ -12,17 +12,32 @@ const Debtpaid: FC<DebtItemProps> = ({ data }) => {
 
   const userDetails = useSelector((state: RootState) => state.user?.items[0]);
 
+  const [showContent, setShowContent] = useState(false);
+
+  useEffect(() => {
+    if (data) {
+      const timer = setTimeout(() => {
+        setShowContent(true);
+      }, 1200);
+
+      return () => clearTimeout(timer); // cleanup
+    }
+  }, [data]);
+
 
   return (
     <Card style={styles.section_card} cardStyle={styles.section_card_inner}>
       <View style={styles.section_card_inner_content}>
         <View style={styles.section_card_inner_content_item}>
           <Text style={styles.section_card_text}>Debt paid</Text>
-          <Text style={styles.section_card_text2}>{userDetails?.selectedCurrency}&nbsp;
-            <Text style={styles.section_card_span}>
-              {Number(data?.totalPaid ?? data?.totalDebtPaid ?? 0).toLocaleString('en-IN')}
+          {showContent ? (
+            <Text style={styles.section_card_text2}>{userDetails?.selectedCurrency}&nbsp;
+              <Text style={styles.section_card_span}>
+                {Number(data?.totalPaid ?? data?.totalDebtPaid ?? 0).toLocaleString('en-IN')}
+              </Text>
             </Text>
-          </Text>
+
+          ) : <ActivityIndicator color={"#fff"} size={"large"} />}
         </View>
       </View>
     </Card>
