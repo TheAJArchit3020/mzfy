@@ -6,18 +6,18 @@ import axios from 'axios'
 import { useSelector } from 'react-redux'
 
 export interface User {
-    email: string
-    googleId: string
-    name: any
-    age: any
-    profession: any
-    currency: any
-    personalIncome: any
-    totalHouseholdIncome: any
-    expenseByCategory: any
-    debts: any
-    currentStrategy?: string
-    selectedCurrency?: string
+  email: string
+  googleId: string
+  name: any
+  age: any
+  profession: any
+  currency: any
+  personalIncome: any
+  totalHouseholdIncome: any
+  expenseByCategory: any
+  debts: any
+  currentStrategy?: string
+  selectedCurrency?: string
 }
 
 interface UserState {
@@ -28,21 +28,21 @@ interface UserState {
 }
 
 const initialState: UserState = {
-    current: {
-        email: '',
-        googleId: '',
-        name: '',
-        age: '',
-        profession: '',
-        currency: '',
-        personalIncome: 0,
-        totalHouseholdIncome: 0,
-        expenseByCategory: {},
-        debts: [],
-    },
-    items: [],
-    loading: false,
-    error: null,
+  current: {
+    email: '',
+    googleId: '',
+    name: '',
+    age: '',
+    profession: '',
+    currency: '',
+    personalIncome: 0,
+    totalHouseholdIncome: 0,
+    expenseByCategory: {},
+    debts: [],
+  },
+  items: [],
+  loading: false,
+  error: null,
 }
 
 type SetFieldPayload = {
@@ -51,169 +51,169 @@ type SetFieldPayload = {
 };
 
 export const addUser = createAsyncThunk<User, User, { state: RootState; rejectValue: any }>(
-    'user/addUser',
-    async (newUser, { getState, rejectWithValue }) => {
+  'user/addUser',
+  async (newUser, { getState, rejectWithValue }) => {
 
-        const _token = (getState().loginuser?.items[0]?.token)
+    const _token = (getState().loginuser?.items[0]?.token)
 
-        console.log("_token : ", _token)
+    console.log("_token : ", _token)
 
 
-        try {
-            const resp = await axios.post<User>(
-                registeruseruser,
-                newUser,
-                {
-                    headers: {
-                        Authorization: `Bearer ${_token}`,
-                        // Authorization: `Bearer ${token}`,
-                    }
-                }
-            )
+    try {
+      const resp = await axios.post<User>(
+        registeruseruser,
+        newUser,
+        {
+          headers: {
+            Authorization: `Bearer ${_token}`,
+            // Authorization: `Bearer ${token}`,
+          }
+        }
+      )
 
-            fetchUser();
+      fetchUser();
 
-            return resp.data
-        } catch (err: any) {
-            if (axios.isAxiosError(err)) {
+      return resp.data
+    } catch (err: any) {
+      if (axios.isAxiosError(err)) {
 
-                const statusCode = err.response?.status
-                const errorData = err.response?.data
+        const statusCode = err.response?.status
+        const errorData = err.response?.data
 
-      return rejectWithValue({
-        message: err.message,
-        status: statusCode,
-        data: errorData,
-      });
-    } else {
-      // Non-Axios error (e.g. coding bug, thrown manually)
-      console.log("Unexpected error:", err);
-      return rejectWithValue({ message: (err as Error).message });
+        return rejectWithValue({
+          message: err.message,
+          status: statusCode,
+          data: errorData,
+        });
+      } else {
+        // Non-Axios error (e.g. coding bug, thrown manually)
+        console.log("Unexpected error:", err);
+        return rejectWithValue({ message: (err as Error).message });
+      }
     }
-  }
-});
+  });
 // fetch user....
 export const fetchUser = createAsyncThunk<User, void, { state: RootState; rejectValue: any }>(
-    'user/fetchUser',
-    async (newUser, { getState, rejectWithValue }) => {
+  'user/fetchUser',
+  async (newUser, { getState, rejectWithValue }) => {
 
-        const _token = (getState().loginuser?.items[0]?.token)
-        const storetoken = await AsyncStorage.getItem('token')
+    const _token = (getState().loginuser?.items[0]?.token)
+    const storetoken = await AsyncStorage.getItem('token')
 
-        console.log("storetoken : ", storetoken)
+    console.log("storetoken : ", storetoken)
 
-        try {
-            const resp = await axios.get<User>(
-                registeruseruser,
-                {
-                    headers: {
-                        Authorization: `Bearer ${_token ? _token : storetoken}`,
-                    }
-                }
-            )
-
-            console.log("fetchUser : ", resp.data)
-            return resp.data
-        } catch (err: any) {
-            if (axios.isAxiosError(err)) {
-
-                const statusCode = err.response?.status
-                const errorData = err.response?.data
-
-                return rejectWithValue({
-                    message: err.message,
-                    status: statusCode,
-                    data: errorData,
-                })
-            } else {
-                // Non-Axios error (e.g. coding bug, thrown manually)
-                console.log("Unexpected error:", err)
-                return rejectWithValue({ message: (err as Error).message })
-            }
+    try {
+      const resp = await axios.get<User>(
+        registeruseruser,
+        {
+          headers: {
+            Authorization: `Bearer ${_token ? _token : storetoken}`,
+          }
         }
+      )
+
+      console.log("fetchUser : ", resp.data)
+      return resp.data
+    } catch (err: any) {
+      if (axios.isAxiosError(err)) {
+
+        const statusCode = err.response?.status
+        const errorData = err.response?.data
+
+        return rejectWithValue({
+          message: err.message,
+          status: statusCode,
+          data: errorData,
+        })
+      } else {
+        // Non-Axios error (e.g. coding bug, thrown manually)
+        console.log("Unexpected error:", err)
+        return rejectWithValue({ message: (err as Error).message })
+      }
     }
+  }
 )
 
 
 // delete user
 export const deleteUser = createAsyncThunk<void, void, { state: RootState; rejectValue: any }>(
-    'user/deleteUser',
-    async (_, { getState, rejectWithValue }) => {
+  'user/deleteUser',
+  async (_, { getState, rejectWithValue }) => {
 
-        const _token = (getState().loginuser?.items[0]?.token)
-        const storetoken = await AsyncStorage.getItem('token')
+    const _token = (getState().loginuser?.items[0]?.token)
+    const storetoken = await AsyncStorage.getItem('token')
 
-        console.log("_token : ", _token)
-        console.log("storetoken : ", storetoken)
+    console.log("_token : ", _token)
+    console.log("storetoken : ", storetoken)
 
-        try {
-            await axios.post(
-                deleteuser, {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${_token ? _token : storetoken}`,
-                    }
-                }
-            )
-
-        } catch (err: any) {
-            if (axios.isAxiosError(err)) {
-
-                const statusCode = err.response?.status
-                const errorData = err.response?.data
-
-                return rejectWithValue({
-                    message: err.message,
-                    status: statusCode,
-                    data: errorData,
-                })
-            } else {
-                // Non-Axios error (e.g. coding bug, thrown manually)
-                console.log("Unexpected error:", err)
-                return rejectWithValue({ message: (err as Error).message })
-            }
+    try {
+      await axios.post(
+        deleteuser, {},
+        {
+          headers: {
+            Authorization: `Bearer ${_token ? _token : storetoken}`,
+          }
         }
+      )
+
+    } catch (err: any) {
+      if (axios.isAxiosError(err)) {
+
+        const statusCode = err.response?.status
+        const errorData = err.response?.data
+
+        return rejectWithValue({
+          message: err.message,
+          status: statusCode,
+          data: errorData,
+        })
+      } else {
+        // Non-Axios error (e.g. coding bug, thrown manually)
+        console.log("Unexpected error:", err)
+        return rejectWithValue({ message: (err as Error).message })
+      }
     }
+  }
 )
 
 // update user
 export const updateUser = createAsyncThunk<User, Partial<User>, { state: RootState; rejectValue: any }>(
-    'user/updateUser',
-    async (updatedFields, { getState, rejectWithValue }) => {
+  'user/updateUser',
+  async (updatedFields, { getState, rejectWithValue }) => {
 
-        const _token = (getState().loginuser?.items[0]?.token)
-        const storetoken = await AsyncStorage.getItem('token')
+    const _token = (getState().loginuser?.items[0]?.token)
+    const storetoken = await AsyncStorage.getItem('token')
 
-        try {
-            const resp = await axios.put<User>(
-                registeruseruser,
-                updatedFields,
-                {
-                    headers: {
-                        Authorization: `Bearer ${_token ? _token : storetoken}`,
-                    }
-                }
-            )
-
-            return resp.data
-        } catch (err: any) {
-            if (axios.isAxiosError(err)) {
-
-                const statusCode = err.response?.status
-                const errorData = err.response?.data
-
-                return rejectWithValue({
-                    message: err.message,
-                    status: statusCode,
-                    data: errorData,
-                })
-            } else {
-                // Non-Axios error (e.g. coding bug, thrown manually)
-                console.log("Unexpected error:", err)
-                return rejectWithValue({ message: (err as Error).message })
-            }
+    try {
+      const resp = await axios.put<User>(
+        registeruseruser,
+        updatedFields,
+        {
+          headers: {
+            Authorization: `Bearer ${_token ? _token : storetoken}`,
+          }
         }
+      )
+
+      return resp.data
+    } catch (err: any) {
+      if (axios.isAxiosError(err)) {
+
+        const statusCode = err.response?.status
+        const errorData = err.response?.data
+
+        return rejectWithValue({
+          message: err.message,
+          status: statusCode,
+          data: errorData,
+        })
+      } else {
+        // Non-Axios error (e.g. coding bug, thrown manually)
+        console.log("Unexpected error:", err)
+        return rejectWithValue({ message: (err as Error).message })
+      }
     }
+  }
 )
 
 
@@ -248,53 +248,53 @@ const userSlice = createSlice({
         state.error = action.payload as string;
       });
 
-        // fetch user data
-        builder
-            .addCase(fetchUser.pending, (state) => {
-                state.loading = true
-                state.error = null
-            })
-            .addCase(fetchUser.fulfilled, (state, action) => {
-                state.loading = false
-                state.items = [action.payload]
-            })
-            .addCase(fetchUser.rejected, (state, action) => {
-                state.loading = false
-                state.error = action.payload as string
-            })
+    // fetch user data
+    builder
+      .addCase(fetchUser.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(fetchUser.fulfilled, (state, action) => {
+        state.loading = false
+        state.items = [action.payload]
+      })
+      .addCase(fetchUser.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload as string
+      })
 
 
-        // delete user
-        builder
-            .addCase(deleteUser.pending, (state) => {
-                state.loading = true
-                state.error = null
-            })
-            .addCase(deleteUser.fulfilled, (state) => {
-                state.loading = false
-                state.items = []
-                state.current = initialState.current
-            })
-            .addCase(deleteUser.rejected, (state, action) => {
-                state.loading = false
-                state.error = action.payload as string
-            })
+    // delete user
+    builder
+      .addCase(deleteUser.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(deleteUser.fulfilled, (state) => {
+        state.loading = false
+        state.items = []
+        state.current = initialState.current
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload as string
+      })
 
-        builder
-            .addCase(updateUser.pending, (state) => {
-                state.loading = true
-                state.error = null
-            })
-            .addCase(updateUser.fulfilled, (state, action) => {
-                state.loading = false
-                state.items = [action.payload]
-                state.current = action.payload
-            })
-            .addCase(updateUser.rejected, (state, action) => {
-                state.loading = false
-                state.error = action.payload as string
-            })
-    },
+    builder
+      .addCase(updateUser.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.loading = false
+        state.items = [action.payload]
+        state.current = action.payload
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload as string
+      })
+  },
 })
 
 export const { setField, resetCurrent } = userSlice.actions;

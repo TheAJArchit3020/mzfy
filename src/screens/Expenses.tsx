@@ -1,7 +1,9 @@
 import React, { FC, useState, useEffect, useMemo } from "react";
 import { View, Text, StyleSheet, ScrollView, Image } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
-
+import DateNavigator from "../components/reusable/DateNavigator";
+import SegmentButton from "../components/reusable/segmentbutton";
+import PieChartComponent from "../components/reusable/pieChart";
 import {
   widthToDP as wp,
   heightToDP as hp,
@@ -467,6 +469,15 @@ const styles = StyleSheet.create({
   balanceContainer: {
     alignItems: "center",
   },
+  balanceText: {
+    color: "#fff",
+    fontSize: wp(4),
+    fontFamily: "PlusJakartaSans-Bold",
+    fontWeight: "600",
+  },
+  spendingTrendContainer: {
+    marginHorizontal: wp(5),
+  },
   sectionTitle: {
     color: "#fff",
     fontSize: wp(4.5),
@@ -474,7 +485,128 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: hp(2),
   },
-
+  buttonContainer: {
+    width: "90%",
+    height: "10%",
+    alignItems: "center",
+    marginVertical: hp(4.5),
+    alignSelf: "center",
+    paddingBottom: hp(5),
+  },
+  categoryButton: {
+    width: "100%",
+    backgroundColor: "#177AD5",
+    borderRadius: wp(10),
+    paddingVertical: hp(1.5),
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  buttonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: wp(2),
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: wp(4),
+    fontFamily: "PlusJakartaSans-Bold",
+    fontWeight: "600",
+  },
+  recentExpensesHeader: {
+    marginHorizontal: wp(5),
+    marginBottom: hp(1),
+  },
+  recentExpensesTitleContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: hp(0.5),
+    marginTop: hp(0.5),
+  },
+  recentExpensesTitle: {
+    color: "#fff",
+    fontSize: wp(4.5),
+    fontFamily: "PlusJakartaSans-Bold",
+    marginBottom: hp(2),
+  },
+  expensesButton: {
+    backgroundColor: "#006EFF",
+    borderRadius: wp(10),
+    height: hp(4),
+    paddingHorizontal: wp(2),
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    gap: wp(2),
+  },
+  expensesText: {
+    color: "#fff",
+    fontSize: wp(3.5),
+    fontFamily: "PlusJakartaSans-Bold",
+    marginBottom: hp(0.3),
+  },
+  financialOverview: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  financialItem: {
+    alignItems: "center",
+    flex: 1,
+  },
+  financialLabel: {
+    color: "#fff",
+    fontSize: wp(4),
+    fontFamily: "PlusJakartaSans-Bold",
+    opacity: 0.8,
+    marginBottom: hp(0.5),
+  },
+  financialAmount: {
+    color: "#68AAFF",
+    fontSize: wp(4),
+    fontFamily: "PlusJakartaSans-Regular",
+  },
+  expensesListContainer: {
+    paddingHorizontal: wp(5),
+    paddingVertical: hp(2),
+    height: hp(30),
+    backgroundColor: "#2A2A2A",
+  },
+  fabContainer: {
+    position: "absolute",
+    bottom: hp(5),
+    right: wp(10),
+    zIndex: 1000,
+  },
+  fabButton: {
+    width: wp(14),
+    height: wp(14),
+    borderRadius: wp(7),
+    backgroundColor: "#006FFF",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  noDataContainer: {
+    flex: 1,
+    alignItems: "center",
+  },
+  noImage: {
+    height: hp(15),
+    width: wp(30),
+    resizeMode: "contain",
+    marginTop: hp(3),
+  },
+  noDataText: {
+    fontFamily: "PlusJakartaSans-Bold",
+    color: "#fff",
+    fontSize: wp(5),
+  },
 });
 
 export default Expenses;

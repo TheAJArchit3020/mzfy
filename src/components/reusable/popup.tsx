@@ -15,7 +15,7 @@ import LinearGradient from "react-native-linear-gradient";
 export interface PopupProps {
   visible: boolean
   onClose: () => void
-    onConfirm?: () => void
+  onConfirm?: () => void
   onClose2?: () => void
   title?: string
   children: ReactNode
@@ -31,7 +31,7 @@ export interface PopupProps {
 const Popup: React.FC<PopupProps> = ({
   visible,
   onClose,
-    onConfirm,
+  onConfirm,
   onClose2,
   title,
   children,

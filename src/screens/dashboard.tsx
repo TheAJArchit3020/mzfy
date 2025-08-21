@@ -25,9 +25,9 @@ import { widthToDP } from "react-native-responsive-screens";
 import Debtprogress from "@components/dashboard/debtprogress";
 import { DebtCountDownType } from "src/commonTypes";
 import { DebtChartDataItem, DonutDataItem } from "src/commonTypes";
-import use from "react";
-import Transaction from "./transaction";
-import { logPayment } from "@redux/Transacttion/Transaction";import Aimodal from "@components/chatai/aimodal";
+
+import { logPayment } from "@redux/Transacttion/Transaction";
+import Aimodal from "@components/chatai/aimodal";
 import { logTransaction } from "@redux/debts/debtsSlice";
 
 type navprops = NativeStackNavigationProp<RootStackParams>;
@@ -38,9 +38,10 @@ const DashboardScreen: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<navprops>();
   const [show, setShow] = useState(false);
+
+
   const userData = useSelector((state: RootState) => state.user);
   const [logPaymentAmount, setLogPaymentAmount] = useState<String>("0");
-  const dashboardData = useSelector((state: RootState) => state.dashBoard);
   const [selectedTrasactionId, setSelectedTransactionId] = useState<string>("");
 
   const [debtFreeDate, setDebtFreeDate] = useState<DebtCountDownType>({
@@ -135,7 +136,7 @@ const DashboardScreen: FC = () => {
   };
 
   const handleSeprateTrasactionNavigation = (id: string) => {
-    navigation.navigate("Transaction", { id: id });
+    // navigation.navigate("Transaction", { id: id });
   };
 
   const handleConfirm = async () => {
@@ -166,14 +167,14 @@ const DashboardScreen: FC = () => {
 
   const LogTransactionHandler = async () => {
 
-    await dispatch(logTransaction({ selectedDueTransaction, logAmount })).then((payload) => {
-      console.log("Transaction logged successfully:", payload);
-      if (payload.meta.requestStatus === 'fulfilled') {
-        setShow(false);
-      }
-    }).catch((err) => {
-      console.error("Error logging transaction:", err);
-    });
+    // await dispatch(logTransaction({ selectedDueTransaction, logAmount })).then((payload) => {
+    //   console.log("Transaction logged successfully:", payload);
+    //   if (payload.meta.requestStatus === 'fulfilled') {
+    //     setShow(false);
+    //   }
+    // }).catch((err) => {
+    //   console.error("Error logging transaction:", err);
+    // });
   }
 
 
@@ -233,7 +234,7 @@ const DashboardScreen: FC = () => {
                 dashboardData.data?.balanceByDebt.length
               ) || []
             }
-            logpopupHandler={(id) => logpopupHandler(id)}
+          // logpopupHandler={(id: any) => logpopupHandler(id)}
           />
         </View>
         <View style={styles.section5}>
@@ -262,8 +263,8 @@ const DashboardScreen: FC = () => {
         containerStyle={styles.popupContainerStyle}
       >
         <Input
-          value={logAmount}
-          onChangeContent={(val) => setLogAmount(val)}
+          // value={logAmount}
+          // onChangeContent={(val) => setLogAmount(val)}
           keyboardType="numeric"
           textHeader={userDetails?.selectedCurrency}
           children={

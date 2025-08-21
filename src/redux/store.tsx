@@ -8,13 +8,6 @@ import payoffPlanReducer from "../redux/payoffplans/payoffplanSlice"
 import strategyReducer from "../redux/strategies/strategySlice"
 import customPlanReducer from "./customplan/customplanSlice"
 import chatReducer from "./chat/chatSlices";
-
-import expensesReducer from "../redux/expenseSlice/expenseSlice";
-import debtsReducer from "../redux/debts/debtsSlice";
-import payoffPlanReducer from "../redux/payoffplans/payoffplanSlice";
-import strategyReducer from "../redux/strategies/strategySlice";
-import customPlanReducer from "./customplan/customplanSlice";
-
 import transactionReducer from "../redux/Transacttion/Transaction";
 
 export const store = configureStore({
@@ -27,11 +20,10 @@ export const store = configureStore({
     payoffplan: payoffPlanReducer,
     strategy: strategyReducer,
     customplan: customPlanReducer,
-    transaction: transactionReducer,,
+    transaction: transactionReducer,
     chats: chatReducer
   },
 });
 
-// Infer the `AppDispatch` and `RootState` types from store itself
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

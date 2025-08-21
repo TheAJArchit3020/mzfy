@@ -9,7 +9,7 @@ import { ChevronRightIcon, ChevronUpIcon } from "react-native-heroicons/solid";
 import CustomLineChart from "src/CustomLineChart";
 interface RawPoint {
   amount: number;
-  dueDate: string; 
+  dueDate: string;
 }
 
 interface GraphComponentProps {
@@ -114,7 +114,7 @@ const GraphComponent: FC<GraphComponentProps> = memo(
             data={dataPoints}
             width={width}
             height={height}
-            // Pass other necessary props as required by your CustomLineChart
+          // Pass other necessary props as required by your CustomLineChart
           />
 
           {/* axes lines & arrows, unchanged */}
