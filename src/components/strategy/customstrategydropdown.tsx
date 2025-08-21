@@ -37,7 +37,7 @@ interface DropdownProps {
     label?: string;
     maxheight?: any;
     onClose2?: () => void;
-    onSelect: any
+    onSelect?: any
 }
 
 type navProps = NativeStackNavigationProp<RootStackParams>

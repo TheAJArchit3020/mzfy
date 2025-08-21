@@ -7,12 +7,15 @@ import { useDispatch } from "react-redux";
 import { logTransaction } from "@redux/debts/debtsSlice";
 
 interface NextduedateProps {
-    data?: Array<{ id: string; amount: number; dueDate: string }>
+    data?: Array<{ id: string; amount: number; dueDate: string, _id?: string }>
     logpopupHandler?: () => void
     setSelectedDueTransaction?: (id: string) => void
 }
 
 const Nextduedate: FC<NextduedateProps> = ({ data, logpopupHandler, setSelectedDueTransaction }) => {
+
+
+    console.log("data transcation :: ", data)
 
 
     const startOfDay = (d: Date) => {
@@ -47,7 +50,7 @@ const Nextduedate: FC<NextduedateProps> = ({ data, logpopupHandler, setSelectedD
     // Set the selected transaction id (first card) when it changes
     useEffect(() => {
         if (setSelectedDueTransaction) {
-            setSelectedDueTransaction(comingData[0]?.id ?? "");
+            setSelectedDueTransaction(comingData[0]?.id ?? comingData[0]?._id ?? "");
         }
     }, [setSelectedDueTransaction, comingData]);
 

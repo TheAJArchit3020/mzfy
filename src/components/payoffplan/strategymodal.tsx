@@ -1,4 +1,3 @@
-// components/StrategyRadioCard.tsx
 import Customstrategydropdown from '@components/strategy/customstrategydropdown';
 import { useFocusEffect } from '@react-navigation/native';
 import { AppDispatch, RootState } from '@redux/store';
@@ -74,7 +73,6 @@ const StrategyRadioCard: React.FC<Props> = ({
     }
 
     const customPlansArray = useSelector((state: RootState) => state.strategy?.customitems[0] ?? [])
-    console.log("customPlansArray : ", customPlansArray?.plans)
 
 
 

@@ -141,8 +141,7 @@ const PayoffplansScreen: FC = () => {
         <View style={styles.container}>
 
           {/* section1 */}
-          <Strategycard
-            title={`Debt ${filteredCustomPlans?.length > 0 ? filteredCustomPlans[0]?.name : payoffplanArray?.strategy}`} subtitle={`Debt ${filteredCustomPlans?.length > 0 ? filteredCustomPlans[0]?.name : payoffplanArray?.strategy}`} onPress={strategypopupHandler} />
+          <Strategycard title={`Debt ${filteredCustomPlans?.length > 0 ? filteredCustomPlans[0]?.name : payoffplanArray?.strategy}`} subtitle={`Debt ${filteredCustomPlans?.length > 0 ? filteredCustomPlans[0]?.name : payoffplanArray?.strategy}`} onPress={strategypopupHandler} />
 
           {/* section2 */}
           <View style={styles.cardcontainer}>

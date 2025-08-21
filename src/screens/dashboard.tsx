@@ -26,6 +26,7 @@ import { dashboard } from "../managers/apis";
 import { DebtCountDownType } from "src/commonTypes";
 import { DebtChartDataItem, DonutDataItem } from "src/commonTypes";
 import Aimodal from "@components/chatai/aimodal";
+import { logTransaction } from "@redux/debts/debtsSlice";
 
 type navprops = NativeStackNavigationProp<RootStackParams>;
 
@@ -35,6 +36,8 @@ const DashboardScreen: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<navprops>();
   const [show, setShow] = useState(false);
+  const [logAmount, setLogAmount] = useState('')
+  const [selectedDueTransaction, setSelectedDueTransaction] = useState('');
 
   const dashboardData = useSelector((state: RootState) => state.dashBoard);
   const userDetails = useSelector((state: RootState) => state.user.items[0]);
@@ -122,6 +125,18 @@ const DashboardScreen: FC = () => {
     setDonutData(formatted);
   };
 
+  const LogTransactionHandler = async () => {
+
+    await dispatch(logTransaction({ selectedDueTransaction, logAmount })).then((payload) => {
+      console.log("Transaction logged successfully:", payload);
+      if (payload.meta.requestStatus === 'fulfilled') {
+        setShow(false);
+      }
+    }).catch((err) => {
+      console.error("Error logging transaction:", err);
+    });
+  }
+
 
 
 
@@ -173,13 +188,9 @@ const DashboardScreen: FC = () => {
         </View>
         <View style={styles.section7}>
           <Nextduedate
-            data={
-              dashboardData.data?.upcomingTransactions.slice(
-                0,
-                dashboardData.data?.balanceByDebt.length
-              ) || []
-            }
+            data={dashboardData?.data?.upcomingTransactions}
             logpopupHandler={logpopupHandler}
+            setSelectedDueTransaction={setSelectedDueTransaction}
           />
         </View>
         <View style={styles.section5}>
@@ -208,15 +219,16 @@ const DashboardScreen: FC = () => {
       <Popup
         visible={show}
         title="Paid amount"
-        onClose={() => setShow(false)}
+        onClose={LogTransactionHandler}
+        onClose2={() => setShow(false)}
         titleStyle={styles.popuptitle}
         containerStyle={styles.popupContainerStyle}
       >
         <Input
-          value={""}
-          onChangeContent={(val) => console.log(val)}
+          value={logAmount}
+          onChangeContent={(val) => setLogAmount(val)}
           keyboardType="numeric"
-          textHeader="₹"
+          textHeader={userDetails?.selectedCurrency}
           children={
             <Text
               style={{

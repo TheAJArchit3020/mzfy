@@ -39,16 +39,17 @@ const Createcustomplan: FC = () => {
     const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
     const payoffCustomplanArray = useSelector((state: RootState) => state?.customplan?.items[0]) ?? [];
 
-
+    const _getDebtIds = payoffCustomplanArray?.debtOrder?.map((item: any) => item.id) || [];
 
     useEffect(() => {
-        if (debtExtraPaymentArray.length > 0) {
-            _fetchPreviewCustomPlan()
+        if (
+            (debtArray?.length > 0)
+        ) {
+            _fetchPreviewCustomPlan();
         }
-    }, [debtExtraPaymentArray]);
+    }, [debtArray, debtExtraPaymentArray]);
 
-    const _getDebtIds = payoffCustomplanArray?.debtOrder?.map((item: any) => item.id) || [];
-    console.log("_getDebtIds : ", _getDebtIds)
+
 
     const _fetchPreviewCustomPlan = async () => {
 
@@ -57,10 +58,14 @@ const Createcustomplan: FC = () => {
             extraPayments: debtExtraPaymentArray,
         })
         try {
+
             await dispatch(previewCustomPlan({
                 debtOrder: debtArray?.length > 0 ? debtArray : _getDebtIds,
                 extraPayments: debtExtraPaymentArray,
-            }));
+            })).then((result) => {
+                console.log({ result })
+
+            });
         } catch (error) {
             console.error('Error fetchCustomPlan payoff plans:', error);
         }
@@ -86,12 +91,14 @@ const Createcustomplan: FC = () => {
         }, [])
     );
 
-    const previewCustomplanArray = useSelector((state: RootState) => state?.customplan?.previewCustomData) ?? [];
+    const previewCustomplanArray = useSelector((state: RootState) => state?.customplan?.previewCustomData[0]) ?? [];
+
+
     console.log("previewCustomplanArray : ", previewCustomplanArray)
 
 
 
-    const __date = payoffCustomplanArray?.estimatedDebtFreeDate
+    const __date = previewCustomplanArray ? previewCustomplanArray?.estimatedDebtFreeDate : payoffCustomplanArray?.estimatedDebtFreeDate
 
     const d = __date ? new Date(__date as string) : new Date();
 
@@ -111,7 +118,6 @@ const Createcustomplan: FC = () => {
         setShow(true);
     };
 
-    console.log(" payoffCustomplanArray?.debtOrder : ", payoffCustomplanArray?.debtOrder)
 
 
 
@@ -174,6 +180,7 @@ const Createcustomplan: FC = () => {
 
     }
 
+
     return (
         <LinearGradient
             colors={["#443C9F", "#3A346E", "#2B293E", "#272631", "#232323"]}
@@ -193,8 +200,8 @@ const Createcustomplan: FC = () => {
                             <TextCard text1={'Months'} text2={monthsUntil} text1style={styles.text1} text2style={styles.text2} cardStyle={styles.cardstyle} ></TextCard>
                         </View>
                         <View style={styles.cardgroup2}>
-                            <TextCard text1={'Total interest Paid'} text2={`${selectedCurrency} ${payoffCustomplanArray?.totalInterestPaid}`} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
-                            <TextCard text1={'You save'} text2={`${selectedCurrency} ${payoffCustomplanArray?.totalSavings}`} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
+                            <TextCard text1={'Total interest Paid'} text2={`${selectedCurrency} ${previewCustomplanArray ? previewCustomplanArray.totalInterestPaid : payoffCustomplanArray?.totalInterestPaid}`} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
+                            <TextCard text1={'You save'} text2={`${selectedCurrency} ${previewCustomplanArray ? previewCustomplanArray?.totalSavings : payoffCustomplanArray?.totalSavings}`} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
                         </View>
                     </View>
 

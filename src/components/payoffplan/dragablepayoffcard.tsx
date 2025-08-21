@@ -31,11 +31,11 @@ const DraggablePayoffcard: FC<payoffProps> = ({
 }) => {
     const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
 
-    console.log("data : ", data)
 
     const keyExtractor = (item: any) => item?.id?.toString() || item?.name;
 
     const renderItem = ({ item, drag, isActive }: any) => {
+
 
 
         return (
@@ -49,7 +49,7 @@ const DraggablePayoffcard: FC<payoffProps> = ({
                 <Card style={[styles.section_card, cardstyle]} cardStyle={styles.section_card_inner}>
                     <View style={styles.groupsection}>
                         <Text style={styles.groupsection_text1}>{item.name}</Text>
-                        <Text style={styles.groupsection_text2}>Completes on {formatDDMMMyyyy(item.estimatedDebtFreeDate)}</Text>
+                        {/* <Text style={styles.groupsection_text2}>Completes on {formatDDMMMyyyy(item.estimatedDebtFreeDate)}</Text> */}
                         {showicon && <TouchableOpacity style={styles.button}>
                             <Image source={source} style={styles.editimage} />
                         </TouchableOpacity>}

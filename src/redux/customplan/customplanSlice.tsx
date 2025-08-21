@@ -6,8 +6,11 @@ import axios from 'axios'
 
 export interface CustomPlan {
     name?: string
-    debtOrder: any
-    extraPayments: any
+    debtOrder?: any
+    extraPayments?: any
+    estimatedDebtFreeDate?: any
+    totalInterestPaid?: any
+    totalSavings?: any
 }
 
 interface CustomPlanState {
@@ -119,13 +122,18 @@ export const previewCustomPlan = createAsyncThunk<CustomPlan, any, { state: Root
     'customplan/previewCustomPlan',
     async (CustomPlan, { getState, rejectWithValue }) => {
 
+        console.log("CustomPlan redux : ", CustomPlan)
+
         const _token = (getState().loginuser?.items[0]?.token)
         const storetoken = await AsyncStorage.getItem('token')
 
         try {
             const resp = await axios.post<CustomPlan>(
                 previewcustomplan,
-                { CustomPlan },
+                {
+                    debtOrder: CustomPlan?.debtOrder,
+                    extraPayments: CustomPlan?.extraPayments
+                },
                 {
                     headers: {
                         Authorization: `Bearer ${_token ? _token : storetoken}`,

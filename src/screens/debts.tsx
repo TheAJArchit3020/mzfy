@@ -22,6 +22,7 @@ import { RootStackParams } from "@managers/routing";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@redux/store";
 import { fetchAllDebts } from "@redux/debts/debtsSlice";
+import Aimodal from "@components/chatai/aimodal";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParams>;
 
@@ -82,7 +83,7 @@ const DebtsScreen: FC = () => {
   );
 
 
-    const visibleList =
+  const visibleList =
     selectedButton === 0 ? filteredInProgress : filteredCompleted;
 
 
@@ -131,10 +132,13 @@ const DebtsScreen: FC = () => {
           <Payoffcard
             data={visibleList}
             source={require("@assets/images/dashboard/rightarrow.png")}
-            // onPress={() => navigation.navigate("particulardebtdetailscreen")}
+          // onPress={() => navigation.navigate("particulardebtdetailscreen")}
           />
         </ScrollView>
       </View>
+
+      <Aimodal style={styles.aiContainer} imagestyle={styles.aiimagestyle} />
+
       <TouchableOpacity
         style={styles.section6}
         onPress={() => {
@@ -245,4 +249,12 @@ const styles = StyleSheet.create({
     width: wp(30),
     height: hp(20),
   },
+  aiimagestyle: {
+    width: 70,
+    height: 70,
+  },
+  aiContainer:{
+    right: wp(2.5),
+    bottom: wp(12)
+  }
 });

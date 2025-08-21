@@ -40,6 +40,16 @@ type Strategy = {
     subtitle?: string
 }
 
+type StrategyPlan = {
+    avalanche?: any;
+    snowball?: any;
+    hybrid?: any;
+    custom?: any;
+
+};
+
+
+
 
 // move this out as a proper component so it can get props
 const CustomDropdown: FC<{
@@ -96,7 +106,15 @@ const Selectstrategy: FC = () => {
     const currentCurrency = useSelector((state: RootState) => state.user?.current?.selectedCurrency)
     const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
 
-    console.log("strategyAllCustomPlanArray : ", strategyAllCustomPlanArray)
+    console.log("strategyPlanArray : ", strategyPlanArray)
+
+
+    const plans = useSelector((state: RootState) => state.strategy.items);
+
+
+    const plan = plans?.[0];
+
+    console.log("plan : ", plan)
 
     const raw = strategyPlanArray
 
@@ -114,24 +132,24 @@ const Selectstrategy: FC = () => {
             key: 'Debt Avalanche',
             title: 'avalanche',
             advantage: 'Fastest payoff and least interest ',
-            payoffTime: formatDuration(raw[0]?.avalanche?.estimatedDebtFreeDate),
-            interestSaved: `${currentCurrency ? currentCurrency : selectedCurrency} ${raw[0]?.avalanche?.totalInterestPaid?.toLocaleString()}`,
+            payoffTime: formatDuration(plan?.avalanche?.estimatedDebtFreeDate),
+            interestSaved: `${currentCurrency ? currentCurrency : selectedCurrency} ${plan?.avalanche?.totalInterestPaid?.toLocaleString()}`,
             subtitle: '(Prioritize highest interest rate)'
         },
         {
             key: 'Debt Snowball',
             title: 'snowball',
             advantage: 'The most quick wins',
-            payoffTime: formatDuration(raw[0]?.snowball?.estimatedDebtFreeDate),
-            interestSaved: `${currentCurrency ? currentCurrency : selectedCurrency} ${raw[0]?.snowball?.totalInterestPaid?.toLocaleString()}`,
+            payoffTime: formatDuration(plan?.snowball?.estimatedDebtFreeDate),
+            interestSaved: `${currentCurrency ? currentCurrency : selectedCurrency} ${plan?.snowball?.totalInterestPaid?.toLocaleString()}`,
             subtitle: '(Prioritize lowest balance first)'
         },
         {
             key: 'Hybrid',
             title: 'Hybrid',
             advantage: 'Hybrid Plan',
-            payoffTime: formatDuration(raw[0]?.hybrid?.estimatedDebtFreeDate),
-            interestSaved: `${currentCurrency ? currentCurrency : selectedCurrency} ${raw[0]?.hybrid?.totalInterestPaid?.toLocaleString()}`,
+            payoffTime: formatDuration(plan?.hybrid?.estimatedDebtFreeDate),
+            interestSaved: `${currentCurrency ? currentCurrency : selectedCurrency} ${plan?.hybrid?.totalInterestPaid?.toLocaleString()}`,
             subtitle: '(Hybrid Plan)'
 
         },
@@ -139,8 +157,8 @@ const Selectstrategy: FC = () => {
             key: 'Custom',
             title: 'Custom',
             advantage: 'Customized Plan',
-            payoffTime: formatDuration(raw[0]?.custom?.estimatedDebtFreeDate),
-            interestSaved: `${selectedCurrency} ${raw[0]?.custom?.totalInterestPaid?.toLocaleString()}`,
+            payoffTime: formatDuration(plan?.custom?.estimatedDebtFreeDate),
+            interestSaved: `${selectedCurrency} ${plan?.custom?.totalInterestPaid?.toLocaleString()}`,
             subtitle: '(Customized Plan)'
 
         },
