@@ -13,7 +13,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@redux/store';
 import { fetchPayoffPlan } from '@redux/payoffplans/payoffplanSlice';
-import { addStrategy, fetchStrategy } from '@redux/strategies/strategySlice';
+import { addStrategy, fetchAllCustomStrategy, fetchStrategy } from '@redux/strategies/strategySlice';
 import { formatDuration } from '@components/reusable/formatdate';
 
 
@@ -27,7 +27,6 @@ const PayoffplansScreen: FC = () => {
 
 
   const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
-  console.log("first", customPlan)
 
   const handleSelect = async () => {
     if (choice) {
@@ -50,6 +49,7 @@ const PayoffplansScreen: FC = () => {
         try {
           await dispatch(fetchPayoffPlan()).unwrap();
           await dispatch(fetchStrategy()).unwrap();
+          await dispatch(fetchAllCustomStrategy())
         } catch (error) {
           console.error('Error fetching payoff plans:', error);
         }
@@ -62,35 +62,25 @@ const PayoffplansScreen: FC = () => {
 
 
   const payoffplanArray = useSelector((state: RootState) => state?.payoffplan?.items[0]) ?? [];
+  const strategyPlanArray = useSelector((state: RootState) => state?.strategy?.items[0]) ?? [];
+  const customPlansArray = useSelector((state: RootState) => state.strategy?.customitems?.plans ?? [])
 
-  console.log("payoffplanArray : ", payoffplanArray)
+  const filteredCustomPlans = customPlansArray?.filter((plan: any) => plan.id === payoffplanArray?.strategy) || [];
 
 
   const __date = payoffplanArray?.estimatedDebtFreeDate
-
   const d = __date ? new Date(__date as string) : new Date();
-
   const year = d.getUTCFullYear()
 
   const monthNumber = d.getUTCMonth() + 1  // 8
   const monthName = d.toLocaleString('default', { month: 'short', timeZone: 'UTC' })
   const now = new Date()
-
-
   const monthsUntil =
     (year - now.getUTCFullYear()) * 12 +
     ((monthNumber) - (now.getUTCMonth() + 1))
 
-  const strategyPlanArray = useSelector((state: RootState) => state?.strategy?.items[0]) ?? [];
-  const customPlansArray = useSelector((state: RootState) => state.strategy?.customitems[0] ?? [])
 
-  const filteredCustomPlans = customPlansArray?.plans?.filter((plan: any) => plan.id === payoffplanArray?.strategy) || [];
 
-  console.log("filteredCustomPlans : ", filteredCustomPlans[0]?.name)
-
-  console.log("customPlansArray : ", customPlansArray?.plans)
-
-  const raw = strategyPlanArray
 
 
   const strategies = [
@@ -98,24 +88,24 @@ const PayoffplansScreen: FC = () => {
       title: 'Debt Avalanche',
       subtitle: 'Prioritize highest interest rate',
       advantage: 'Fastest payoff and least interest',
-      timeToPayoff: formatDuration(raw[0]?.avalanche?.estimatedDebtFreeDate),
-      interestSaved: `${selectedCurrency} ${raw[0]?.avalanche?.totalInterestPaid?.toLocaleString()}`,
+      timeToPayoff: formatDuration(strategyPlanArray?.avalanche?.estimatedDebtFreeDate),
+      interestSaved: `${selectedCurrency} ${strategyPlanArray?.avalanche?.totalInterestPaid?.toLocaleString()}`,
       value: 'avalanche',
     },
     {
       title: 'Debt Snowball',
       subtitle: 'Prioritize lowest balance first',
       advantage: 'The most quick wins',
-      timeToPayoff: formatDuration(raw[0]?.snowball?.estimatedDebtFreeDate),
-      interestSaved: `${selectedCurrency} ${raw[0]?.snowball?.totalInterestPaid?.toLocaleString()}`,
+      timeToPayoff: formatDuration(strategyPlanArray?.snowball?.estimatedDebtFreeDate),
+      interestSaved: `${selectedCurrency} ${strategyPlanArray?.snowball?.totalInterestPaid?.toLocaleString()}`,
       value: 'snowball',
     },
     {
       key: 'Hybrid',
       title: 'Hybrid',
       advantage: 'Hybrid Plan',
-      timeToPayoff: formatDuration(raw[0]?.hybrid?.estimatedDebtFreeDate),
-      interestSaved: `${selectedCurrency} ${raw[0]?.hybrid?.totalInterestPaid?.toLocaleString()}`,
+      timeToPayoff: formatDuration(strategyPlanArray?.hybrid?.estimatedDebtFreeDate),
+      interestSaved: `${selectedCurrency} ${strategyPlanArray?.hybrid?.totalInterestPaid?.toLocaleString()}`,
       subtitle: '(Hybrid Plan)',
       value: 'Hybrid',
     },
@@ -123,8 +113,8 @@ const PayoffplansScreen: FC = () => {
       title: 'Custom',
       subtitle: 'Customized Plan',
       advantage: 'Customized Plan',
-      timeToPayoff: formatDuration(raw[0]?.custom?.estimatedDebtFreeDate),
-      interestSaved: `${selectedCurrency} ${raw[0]?.custom?.totalInterestPaid?.toLocaleString()}`,
+      timeToPayoff: formatDuration(strategyPlanArray?.custom?.estimatedDebtFreeDate),
+      interestSaved: `${selectedCurrency} ${strategyPlanArray?.custom?.totalInterestPaid?.toLocaleString()}`,
       value: 'custom',
     },
   ];

@@ -39,14 +39,12 @@ const Createcustomplan: FC = () => {
     const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
     const payoffCustomplanArray = useSelector((state: RootState) => state?.customplan?.items[0]) ?? [];
 
+
     const _getDebtIds = payoffCustomplanArray?.debtOrder?.map((item: any) => item.id) || [];
 
     useEffect(() => {
-        if (
-            (debtArray?.length > 0)
-        ) {
-            _fetchPreviewCustomPlan();
-        }
+
+        _fetchPreviewCustomPlan();
     }, [debtArray, debtExtraPaymentArray]);
 
 
@@ -91,14 +89,13 @@ const Createcustomplan: FC = () => {
         }, [])
     );
 
-    const previewCustomplanArray = useSelector((state: RootState) => state?.customplan?.previewCustomData[0]) ?? [];
-
+    const previewCustomplanArray = useSelector((state: RootState) => state?.customplan?.previewCustomData) ?? [];
 
     console.log("previewCustomplanArray : ", previewCustomplanArray)
 
 
 
-    const __date = previewCustomplanArray ? previewCustomplanArray?.estimatedDebtFreeDate : payoffCustomplanArray?.estimatedDebtFreeDate
+    const __date = previewCustomplanArray?.length > 0 ? previewCustomplanArray[0]?.estimatedDebtFreeDate : payoffCustomplanArray?.estimatedDebtFreeDate
 
     const d = __date ? new Date(__date as string) : new Date();
 
@@ -200,8 +197,8 @@ const Createcustomplan: FC = () => {
                             <TextCard text1={'Months'} text2={monthsUntil} text1style={styles.text1} text2style={styles.text2} cardStyle={styles.cardstyle} ></TextCard>
                         </View>
                         <View style={styles.cardgroup2}>
-                            <TextCard text1={'Total interest Paid'} text2={`${selectedCurrency} ${previewCustomplanArray ? previewCustomplanArray.totalInterestPaid : payoffCustomplanArray?.totalInterestPaid}`} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
-                            <TextCard text1={'You save'} text2={`${selectedCurrency} ${previewCustomplanArray ? previewCustomplanArray?.totalSavings : payoffCustomplanArray?.totalSavings}`} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
+                            <TextCard text1={'Total interest Paid'} text2={`${selectedCurrency} ${previewCustomplanArray?.length > 0 ? previewCustomplanArray[0]?.totalInterestPaid : payoffCustomplanArray?.totalInterestPaid}`} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
+                            <TextCard text1={'You save'} text2={`${selectedCurrency} ${previewCustomplanArray?.length > 0 ? previewCustomplanArray[0]?.totalSavings : payoffCustomplanArray?.totalSavings}`} text1style={styles.text1} text2style={styles.text3} cardStyle={styles.cardstyle2} ></TextCard>
                         </View>
                     </View>
 

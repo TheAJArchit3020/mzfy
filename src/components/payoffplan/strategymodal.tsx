@@ -16,11 +16,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 
 export type StrategyOption = {
-    title: string; 
-    subtitle?: string; 
+    title: string;
+    subtitle?: string;
     advantage: string;
-    timeToPayoff: string; 
-    interestSaved: string; 
+    timeToPayoff: string;
+    interestSaved: string;
     value: string;
     disabled?: boolean;
 };
@@ -72,9 +72,7 @@ const StrategyRadioCard: React.FC<Props> = ({
 
     }
 
-    const customPlansArray = useSelector((state: RootState) => state.strategy?.customitems[0] ?? [])
-
-
+    const customPlansArray = useSelector((state: RootState) => state.strategy?.customitems?.plans ?? [])
 
     interface CustomOption {
         id: number;
@@ -82,7 +80,7 @@ const StrategyRadioCard: React.FC<Props> = ({
         value: string;
     }
 
-    const customOptions: CustomOption[] = (customPlansArray?.plans ?? []).map(
+    const customOptions: CustomOption[] = (customPlansArray ?? []).map(
         (plan: any, index: number) => ({
             id: index + 1,
             label: plan.name,

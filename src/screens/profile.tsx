@@ -12,6 +12,8 @@ import { deleteUser, fetchUser, setField, updateUser, User } from '@redux/user/u
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Input from '@components/reusable/Input';
 import { PencilIcon } from 'react-native-heroicons/solid';
+import { fetchAllCustomStrategy } from '@redux/strategies/strategySlice';
+import { fetchPayoffPlan } from '@redux/payoffplans/payoffplanSlice';
 
 
 type navProps = NativeStackNavigationProp<RootStackParams>
@@ -24,7 +26,6 @@ const Profile: FC = () => {
     const currentData = useSelector((state: RootState) => state.user.current) ?? [];
 
 
-    console.log("currentData :", currentData)
 
 
     // ⏰ Get current hour
@@ -51,6 +52,9 @@ const Profile: FC = () => {
     const getUserDetails = async () => {
         try {
             await dispatch(fetchUser()).unwrap()
+            await dispatch(fetchPayoffPlan()).unwrap();
+            await dispatch(fetchAllCustomStrategy())
+
         } catch (err: any) {
             console.log("Error adding user:", err);
         }
@@ -58,6 +62,19 @@ const Profile: FC = () => {
     }
 
     const USERARRAY = useSelector((state: RootState) => state.user.items[0]) ?? [];
+
+    const payoffplanArray = useSelector((state: RootState) => state?.payoffplan?.items[0]);
+    const customPlansArray = useSelector((state: RootState) => state.strategy?.customitems?.plans)
+
+    console.log("payoffplanArray : ", payoffplanArray)
+
+    const filteredCustomPlans = React.useMemo(() => {
+        if (!customPlansArray || !payoffplanArray) return [];
+        return customPlansArray.filter((plan: any) => plan.id === payoffplanArray?.strategy);
+    }, [customPlansArray, payoffplanArray]);
+
+
+    console.log("currentData :", customPlansArray)
 
 
 
@@ -175,7 +192,12 @@ const Profile: FC = () => {
                         <View style={styles.section2_content}>
                             <Text style={styles.label} >Plan</Text>
                             <View style={styles.section2_content_item}>
-                                <Text style={styles.section2_content_item_title}>{USERARRAY?.currentStrategy}</Text>
+                                <Text style={styles.section2_content_item_title}>
+                                    {
+                                        filteredCustomPlans?.length > 0 ? filteredCustomPlans[0].name
+                                            : USERARRAY?.currentStrategy
+                                    }
+                                </Text>
                                 {USERARRAY?.currentStrategy === 'moneezify' && <Image source={require('@images/registration/crown.png')} style={styles.image} />}
                             </View>
                         </View>

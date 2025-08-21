@@ -14,6 +14,7 @@ import { fetchUser } from "@redux/user/userSlice";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParams } from "@managers/routing";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { fetchAllCustomStrategy } from "@redux/strategies/strategySlice";
 
 type navprops = NativeStackNavigationProp<RootStackParams>;
 

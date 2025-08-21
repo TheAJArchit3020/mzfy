@@ -11,6 +11,8 @@ export interface CustomPlan {
     estimatedDebtFreeDate?: any
     totalInterestPaid?: any
     totalSavings?: any
+    length?: any
+    plan?: any
 }
 
 interface CustomPlanState {
