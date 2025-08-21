@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   ViewStyle,
+  Pressable,
 } from "react-native";
 import {
   widthToDP as wp,
@@ -45,6 +46,7 @@ const Input: React.FC<InputProps> = ({
   iconDisabled = true,
   ...rest
 }) => {
+  const [isFocused, setIsFocused] = React.useState(false);
   return (
     <View style={[styles.container, containerStyle]}>
       <View style={styles.lableContainer}>
@@ -59,7 +61,14 @@ const Input: React.FC<InputProps> = ({
           </TouchableOpacity>
         )}
       </View>
-      <View style={[styles.inputWrapper, inputWrapperStyle]}>
+      <Pressable
+        style={[
+          styles.inputWrapper,
+          inputWrapperStyle,
+          isFocused && { backgroundColor: "#5850A2" },
+        ]}
+        onPress={() => setIsFocused((prev) => !prev)}
+      >
         {iconAbove && (
           <View style={styles.iconAboveContainer}>{iconAbove}</View>
         )}
@@ -71,10 +80,14 @@ const Input: React.FC<InputProps> = ({
           onChangeText={onChangeContent}
           keyboardType={type === "number" ? "numeric" : "default"}
           style={[styles.input, style]}
+          onTouchStart={() => setIsFocused(true)}
+          //onTouchEnd={() => setIsFocused(false)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
           {...rest}
         />
         {children}
-      </View>
+      </Pressable>
     </View>
   );
 };
@@ -84,7 +97,6 @@ const styles = StyleSheet.create({
     marginBottom: hp(2),
   },
   inputWrapper: {
-    backgroundColor: "transparent",
     borderWidth: 0.5,
     flexDirection: "row",
     borderColor: "#BCBCBC",
@@ -102,7 +114,6 @@ const styles = StyleSheet.create({
   },
   iconAboveContainer: {
     alignItems: "center",
-    marginBottom: hp(1),
   },
   input: {
     color: "#e5e5f7",
@@ -111,6 +122,7 @@ const styles = StyleSheet.create({
     padding: 0,
     backgroundColor: "transparent",
     paddingHorizontal: 5,
+    paddingVertical: hp(0.5),
   },
   label: {
     marginBottom: hp(2),
@@ -121,3 +133,4 @@ const styles = StyleSheet.create({
 });
 
 export default memo(Input);
+

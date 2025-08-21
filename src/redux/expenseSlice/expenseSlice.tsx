@@ -20,6 +20,7 @@ interface ExpensesDashboardData {
   recentExpenses: any[];
   getCatogories: LogExpenseCategoryItem[];
   allExpenses: any[];
+  spendingTrend: any[];
 }
 
 interface LogExpensePayload {
@@ -48,6 +49,7 @@ const initialState: ExpensesDashboardData = {
   recentExpenses: [],
   getCatogories: [],
   allExpenses: [],
+  spendingTrend: [],
 };
 
 // Create async thunk for fetching expenses dashboard data
@@ -275,6 +277,7 @@ const expenseSlice = createSlice({
         state.totalSpent = action.payload.totalSpent || 0;
         state.byCategory = action.payload.byCategory || [];
         state.recentExpenses = action.payload.recentExpenses || [];
+        state.spendingTrend = action.payload.spendingTrend || [];
       })
       .addCase(fetchExpensesDashboard.rejected, (state, action) => {
         console.error("Failed to fetch expenses dashboard:", action.error);

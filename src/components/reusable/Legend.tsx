@@ -35,7 +35,7 @@ const Legend: React.FC<LegendProps> = ({
 
   const defaultContainerStyle = {
     flexDirection: layout === "row" ? "row" : "column",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: layout === "row" ? "space-between" : "flex-start",
     gap: gap,
   };

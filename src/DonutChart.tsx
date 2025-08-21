@@ -1,5 +1,5 @@
 // DonutChart.tsx
-import React, { FC } from "react";
+import React, { FC, useRef } from "react";
 import { View, StyleProp, ViewStyle } from "react-native";
 import Svg, {
   G,
@@ -54,7 +54,7 @@ const DonutChart: FC<DonutChartProps> = ({
 }) => {
   type ArcDatum = PieArcDatum<DonutDataItem>;
   const total = data.reduce((sum, d) => sum + d.value, 0);
-
+  const lastOffsetRef = useRef(0);
   const sectionArcs: ArcDatum[] = pie<DonutDataItem>()
     .value((d) => d.value)
     .sort(null)(data);
@@ -62,7 +62,9 @@ const DonutChart: FC<DonutChartProps> = ({
   const arcGen: ArcGenerator<any, ArcDatum> = arc<ArcDatum>()
     .innerRadius(radius - donutStrokeWidth)
     .outerRadius(radius)
-    .cornerRadius(arcCornerRadius);
+    .cornerRadius(arcCornerRadius)
+    .padAngle(0.02)
+    .padRadius(radius);
 
   const donutSize = radius * 2 + donutStrokeWidth * 2;
 
@@ -72,16 +74,19 @@ const DonutChart: FC<DonutChartProps> = ({
   const svgHeight = donutSize + canvasHeight;
   const centerX = svgWidth / 2;
   const centerY = svgHeight / 2;
+
   console.log("pieChart Data: ", data);
   return (
     <View style={[{ overflow: "visible" }, style]}>
       <Svg width={svgWidth} height={svgHeight}>
         <G transform={`translate(${centerX}, ${centerY})`}>
           {sectionArcs.map((slice, i) => {
-            // console.log("slice index: ", slice.index);
-            // console.log("slice start Angle: ", slice.startAngle);
-            // console.log("slice end Angle: ", slice.endAngle);
-            const midAngle = (slice.startAngle + slice.endAngle) / 2 - 1.5708;
+            // Modiefied bleow logic to prevent lable overlaps if all values are 0
+            let midAngle = (slice.startAngle + slice.endAngle) / 2 - 1.5708;
+            let prevOffset = lastOffsetRef.current;
+            let currentOffset = prevOffset + 0.5;
+            lastOffsetRef.current = currentOffset;
+            midAngle += currentOffset;
 
             console.log("mid Angle: ", midAngle);
 
@@ -101,6 +106,8 @@ const DonutChart: FC<DonutChartProps> = ({
             const text = `${data[i].label}`;
             const line1 = `${data[i].line1}`;
             const line2 = `${data[i].line2}`;
+
+            console.log("slice", slice);
             return (
               <G key={i}>
                 <Path d={arcGen(slice) || undefined} fill={data[i].color} />

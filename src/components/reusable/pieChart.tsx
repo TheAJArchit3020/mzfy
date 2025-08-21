@@ -38,6 +38,8 @@ const PieChartComponent: FC<PieChartProps> = ({
           showText
           textColor="#fff"
           textSize={wp(4)}
+          font={"PlusJakartaSans-Bold"}
+          fontWeight="bold"
         />
       </View>
     </View>

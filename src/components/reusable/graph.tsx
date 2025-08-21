@@ -6,10 +6,10 @@ import {
   widthToDP as wp,
 } from "react-native-responsive-screens";
 import { ChevronRightIcon, ChevronUpIcon } from "react-native-heroicons/solid";
-
+import CustomLineChart from "src/CustomLineChart";
 interface RawPoint {
   amount: number;
-  dueDate: string;
+  dueDate?: string;
 }
 
 interface GraphComponentProps {
@@ -41,7 +41,7 @@ const GraphComponent: FC<GraphComponentProps> = memo(
     const chartLabels =
       labels ||
       rawData.map((pt) => {
-        const d = new Date(pt.dueDate);
+        const d = new Date(pt?.dueDate || "");
         const day = String(d.getDate()).padStart(2, "0");
         const month = monthNames[d.getMonth()];
         const year = d.getFullYear();
@@ -64,6 +64,8 @@ const GraphComponent: FC<GraphComponentProps> = memo(
             data={data}
             width={width}
             height={height}
+            withVerticalLabels={true}
+            withHorizontalLabels={true}
             yAxisLabel="₹"
             yAxisSuffix=""
             yAxisInterval={1}
@@ -71,13 +73,21 @@ const GraphComponent: FC<GraphComponentProps> = memo(
               backgroundColor: "#2a2a2a",
               backgroundGradientFrom: "#2a2a2a",
               backgroundGradientTo: "#2a2a2a",
-              decimalPlaces: 2,
+              decimalPlaces: 0, // no decimals for thousands
               color: (opacity = 1) => `rgba(59, 130, 246, ${opacity})`,
               labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
               style: { borderRadius: 16 },
               propsForDots: { r: "0", strokeWidth: "0" },
               fillShadowGradient: "#4C96F7",
               fillShadowGradientOpacity: 1,
+              formatYLabel: (yValue) => {
+                const val = Number(yValue);
+                if (val >= 1000000) return `${(val / 1000000).toFixed(1)}M`;
+                if (val >= 1000) return `${(val / 1000).toFixed(1)}k`;
+                return val.toString();
+              },
+              formatXLabel: (xLabel) => xLabel,
+              verticalLabelRotation: 45,
             }}
             renderDotContent={({ x, y, index }) => (
               <Image
@@ -99,6 +109,12 @@ const GraphComponent: FC<GraphComponentProps> = memo(
               borderRadius: 16,
               backgroundColor: "#2a2a2a",
             }}
+          />
+          <CustomLineChart
+            data={dataPoints}
+            width={width}
+            height={height}
+            // Pass other necessary props as required by your CustomLineChart
           />
 
           {/* axes lines & arrows, unchanged */}
@@ -127,6 +143,11 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderWidth: 0.5,
     borderColor: "#C0C0C0",
+    elevation: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
   },
   chartContainer: {
     backgroundColor: "#2a2a2a",

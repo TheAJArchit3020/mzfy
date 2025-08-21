@@ -82,8 +82,8 @@ const Expenses: FC<ExpensesProps> = ({}) => {
 
   // Create category data with percentage values
   const categoriesData =
-    userExpensesData.getCatogories?.map((cat) => {
-      const percentage = (cat.budget / totalBudget) * 100;
+    userExpensesData.byCategory?.map((cat) => {
+      const percentage = (cat.spent / totalBudget) * 100;
 
       // Optional: emoji mapping
       const emojiMap: Record<string, string> = {
@@ -93,14 +93,12 @@ const Expenses: FC<ExpensesProps> = ({}) => {
         Miscellaneous: "🧰",
         Food: "🍽️",
       };
-
       return {
         value: Number(percentage.toFixed(2)),
         color: cat.color || "#006FFF",
-        label: cat.name,
-        emoji: emojiMap[cat.name] || "",
-        line1: cat.name,
-        line2: `${percentage.toFixed(2)}% ${emojiMap[cat.name] || "📌"}`,
+        label: cat.categoryName,
+        line1: `${cat.categoryName} ${emojiMap[cat.categoryName] || " "}`,
+        line2: `${percentage.toFixed(2)}%`,
       };
     }) || [];
 
@@ -124,46 +122,18 @@ const Expenses: FC<ExpensesProps> = ({}) => {
 
   // Calculate last 7 days (including today) expenses for the graph
   const { graphData, graphLabels } = useMemo(() => {
-    const toDateKey = (d: Date) => {
-      const y = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, "0");
-      const day = String(d.getDate()).padStart(2, "0");
-      return `${y}-${m}-${day}`;
-    };
-
-    // Build an ordered list of the last 7 days from oldest to today
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const last7Days: Date[] = [];
-    for (let i = 6; i >= 0; i -= 1) {
-      const d = new Date(today);
-      d.setDate(today.getDate() - i);
-      last7Days.push(d);
-    }
-
-    // Precompute totals by date key
-    const totalsByDate: Record<string, number> = {};
-    const recent = Array.isArray(userExpensesData.recentExpenses)
-      ? userExpensesData.recentExpenses
-      : [];
-    for (const exp of recent as any[]) {
-      const expDate = new Date(exp?.date);
-      if (isNaN(expDate.getTime())) continue;
-      const key = toDateKey(expDate);
-      totalsByDate[key] = (totalsByDate[key] || 0) + (Number(exp?.amount) || 0);
-    }
-
     // Build rawData and labels arrays aligned to last7Days
-    const rawData = last7Days.map((d) => ({
-      amount: totalsByDate[toDateKey(d)] || 0,
-      dueDate: toDateKey(d),
+    const rawData = userExpensesData.spendingTrend.map((d) => ({
+      amount: d.amount || 0,
     }));
-    const labels = last7Days.map((d) => {
-      const day = String(d.getDate()).padStart(2, "0");
-      const month = monthNames[d.getMonth()];
+
+    const labels = userExpensesData.spendingTrend.map((d) => {
+      const dateSplit = d.date.split("T")[0].split("-");
+      console.log("dateSplit", dateSplit[1]);
+      const day = dateSplit[2];
+      const month = monthNames[Number(dateSplit[1] - 1)];
       return `${day} ${month}`;
     });
-
     return { graphData: rawData, graphLabels: labels };
   }, [userExpensesData.recentExpenses]);
 
@@ -236,13 +206,17 @@ const Expenses: FC<ExpensesProps> = ({}) => {
                 {/* Monthly Budget Card */}
                 <View style={styles.card}>
                   <Text style={styles.cardLabel}>Monthly budget</Text>
-                  <Text style={styles.cardAmount}>₹{userExpensesData.totalBudget}</Text>
+                  <Text style={styles.cardAmount}>
+                    ₹.{userExpensesData.totalBudget}
+                  </Text>
                 </View>
 
                 {/* Total Spent Card */}
                 <View style={styles.card}>
                   <Text style={styles.cardLabel}>Total spent</Text>
-                  <Text style={styles.cardAmount}>₹{userExpensesData.totalSpent}</Text>
+                  <Text style={styles.cardAmount}>
+                    ₹.{userExpensesData.totalSpent}
+                  </Text>
                 </View>
               </View>
 
@@ -271,7 +245,6 @@ const Expenses: FC<ExpensesProps> = ({}) => {
                         <Legend
                           containerStyle={{
                             gap: hp(2),
-                            width: "30%",
                             alignItems: "flex-start",
                           }}
                           data={pieChartData}
@@ -291,13 +264,13 @@ const Expenses: FC<ExpensesProps> = ({}) => {
                       <DonutChart
                         data={categoriesData}
                         donutStrokeWidth={20}
-                        radius={90}
+                        radius={80}
                         arcCornerRadius={0}
-                        labelOffset={20}
-                        canvasHeight={30}
+                        labelOffset={18}
+                        canvasHeight={10}
                         canvasWidth={300}
                         fontFamily="PlusJakartaSans-Bold"
-                        labelFontSize={wp(2.5)}
+                        labelFontSize={wp(2.3)}
                         lineStroke={wp(0.5)}
                       />
                     </View>
@@ -399,16 +372,15 @@ const styles = StyleSheet.create({
   },
   cardsContainer: {
     paddingHorizontal: wp(5),
-    flexDirection: "row",
     justifyContent: "space-between",
-    gap: wp(3),
+    gap: hp(1),
   },
   card: {
     flex: 1,
     backgroundColor: "#2a2a2a",
     borderRadius: wp(5),
-    padding: wp(4),
-    paddingVertical: hp(3),
+    paddingHorizontal: wp(4),
+    paddingVertical: hp(2),
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -416,20 +388,20 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5,
+    elevation: 8,
     borderWidth: 0.5,
     borderColor: "#C0C0C0",
+    gap: hp(1),
   },
   cardLabel: {
     color: "#fff",
-    fontSize: wp(3.5),
+    fontSize: wp(3.2),
     fontFamily: "PlusJakartaSans-Bold",
-    marginBottom: hp(1),
     opacity: 0.8,
   },
   cardAmount: {
     color: "#fff",
-    fontSize: wp(5),
+    fontSize: wp(7.5),
     fontFamily: "PlusJakartaSans-Bold",
     fontWeight: "bold",
   },
@@ -441,23 +413,29 @@ const styles = StyleSheet.create({
     borderRadius: wp(5),
     paddingHorizontal: wp(2),
     paddingVertical: hp(1),
-    height: hp(36),
+    height: hp(33),
+
+    elevation: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
   },
   segmentButtonContainer: {
     backgroundColor: "#2a2a2a",
     borderRadius: wp(8),
-    padding: wp(1),
+    paddingHorizontal: wp(3),
     paddingVertical: hp(1.3),
     width: wp(60),
-    marginTop: 0,
+    marginTop: hp(0.5),
   },
   segmentButton: {
-    paddingVertical: hp(1),
+    paddingVertical: hp(0.5),
     paddingHorizontal: wp(4),
     borderRadius: wp(8),
   },
   activeSegmentButton: {
-    backgroundColor: "#177AD5",
+    backgroundColor: "#006EFF",
     paddingVertical: hp(0),
   },
   segmentText: {
@@ -489,7 +467,6 @@ const styles = StyleSheet.create({
     gap: wp(3),
   },
   balanceContainer: {
-    marginTop: hp(1.5),
     alignItems: "center",
   },
   balanceText: {
