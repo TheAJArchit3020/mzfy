@@ -15,7 +15,7 @@ import LinearGradient from "react-native-linear-gradient";
 import Input from "@components/reusable/Input";
 import Button from "@components/reusable/button";
 import { PaperAirplaneIcon } from "react-native-heroicons/solid";
-import { heightToDP } from "react-native-responsive-screens";
+import { heightToDP, widthToDP } from "react-native-responsive-screens";
 import EventSource from "react-native-sse";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -429,7 +429,9 @@ const Pennieaichat: FC = () => {
                                     {item.typing ? (
                                         <TypingDots />
                                     ) : (
-                                        <Text style={styles.messageText}>{item.text}</Text>
+                                        <Text style={[styles.messageText, item.sender === "user"
+                                            ? styles.userBubbleText
+                                            : styles.botBubbleText]}>{item.text}</Text>
                                     )}
                                 </View>
                             )}
@@ -558,6 +560,7 @@ const styles = StyleSheet.create({
     userBubble: {
         backgroundColor: "#006FFF",
         alignSelf: "flex-end",
+        width: "auto",
     },
     botBubble: {
         backgroundColor: "transparent",
@@ -566,6 +569,8 @@ const styles = StyleSheet.create({
     messageText: {
         color: "#fff",
         fontFamily: "PlusJakartaSans-Regular",
+        fontSize: 16,
+
     },
     typingContainer: { flexDirection: "row", alignItems: "flex-end", height: 20 },
     dot: {
@@ -575,4 +580,11 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         marginHorizontal: 2,
     },
+    userBubbleText: {
+
+    },
+    botBubbleText: {
+        width: widthToDP(80),
+    },
+
 });
