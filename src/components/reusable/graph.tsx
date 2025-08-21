@@ -6,7 +6,7 @@ import {
   widthToDP as wp,
 } from "react-native-responsive-screens";
 import { ChevronRightIcon, ChevronUpIcon } from "react-native-heroicons/solid";
-import CustomLineChart from "src/CustomLineChart";
+import CustomLineChart from "../../CustomLineChart";
 interface RawPoint {
   amount: number;
   dueDate: string;
