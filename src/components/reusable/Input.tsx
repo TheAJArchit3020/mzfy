@@ -65,7 +65,6 @@ const Input: React.FC<InputProps> = ({
         style={[
           styles.inputWrapper,
           inputWrapperStyle,
-          isFocused && { backgroundColor: "#5850A2" },
         ]}
         onPress={() => setIsFocused((prev) => !prev)}
       >
@@ -104,6 +103,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp(4),
     paddingVertical: hp(1.5),
     justifyContent: "center",
+    alignItems: "center",
     marginTop: 0,
   },
   lableContainer: {

@@ -172,10 +172,10 @@ const Particulardebtdetail: FC = () => {
                         <ProgressBar progress={DEBTDATA.payoffProgress} showTooltip={true} tooltipLabel={`Balance: ${DEBTDATA.currentBalance} ${selectedCurrency}`} backgroundColor='rgba(187,187,187,0.4)' />
                     </View>
 
-                    <View style={styles.section4}>
+                    {/* <View style={styles.section4}>
                         <Text style={styles.section4_title}>Your Debt-Free Timeline</Text>
                         <LineAreaChart rawData={DEBTDATA?.debtFreeTimeline} />
-                    </View>
+                    </View> */}
 
                 </View>
             </ScrollView>
@@ -292,7 +292,8 @@ const styles = StyleSheet.create({
     section4: {
         marginHorizontal: 20,
         flexDirection: "column",
-        gap: 25
+        gap: 25,
+        marginBottom: heightToDP(10)
     },
     section4_title: {
         fontSize: 16,

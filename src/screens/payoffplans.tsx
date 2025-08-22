@@ -18,6 +18,8 @@ import { formatDuration } from '@components/reusable/formatdate';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParams } from '@managers/routing';
 import Nodata from '@components/reusable/nodata';
+import LineAreaChart from '@components/debt/lineareagraph';
+import { heightToDP } from 'react-native-responsive-screens';
 
 type navprops = NativeStackNavigationProp<RootStackParams>;
 
@@ -130,6 +132,8 @@ const PayoffplansScreen: FC = () => {
 
 
 
+  console.log("payoffplanArray : ", payoffplanArray)
+
 
 
 
@@ -185,18 +189,18 @@ const PayoffplansScreen: FC = () => {
 
 
           {/* section5 */}
-          <View style={styles.cardcontainer4}>
+          {/* <View style={styles.cardcontainer4}>
             <Text style={styles.cardcontainer4_title}>Debt Reduction Timeline</Text>
             <View style={styles.cardcontainer4_inner}>
-              {/* <GraphComponent /> */}
+              <LineAreaChart rawData={payoffplanArray?.debtFreeTimeline} />
             </View>
-          </View>
+          </View> */}
 
           {/* section6 */}
-          <Button style={styles.button} >
+          {/* <Button style={styles.button} >
             <Image source={require('@images/payoffplan/pdf.png')} style={styles.buttonimage} />
             <Text style={styles.buttontext}>Export pdf</Text>
-          </Button>
+          </Button> */}
         </View>
       </ScrollView>
 
@@ -304,7 +308,8 @@ const styles = StyleSheet.create({
   cardcontainer3: {
     marginHorizontal: 20,
     flexDirection: "column",
-    gap: 25
+    gap: 25,
+    marginBottom: heightToDP(10)
   },
 
   cardcontainer3_inner: {
