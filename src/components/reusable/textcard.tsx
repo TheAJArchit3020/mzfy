@@ -19,20 +19,17 @@ const TextCard = ({ children, style, cardStyle, text1, text2, text1style, text2s
 
     useEffect(() => {
         if (text1) {
-            const timer = setTimeout(() => {
-                setShowContent(true);
-            }, 1200);
-
-            return () => clearTimeout(timer); // cleanup
+            setShowContent(true);
         }
     }, [text1]);
+
+    
     return (
         <View style={[styles.shadowContainer, style]}>
             <View style={[styles.card, cardStyle]}>
                 <Text style={text1style}>{text1}</Text>
                 {showContent ? (
                     <>
-
                         <Text style={text2style}>{text2}</Text>
                         {children}
                     </>

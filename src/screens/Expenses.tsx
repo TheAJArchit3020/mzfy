@@ -1,5 +1,5 @@
 import React, { FC, useState, useEffect, useMemo } from "react";
-import { View, Text, StyleSheet, ScrollView, Image } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Image, ActivityIndicator } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import DateNavigator from "../components/reusable/DateNavigator";
 import SegmentButton from "../components/reusable/segmentbutton";
@@ -22,6 +22,7 @@ import { useNavigation } from "@react-navigation/native";
 import { RootStackParams } from "@managers/routing";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { expenseItem, Transaction } from "src/commonTypes";
+import Nodata from "@components/reusable/nodata";
 
 const monthNames = [
   "Jan",
@@ -40,15 +41,18 @@ const monthNames = [
 
 type ExpensesScreenNavigationProp = StackNavigationProp<RootStackParams>;
 
-interface ExpensesProps {}
 
-const Expenses: FC<ExpensesProps> = ({}) => {
+const Expenses: FC = () => {
+
   const navigation = useNavigation<ExpensesScreenNavigationProp>();
   const dispatch = useDispatch<AppDispatch>();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTab, setSelectedTab] = useState(0); // 0 for Expenses, 1 for Categories
+
   const userExpensesData = useSelector((state: RootState) => state.expenses);
-  console.log("userExpensesData", userExpensesData);
+  const USERARRAY = useSelector((state: RootState) => state.user.items[0]) ?? [];
+
+
   const isDataAvailable = userExpensesData.totalSpent > 0;
   useEffect(() => {
     console.log(
@@ -64,6 +68,7 @@ const Expenses: FC<ExpensesProps> = ({}) => {
       })
     );
   }, [selectedDate]);
+
   const handleDateChange = (date: Date) => {
     setSelectedDate(date);
     console.log("Selected date:", date.toLocaleDateString());
@@ -105,14 +110,10 @@ const Expenses: FC<ExpensesProps> = ({}) => {
   const segmentItems = ["Expenses", "Categories"];
 
   const handleCategoryManagement = () => {
-    console.log("Category management pressed");
-    // Add navigation or modal logic here
     navigation.navigate("CategoryManagement");
   };
 
   const handleAddExpense = () => {
-    console.log("Add expense pressed");
-    // Add navigation or modal logic here
     navigation.navigate("LogExpense");
   };
 
@@ -122,7 +123,6 @@ const Expenses: FC<ExpensesProps> = ({}) => {
 
   // Calculate last 7 days (including today) expenses for the graph
   const { graphData, graphLabels } = useMemo(() => {
-    // Build rawData and labels arrays aligned to last7Days
     const rawData = userExpensesData.spendingTrend.map((d) => ({
       amount: d.amount || 0,
     }));
@@ -178,9 +178,28 @@ const Expenses: FC<ExpensesProps> = ({}) => {
     const dateB = new Date(b.transactions[0]?.date || "");
     return dateB.getTime() - dateA.getTime();
   }) as expenseItem[];
-  {
-    console.log("categoriesData", categoriesData);
-  }
+
+
+  const [showContent, setShowContent] = useState(false);
+
+  useEffect(() => {
+    if (userExpensesData) {
+      setShowContent(true);
+    }
+  }, [userExpensesData]);
+
+  const FinancialItem = ({ label, value, currency }: { label: string; value: any; currency: string }) => (
+    <View style={styles.financialItem}>
+      <Text style={styles.financialLabel}>{label}</Text>
+      {showContent ? (
+        <Text style={styles.financialAmount}>
+          {currency} {value}
+        </Text>
+      ) : <ActivityIndicator color={"#fff"} size={"large"} />}
+    </View>
+  );
+
+
   return (
     <LinearGradient
       colors={["#463C9F", "#3A346E", "#23234B", "#2B293E", "#272631"]}
@@ -206,17 +225,28 @@ const Expenses: FC<ExpensesProps> = ({}) => {
                 {/* Monthly Budget Card */}
                 <View style={styles.card}>
                   <Text style={styles.cardLabel}>Monthly budget</Text>
-                  <Text style={styles.cardAmount}>
-                    ₹.{userExpensesData.totalBudget}
-                  </Text>
+                  {showContent ? (
+
+                    <Text style={styles.cardAmount}>
+                      {USERARRAY?.selectedCurrency}.{userExpensesData.totalBudget}
+                    </Text>
+                  ) : (
+                    <ActivityIndicator color={"#fff"} size={"small"} />
+                  )}
                 </View>
 
                 {/* Total Spent Card */}
                 <View style={styles.card}>
                   <Text style={styles.cardLabel}>Total spent</Text>
-                  <Text style={styles.cardAmount}>
-                    ₹.{userExpensesData.totalSpent}
-                  </Text>
+
+                  {showContent ? (
+                    <Text style={styles.cardAmount}>
+                      {USERARRAY?.selectedCurrency}.{userExpensesData.totalSpent}
+                    </Text>
+                  ) : (
+                    <ActivityIndicator color={"#fff"} size={"small"} />
+                  )}
+
                 </View>
               </View>
 
@@ -233,48 +263,52 @@ const Expenses: FC<ExpensesProps> = ({}) => {
                 />
 
                 <View style={styles.chartContainer}>
-                  {selectedTab === 0 ? (
-                    // Expenses View
-                    <View style={styles.chartCard}>
-                      <View style={styles.chart}>
-                        <PieChartComponent
-                          containerStyle={{ width: "50%", marginLeft: wp(10) }}
-                          data={pieChartData}
-                          radius={wp(20)}
-                        />
-                        <Legend
-                          containerStyle={{
-                            gap: hp(2),
-                            alignItems: "flex-start",
-                          }}
-                          data={pieChartData}
-                          layout={"column"}
-                          gap={hp(0.5)}
+                  {showContent ? (
+                    selectedTab === 0 ? (
+                      // Expenses View
+                      <View style={styles.chartCard}>
+                        <View style={styles.chart}>
+                          <PieChartComponent
+                            containerStyle={{ width: "50%", marginLeft: wp(10) }}
+                            data={pieChartData}
+                            radius={wp(20)}
+                          />
+                          <Legend
+                            containerStyle={{
+                              gap: hp(2),
+                              alignItems: "flex-start",
+                            }}
+                            data={pieChartData}
+                            layout={"column"}
+                            gap={hp(0.5)}
+                          />
+                        </View>
+                        <View style={styles.balanceContainer}>
+                          <Text style={styles.balanceText}>
+                            Balance: ₹{getRecentRemaining}
+                          </Text>
+                        </View>
+                      </View>
+                    ) : (
+                      // Categories View
+                      <View>
+                        <DonutChart
+                          data={categoriesData}
+                          donutStrokeWidth={20}
+                          radius={80}
+                          arcCornerRadius={0}
+                          labelOffset={18}
+                          canvasHeight={10}
+                          canvasWidth={300}
+                          fontFamily="PlusJakartaSans-Bold"
+                          labelFontSize={wp(2.3)}
+                          lineStroke={wp(0.5)}
                         />
                       </View>
-                      <View style={styles.balanceContainer}>
-                        <Text style={styles.balanceText}>
-                          Balance: ₹{getRecentRemaining}
-                        </Text>
-                      </View>
-                    </View>
-                  ) : (
-                    // Categories View
-                    <View>
-                      <DonutChart
-                        data={categoriesData}
-                        donutStrokeWidth={20}
-                        radius={80}
-                        arcCornerRadius={0}
-                        labelOffset={18}
-                        canvasHeight={10}
-                        canvasWidth={300}
-                        fontFamily="PlusJakartaSans-Bold"
-                        labelFontSize={wp(2.3)}
-                        lineStroke={wp(0.5)}
-                      />
-                    </View>
-                  )}
+                    )
+                  )
+                    : <Nodata />
+                  }
                 </View>
               </View>
 
@@ -293,24 +327,18 @@ const Expenses: FC<ExpensesProps> = ({}) => {
                   </Button>
                 </View>
                 <View style={styles.financialOverview}>
-                  <View style={styles.financialItem}>
-                    <Text style={styles.financialLabel}>Budget</Text>
-                    <Text style={styles.financialAmount}>
-                      ₹{userExpensesData.totalBudget}
-                    </Text>
-                  </View>
-                  <View style={styles.financialItem}>
-                    <Text style={styles.financialLabel}>Exp.</Text>
-                    <Text style={styles.financialAmount}>
-                      ₹{userExpensesData.totalSpent}
-                    </Text>
-                  </View>
-                  <View style={styles.financialItem}>
-                    <Text style={styles.financialLabel}>Remaining</Text>
-                    <Text style={styles.financialAmount}>
-                      ₹{getRecentRemaining}
-                    </Text>
-                  </View>
+                  {[
+                    { label: "Budget", value: userExpensesData.totalBudget },
+                    { label: "Exp.", value: userExpensesData.totalSpent },
+                    { label: "Remaining", value: getRecentRemaining },
+                  ].map((item, index) => (
+                    <FinancialItem
+                      key={index}
+                      label={item.label}
+                      value={item.value}
+                      currency={USERARRAY?.selectedCurrency || ""}
+                    />
+                  ))}
                 </View>
               </View>
 
@@ -323,11 +351,11 @@ const Expenses: FC<ExpensesProps> = ({}) => {
               <View style={styles.spendingTrendContainer}>
                 <Text style={styles.sectionTitle}>Spending trend</Text>
                 <View style={styles.graphContainer}>
-                  <GraphComponent
+                  {/* <GraphComponent
                     width={wp(80)}
                     rawData={graphData}
                     labels={graphLabels}
-                  />
+                  /> */}
                 </View>
               </View>
 
@@ -346,11 +374,7 @@ const Expenses: FC<ExpensesProps> = ({}) => {
             </>
           ) : (
             <View style={styles.noDataContainer}>
-              <Image
-                source={require("../assets/images/Expenses/NoData.png")}
-                style={styles.noImage}
-              />
-              <Text style={styles.noDataText}>No data available</Text>
+              <Nodata />
             </View>
           )}
         </View>
@@ -593,20 +617,11 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   noDataContainer: {
-    flex: 1,
+    height: hp(65),
     alignItems: "center",
+    justifyContent: "center",
   },
-  noImage: {
-    height: hp(15),
-    width: wp(30),
-    resizeMode: "contain",
-    marginTop: hp(3),
-  },
-  noDataText: {
-    fontFamily: "PlusJakartaSans-Bold",
-    color: "#fff",
-    fontSize: wp(5),
-  },
+
 });
 
 export default Expenses;

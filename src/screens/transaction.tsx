@@ -71,6 +71,7 @@ const Transaction: FC<TransactionScreenProps> = ({ route }) => {
   const [amount, setAmount] = useState("");
   const [kbEnabled, setKbEnabled] = useState(false);
   const [note, setNote] = useState("");
+  const userDetails = useSelector((state: RootState) => state.user.items[0]);
 
   // Fetch transaction data when component mounts
   useEffect(() => {
@@ -238,7 +239,7 @@ const Transaction: FC<TransactionScreenProps> = ({ route }) => {
               <View style={styles.transactionInfoContainer}>
                 <TextCard2
                   text1={"Transaction Balance"}
-                  text2={"₹"}
+                  text2={userDetails?.selectedCurrency}
                   text3={transactionData.paymentAmount?.toString() || "0"}
                   text1style={styles.labelText}
                   text2style={styles.rupeeSymbol}

@@ -17,11 +17,7 @@ const Strategycard: FC<strategyProps> = ({ title, subtitle, onPress }) => {
 
     useEffect(() => {
         if (title) {
-            const timer = setTimeout(() => {
-                setShowContent(true);
-            }, 1200);
-
-            return () => clearTimeout(timer);
+            setShowContent(true);
         }
     }, [title]);
 

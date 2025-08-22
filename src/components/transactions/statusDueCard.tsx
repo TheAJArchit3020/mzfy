@@ -8,6 +8,8 @@ import {
   widthToDP as wp,
   heightToDP as hp,
 } from "react-native-responsive-screens";
+import { useSelector } from "react-redux";
+import { RootState } from "@redux/store";
 
 interface StatusDueCardProps {
   status: paymentStatus;
@@ -22,6 +24,8 @@ const StatusDueCard: FC<StatusDueCardProps> = ({
   amount,
   onPress,
 }) => {
+
+  const userDetails = useSelector((state: RootState) => state.user.items[0]);
   // Define colors based on status
   const getColors = () => {
     switch (status) {
@@ -78,7 +82,7 @@ const StatusDueCard: FC<StatusDueCardProps> = ({
             </Text>
           </View>
           <View style={styles.amountSection}>
-            <Text style={styles.amountText}>₹{amount.toLocaleString()}</Text>
+            <Text style={styles.amountText}>{userDetails?.selectedCurrency} {amount.toLocaleString()}</Text>
           </View>
         </View>
         <View style={styles.rightSection}>

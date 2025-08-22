@@ -17,11 +17,7 @@ const Debtcountdown: React.FC<DebtcountdownProps> = ({ data }) => {
 
   useEffect(() => {
     if (data) {
-      const timer = setTimeout(() => {
-        setShowContent(true);
-      }, 1200);
-
-      return () => clearTimeout(timer); // cleanup
+      setShowContent(true);
     }
   }, [data]);
 

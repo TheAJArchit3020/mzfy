@@ -20,11 +20,7 @@ const TextCard2 = ({ children, style, cardStyle, text1, text2, text3, text1style
 
     useEffect(() => {
         if (text1) {
-            const timer = setTimeout(() => {
-                setShowContent(true);
-            }, 1200);
-
-            return () => clearTimeout(timer); // cleanup
+            setShowContent(true);
         }
     }, [text1]);
 

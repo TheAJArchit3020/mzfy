@@ -36,9 +36,6 @@ const Particulardebtdetail: FC = () => {
     const { id, name } = route.params
 
 
-
-
-
     const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
 
 
@@ -87,11 +84,7 @@ const Particulardebtdetail: FC = () => {
 
     useEffect(() => {
         if (DEBTDATA) {
-            const timer = setTimeout(() => {
-                setShowContent(true);
-            }, 1200);
-
-            return () => clearTimeout(timer); // cleanup
+            setShowContent(true);
         }
     }, [DEBTDATA]);
 

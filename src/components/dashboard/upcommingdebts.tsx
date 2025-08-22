@@ -39,7 +39,6 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
   onArrowPress,
 }) => {
 
-  console.log("data : ", data)
 
   const userDetails = useSelector((state: RootState) => state.user?.items[0]);
 
@@ -51,11 +50,7 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
 
   useEffect(() => {
     if (data) {
-      const timer = setTimeout(() => {
-        setShowContent(true);
-      }, 1200);
-
-      return () => clearTimeout(timer); // cleanup
+      setShowContent(true);
     }
   }, [data]);
 
@@ -86,7 +81,6 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
 
   const scrollViewRef = useRef<ScrollView>(null);
 
-  console.log("data : ", data)
 
   return (
     <Card style={[styles.card, style]} cardStyle={[styles.innerCard, cardStyle]}>

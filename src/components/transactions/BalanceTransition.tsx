@@ -1,9 +1,11 @@
+import { RootState } from "@redux/store";
 import React, { FC } from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import {
   widthToDP as wp,
   heightToDP as hp,
 } from "react-native-responsive-screens";
+import { useSelector } from "react-redux";
 
 interface BalanceTransitionProps {
   openingBalance: number;
@@ -14,14 +16,17 @@ const BalanceTransition: FC<BalanceTransitionProps> = ({
   openingBalance,
   closingBalance,
 }) => {
-  console.log("Opening Balance:", openingBalance)
-    console.log("Closing Balance:", closingBalance);
+
+  const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
+
+
+
   return (
     <View style={styles.container}>
       <View style={styles.balanceRow}>
         <View style={styles.balanceSection}>
           <Text style={styles.label}>Opening Balance</Text>
-          <Text style={styles.amount}>₹{openingBalance?.toString()}</Text>
+          <Text style={styles.amount}>{selectedCurrency} {openingBalance?.toString()}</Text>
         </View>
 
         <View style={styles.arrowContainer}>
@@ -34,7 +39,7 @@ const BalanceTransition: FC<BalanceTransitionProps> = ({
 
         <View style={styles.balanceSection}>
           <Text style={styles.label}>Closing Balance</Text>
-          <Text style={styles.amount}>₹{closingBalance?.toString()}</Text>
+          <Text style={styles.amount}>{selectedCurrency} {closingBalance?.toString()}</Text>
         </View>
       </View>
     </View>

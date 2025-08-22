@@ -1,7 +1,6 @@
 import React, { FC } from "react";
 import { View, Text } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
-import AddDebts from "./RegistartionScreens/addDebt";
 import IncomeDetails from "./RegistartionScreens/income";
 const Test: FC = () => {
   return (

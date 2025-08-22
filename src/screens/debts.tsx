@@ -90,7 +90,7 @@ const DebtsScreen: FC = () => {
   const visibleList =
     selectedButton === 0 ? filteredInProgress : filteredCompleted;
 
-  
+
   // 4️⃣ build the two button labels
   const buttonLabels = [
     `In Progress (${inProgressList.length})`,
@@ -101,11 +101,7 @@ const DebtsScreen: FC = () => {
 
   useEffect(() => {
     if (visibleList) {
-      const timer = setTimeout(() => {
-        setShowContent(true);
-      }, 1200);
-
-      return () => clearTimeout(timer); // cleanup
+      setShowContent(true);
     }
   }, [visibleList]);
 
