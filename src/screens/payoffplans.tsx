@@ -15,11 +15,16 @@ import { AppDispatch, RootState } from '@redux/store';
 import { fetchPayoffPlan } from '@redux/payoffplans/payoffplanSlice';
 import { addStrategy, fetchAllCustomStrategy, fetchStrategy } from '@redux/strategies/strategySlice';
 import { formatDuration } from '@components/reusable/formatdate';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParams } from '@managers/routing';
+import Nodata from '@components/reusable/nodata';
 
+type navprops = NativeStackNavigationProp<RootStackParams>;
 
 const PayoffplansScreen: FC = () => {
 
   const dispatch = useDispatch<AppDispatch>();
+  const navigation = useNavigation<navprops>();
   const [show, setShow] = useState(false);
   const [choice, setChoice] = useState<string | null>(null);
   const strategypopupHandler = () => setShow(true);
@@ -119,6 +124,10 @@ const PayoffplansScreen: FC = () => {
     },
   ];
 
+  const handleSeprateTrasactionNavigation = (id: string) => {
+    navigation.navigate("Transaction", { id: id });
+  };
+
 
 
 
@@ -131,7 +140,11 @@ const PayoffplansScreen: FC = () => {
         <View style={styles.container}>
 
           {/* section1 */}
-          <Strategycard title={`Debt ${filteredCustomPlans?.length > 0 ? filteredCustomPlans[0]?.name : payoffplanArray?.strategy}`} subtitle={`Debt ${filteredCustomPlans?.length > 0 ? filteredCustomPlans[0]?.name : payoffplanArray?.strategy}`} onPress={strategypopupHandler} />
+          <Strategycard
+            title={`Debt ${filteredCustomPlans?.length > 0 ? filteredCustomPlans[0]?.name : payoffplanArray?.strategy}`}
+            subtitle={`Debt ${filteredCustomPlans?.length > 0 ? filteredCustomPlans[0]?.name : payoffplanArray?.strategy}`}
+            onPress={strategypopupHandler}
+          />
 
           {/* section2 */}
           <View style={styles.cardcontainer}>
@@ -149,7 +162,12 @@ const PayoffplansScreen: FC = () => {
           {/* section3 */}
           <View style={styles.cardcontainer2}>
             <Text style={styles.cardcontainer2_title}>Step wise Plan</Text>
-            <UpcomingDebtsWithScrollbar data={payoffplanArray?.stepWisePlan} style={styles.payoffcard} showicon={false} />
+            <UpcomingDebtsWithScrollbar
+              data={payoffplanArray?.stepWisePlan}
+              style={styles.payoffcard}
+              showicon={false}
+              onArrowPress={handleSeprateTrasactionNavigation}
+            />
           </View>
           {/* section4 */}
           <View style={styles.cardcontainer3}>
@@ -159,8 +177,7 @@ const PayoffplansScreen: FC = () => {
 
                 <Payoffcard data={payoffplanArray?.debtOrder} source={require('@images/payoffplan/rightarrowwhite.png')} />
               ) : (
-
-                <Text style={{ color: '#fff', textAlign: 'center' }}>No order wise debt</Text>
+                <Nodata />
               )
               }
             </View>

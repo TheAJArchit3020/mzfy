@@ -17,13 +17,9 @@ import { formatDDMMMyyyy } from '@components/reusable/formatdate'
 import { heightToDP, widthToDP } from 'react-native-responsive-screens'
 import { useSelector } from "react-redux";
 import { RootState } from "@redux/store";
+import Nodata from "@components/reusable/nodata";
 
-// export interface DebtItem {
-//     name: string
-//     amount: number
-//     date: string
 
-// }
 
 interface UpcomingDebtsWithScrollbarProps {
   data: any;
@@ -42,6 +38,8 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
   showicon = true,
   onArrowPress,
 }) => {
+
+  console.log("data : ", data)
 
   const userDetails = useSelector((state: RootState) => state.user?.items[0]);
 
@@ -88,6 +86,8 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
 
   const scrollViewRef = useRef<ScrollView>(null);
 
+  console.log("data : ", data)
+
   return (
     <Card style={[styles.card, style]} cardStyle={[styles.innerCard, cardStyle]}>
 
@@ -103,51 +103,60 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
             nestedScrollEnabled={true}
             ref={scrollViewRef}
           >
-            {data?.map((item: any, idx: any) => {
+            {data?.length > 0 ?
+              data?.map((item: any, idx: any) => {
 
-              const isLast = idx === data.length - 1
-              return (
-                <View key={idx}>
-                  {sort ?
-                    (<View
-                      style={[
-                        styles.row,
-                        isLast && styles.noBorder,
-                      ]}
-                    >
-                      <Text style={[styles.text, { textAlign: "left" }]}>{formatDDMMMyyyy(item?.dueDate)}</Text>
+                const isLast = idx === data.length - 1
 
-                      <Text style={styles.text}>
-                        {userDetails?.selectedCurrency} {item.amount.toFixed(0)} /-
-                      </Text>
-                      <Text style={[styles.text, { textAlign: item.debtName ? "right" : "right", paddingRight: item.debtName ? "5%" : "auto" }]}>
-                        {item.name ?? item.debtName}</Text>
+                return (
+                  <View key={idx}>
+                    {sort ?
+                      (
+                        <View
+                          style={[
+                            styles.row,
+                            isLast && styles.noBorder,
+                          ]}
+                        >
+                          <Text style={[styles.text, { textAlign: "left" }]}>{formatDDMMMyyyy(item?.dueDate)}</Text>
 
-                      {showicon && <TouchableOpacity>
-                        <Image source={require('@images/dashboard/rightarrow.png')} style={styles.image} />
-                      </TouchableOpacity>}
-                    </View>)
-                    : (<View
-                      style={[
-                        styles.row,
-                        isLast && styles.noBorder,
-                      ]}
-                    >
-                      <Text style={styles.text}>{formatDDMMMyyyy(item?.dueDate)}</Text>
-                      <Text style={styles.text}></Text>
-                      <Text style={[styles.text]}>
-                        {userDetails?.selectedCurrency} {item.amount} /-
-                      </Text>
-                      {showicon && <TouchableOpacity>
-                        <Image source={require('@images/dashboard/rightarrow.png')} style={styles.image} />
-                      </TouchableOpacity>}
-                    </View>)}
-                </View>
-              )
-            })}
+                          <Text style={styles.text}>
+                            {userDetails?.selectedCurrency} {item.amount.toFixed(0)} /-
+                          </Text>
+                          <Text style={[styles.text, { textAlign: item.debtName ? "right" : "right", paddingRight: item.debtName ? "5%" : "auto" }]}>
+                            {item.name ?? item.debtName}</Text>
+
+                          {showicon &&
+                            <TouchableOpacity onPress={() => onArrowPress(item.debtTransaction)} >
+                              <Image source={require('@images/dashboard/rightarrow.png')} style={styles.image} />
+                            </TouchableOpacity>}
+                        </View>
+                      ) : (
+                        <View
+                          style={[
+                            styles.row,
+                            isLast && styles.noBorder,
+                          ]}
+                        >
+                          <Text style={styles.text}>{formatDDMMMyyyy(item?.dueDate)}</Text>
+                          <Text style={styles.text}></Text>
+                          <Text style={[styles.text]}>
+                            {userDetails?.selectedCurrency} {item.amount} /-
+                          </Text>
+                          {showicon &&
+                            <TouchableOpacity onPress={() => onArrowPress(item.debtTransaction ?? item?.id)}>
+                              <Image source={require('@images/dashboard/rightarrow.png')} style={styles.image} />
+                            </TouchableOpacity>
+                          }
+                        </View>
+                      )}
+                  </View>
+                )
+              })
+              : <Nodata />
+            }
           </ScrollView>
 
-          {/* Custom scrollbar */}
           {contentHeight > containerHeight && (
             <View
               style={[

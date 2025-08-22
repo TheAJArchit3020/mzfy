@@ -25,8 +25,6 @@ import { widthToDP } from "react-native-responsive-screens";
 import Debtprogress from "@components/dashboard/debtprogress";
 import { DebtCountDownType } from "src/commonTypes";
 import { DebtChartDataItem, DonutDataItem } from "src/commonTypes";
-
-import { logPayment } from "@redux/Transacttion/Transaction";
 import Aimodal from "@components/chatai/aimodal";
 import { logTransaction } from "@redux/debts/debtsSlice";
 
@@ -38,11 +36,11 @@ const DashboardScreen: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<navprops>();
   const [show, setShow] = useState(false);
+  const [logAmount, setLogAmount] = useState('')
+  const [selectedDueTransaction, setSelectedDueTransaction] = useState('');
 
 
-  const userData = useSelector((state: RootState) => state.user);
-  const [logPaymentAmount, setLogPaymentAmount] = useState<String>("0");
-  const [selectedTrasactionId, setSelectedTransactionId] = useState<string>("");
+
 
   const [debtFreeDate, setDebtFreeDate] = useState<DebtCountDownType>({
     year: 0,
@@ -62,19 +60,15 @@ const DashboardScreen: FC = () => {
   const userDetails = useSelector((state: RootState) => state.user.items[0]);
 
 
-  console.log("dashboardData : ", dashboardData)
 
 
 
   useEffect(() => {
     adjustedDate();
     transformDebtData(dashboardData?.data?.balanceByDebt || []);
-    console.log("dashboardData", dashboardData);
   }, [dashboardData]);
 
-  const logpopupHandler = (id: string) => {
-    console.log("id", id);
-    setSelectedTransactionId(id);
+  const logpopupHandler = () => {
     setShow(true);
   };
 
@@ -135,46 +129,23 @@ const DashboardScreen: FC = () => {
     setDonutData(formatted);
   };
 
+
   const handleSeprateTrasactionNavigation = (id: string) => {
-    // navigation.navigate("Transaction", { id: id });
+    navigation.navigate("Transaction", { id: id });
   };
 
-  const handleConfirm = async () => {
-    console.log(
-      "Confirmed amount:",
-      selectedTrasactionId,
-      " ",
-      " amount",
-      logPaymentAmount
-    );
-    try {
-      const response = await dispatch(
-        logPayment({
-          transactionId: selectedTrasactionId,
-          amount: Number(logPaymentAmount),
-        })
-      ).unwrap();
-
-      if (response) {
-        setShow(false);
-        setLogPaymentAmount("0");
-        fetchDashboardSummary();
-      }
-    } catch (error) {
-      console.error("Failed to log payment:", error);
-    }
-  };
 
   const LogTransactionHandler = async () => {
 
-    // await dispatch(logTransaction({ selectedDueTransaction, logAmount })).then((payload) => {
-    //   console.log("Transaction logged successfully:", payload);
-    //   if (payload.meta.requestStatus === 'fulfilled') {
-    //     setShow(false);
-    //   }
-    // }).catch((err) => {
-    //   console.error("Error logging transaction:", err);
-    // });
+    await dispatch(logTransaction({ selectedDueTransaction, logAmount })).then(async (payload) => {
+      console.log("Transaction logged successfully:", payload);
+      if (payload.meta.requestStatus === 'fulfilled') {
+        setShow(false);
+        await dispatch(fetchDashboardSummary())
+      }
+    }).catch((err) => {
+      console.error("Error logging transaction:", err);
+    });
   }
 
 
@@ -218,7 +189,6 @@ const DashboardScreen: FC = () => {
 
         <View style={styles.section3}>
           {<Debtprogress percent={dashboardData.data?.payoffPct || 0} />}
-          {<Debtprogress percent={dashboardData.data?.payoffPct || 0} />}
         </View>
 
         <View style={styles.section4}>
@@ -228,13 +198,9 @@ const DashboardScreen: FC = () => {
         </View>
         <View style={styles.section7}>
           <Nextduedate
-            data={
-              dashboardData.data?.upcomingTransactions.slice(
-                0,
-                dashboardData.data?.balanceByDebt.length
-              ) || []
-            }
-          // logpopupHandler={(id: any) => logpopupHandler(id)}
+            data={dashboardData?.data?.upcomingTransactions}
+            logpopupHandler={logpopupHandler}
+            setSelectedDueTransaction={setSelectedDueTransaction}
           />
         </View>
         <View style={styles.section5}>
@@ -254,17 +220,13 @@ const DashboardScreen: FC = () => {
         visible={show}
         title="Paid amount"
         onClose={LogTransactionHandler}
-        onClose2={() => {
-          setShow(false);
-          setLogPaymentAmount("0");
-        }}
-        onConfirm={handleConfirm}
+        onClose2={() => setShow(false)}
         titleStyle={styles.popuptitle}
         containerStyle={styles.popupContainerStyle}
       >
         <Input
-          // value={logAmount}
-          // onChangeContent={(val) => setLogAmount(val)}
+          value={logAmount}
+          onChangeContent={(val) => setLogAmount(val)}
           keyboardType="numeric"
           textHeader={userDetails?.selectedCurrency}
           children={

@@ -1,5 +1,5 @@
-import { Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { FC, useCallback, useState } from 'react'
+import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import React, { FC, useCallback, useEffect, useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import Header from '@components/reusable/header'
 import SegmentButton from '@components/reusable/segmentbutton'
@@ -10,21 +10,23 @@ import ProgressBar from '@components/reusable/progressbar'
 import GraphComponent from '@components/reusable/graph'
 import Card from '@components/reusable/card'
 import Input from '@components/reusable/Input'
-import { widthToDP } from 'react-native-responsive-screens'
+import { heightToDP, widthToDP } from 'react-native-responsive-screens'
 import { RouteProp, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
 import { RootStackParams } from '@managers/routing'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@redux/store'
 import { fetchDebtsById, logTransaction } from '@redux/debts/debtsSlice'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 
 type routeProps = RouteProp<RootStackParams, 'particulardebtdetailscreen'>
+type navprops = NativeStackNavigationProp<RootStackParams>;
 
 const Particulardebtdetail: FC = () => {
 
 
     const route = useRoute<routeProps>();
     const dispatch = useDispatch<AppDispatch>();
-    const navigation = useNavigation();
+    const navigation = useNavigation<navprops>();
 
     const [selectedButton, setSelectedButton] = useState(0);
     const [show, setShow] = useState(false);
@@ -32,6 +34,10 @@ const Particulardebtdetail: FC = () => {
     const [logAmount, setLogAmount] = useState('');
 
     const { id, name } = route.params
+
+
+
+
 
     const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
 
@@ -59,7 +65,6 @@ const Particulardebtdetail: FC = () => {
     const DEBTDATA = (useSelector((state: RootState) => state.debts.items[0]?.payload)) ?? {};
 
 
-    console.log("DEBTDATA : ", DEBTDATA)
 
     const LogTransactionHandler = async () => {
 
@@ -73,6 +78,24 @@ const Particulardebtdetail: FC = () => {
             console.error("Error logging transaction:", err);
         });
     }
+
+    const handleSeprateTrasactionNavigation = (id: string) => {
+        navigation.navigate("Transaction", { id: id });
+    };
+
+    const [showContent, setShowContent] = useState(false);
+
+    useEffect(() => {
+        if (DEBTDATA) {
+            const timer = setTimeout(() => {
+                setShowContent(true);
+            }, 1200);
+
+            return () => clearTimeout(timer); // cleanup
+        }
+    }, [DEBTDATA]);
+
+
 
 
 
@@ -95,12 +118,26 @@ const Particulardebtdetail: FC = () => {
                         <Card cardStyle={styles.cardcontainer} >
                             <View style={styles.balancegrp1} >
                                 <Text style={styles.text1}>Curent balance</Text>
-                                <Text style={styles.text2}>{selectedCurrency ?? ''} {DEBTDATA.currentBalance}</Text>
+                                {
+                                    showContent ? (
+                                        <Text style={styles.text2}>{selectedCurrency ?? ''} {DEBTDATA.currentBalance}</Text>
+                                    ) : (
+                                        <ActivityIndicator color={"#fff"} size={"small"} />
+                                    )
+                                }
                             </View>
-                            <View style={styles.balancegrp} >
-                                <Image source={require('@images/dashboard/rightarrow.png')} style={styles.arrowimage} />
-                                <Text style={styles.balancetext} >-{DEBTDATA.payoffProgress}%</Text>
-                            </View>
+                            {showContent ? (
+                                <>
+                                    <View style={styles.balancegrp} >
+                                        <Image source={require('@images/dashboard/rightarrow.png')} style={styles.arrowimage} />
+                                        <Text style={styles.balancetext} >-{DEBTDATA.payoffProgress}%</Text>
+                                    </View>
+                                </>
+                            ) : (
+                                <ActivityIndicator color={"#fff"} size={"small"} />
+                            )
+
+                            }
                         </Card>
 
                     </View>
@@ -117,7 +154,11 @@ const Particulardebtdetail: FC = () => {
                                 containerStyle={styles.toggleButtonContainer}
                                 textStyle={styles.segmentText} />
 
-                            <UpcomingDebtsWithScrollbar data={selectedButton === 0 ? DEBTDATA.upcomingTransactions : DEBTDATA.paidTransactions} style={styles.cardstyle} cardStyle={styles.cardstyle2} sort={false} />
+                            <UpcomingDebtsWithScrollbar
+                                data={selectedButton === 0 ? DEBTDATA.upcomingTransactions : DEBTDATA.paidTransactions} style={styles.cardstyle}
+                                cardStyle={styles.cardstyle2}
+                                sort={false}
+                                onArrowPress={handleSeprateTrasactionNavigation} />
                         </View>
                     </View>
 

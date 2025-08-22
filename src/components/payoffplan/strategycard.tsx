@@ -1,7 +1,8 @@
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { FC, useEffect, useState } from 'react'
 import Card from '@components/reusable/card'
 import LinearGradient from 'react-native-linear-gradient'
+import { heightToDP } from 'react-native-responsive-screens'
 
 
 interface strategyProps {
@@ -20,7 +21,7 @@ const Strategycard: FC<strategyProps> = ({ title, subtitle, onPress }) => {
                 setShowContent(true);
             }, 1200);
 
-            return () => clearTimeout(timer); 
+            return () => clearTimeout(timer);
         }
     }, [title]);
 
@@ -39,8 +40,15 @@ const Strategycard: FC<strategyProps> = ({ title, subtitle, onPress }) => {
                 <View style={styles.section_card_inner_content}>
                     <View style={styles.section_card_inner_content_item}>
                         <Text style={styles.section_card_text1}>Current Strategy</Text>
-                        <Text style={styles.section_card_text2}>{title}</Text>
-                        <Text style={styles.section_card_text3}>{subtitle}</Text>
+
+                        {showContent ? (
+                            <>
+                                <Text style={styles.section_card_text2}>{title}</Text>
+                                <Text style={styles.section_card_text3}>{subtitle}</Text>
+                            </>
+                        ) : (
+                            <ActivityIndicator color={"#fff"} size={"large"} style={{ marginTop: heightToDP(2) }} />
+                        )}
                     </View>
                 </View>
             </LinearGradient>

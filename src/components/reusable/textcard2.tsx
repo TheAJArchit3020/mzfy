@@ -1,6 +1,6 @@
-import { Platform, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
-import React from 'react'
-import { widthToDP as wp } from 'react-native-responsive-screens';
+import { ActivityIndicator, Platform, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { heightToDP, widthToDP as wp } from 'react-native-responsive-screens';
 
 type CardProps = {
     children?: React.ReactNode;
@@ -15,12 +15,31 @@ type CardProps = {
 };
 
 const TextCard2 = ({ children, style, cardStyle, text1, text2, text3, text1style, text2style, text3style }: CardProps) => {
+
+    const [showContent, setShowContent] = useState(false);
+
+    useEffect(() => {
+        if (text1) {
+            const timer = setTimeout(() => {
+                setShowContent(true);
+            }, 1200);
+
+            return () => clearTimeout(timer); // cleanup
+        }
+    }, [text1]);
+
     return (
         <View style={[styles.shadowContainer, style]}>
             <View style={[styles.card, cardStyle]}>
                 <Text style={text1style}>{text1}</Text>
-                <Text style={text2style}>{text2} <Text style={text3style}>{text3}</Text></Text>
-                {children}
+                {showContent ? (
+                    <>
+                        <Text style={text2style}>{text2} <Text style={text3style}>{text3}</Text></Text>
+                        {children}
+                    </>
+                ) : (
+                    <ActivityIndicator color={"#fff"} size={"large"} style={{ marginTop: heightToDP(2) }} />
+                )}
             </View>
         </View>
     )

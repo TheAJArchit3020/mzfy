@@ -17,6 +17,7 @@ import { RootState, AppDispatch } from '@redux/store'
 import { checkUser } from '@redux/login/loginSlice'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { fetchUser, setField } from '@redux/user/userSlice'
+import { widthToDP } from 'react-native-responsive-screens'
 
 type navProps = NativeStackNavigationProp<RootStackParams>
 
@@ -69,7 +70,7 @@ const Login: FC = () => {
             console.log("first resultAction : ", resultAction.payload)
             const payloadData = resultAction?.payload as { detailsExists?: boolean; token?: string; userId?: string };
             const { detailsExists, token, userId } = payloadData;
-            
+
 
             if (detailsExists) {
                 await dispatch(fetchUser()).unwrap()
@@ -135,8 +136,7 @@ const Login: FC = () => {
             <View style={styles.container}>
                 <View style={styles.section1} >
                     <View style={styles.imagecontainer}>
-                        {/* <Image source={require('@images/dashboard/fireprogress.png')} style={styles.logoimage} /> */}
-
+                        <Image source={require('@images/AppIntro/moneezifylogo.png')} style={styles.logoimage} />
                     </View>
                     <Text style={styles.section1_text}>Moneezify</Text>
                 </View>
@@ -184,15 +184,15 @@ const styles = StyleSheet.create({
         gap: 8,
     },
     imagecontainer: {
-        backgroundColor: "#D9D9D9",
+        backgroundColor: "#ffffffff",
         borderRadius: 100,
-        padding: 1,
-        width: 25,
-        height: 25,
+        padding: 2,
+        justifyContent: "center",
+        alignItems: "center"
     },
     logoimage: {
-        width: 30,
-        height: 30,
+        width: widthToDP(10),
+        height: widthToDP(10),
         resizeMode: "contain"
     },
     section1_text: {

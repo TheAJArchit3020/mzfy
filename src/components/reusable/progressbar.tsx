@@ -133,16 +133,15 @@ const styles = StyleSheet.create({
     tooltipContainer: {
         position: 'absolute',
         left: 0,
-        // we set top via inline style so it floats above the bar
         alignItems: 'center',
     },
     tooltip: {
-        width: '100%',
+        width: 'auto',
         height: 'auto',
         borderRadius: 100,
         justifyContent: 'center',
         alignItems: 'center',
-        // paddingHorizontal: 6,
+        paddingHorizontal: 12,
         padding: 6
     },
     tooltipText: {
@@ -158,7 +157,6 @@ const styles = StyleSheet.create({
         borderTopWidth: 6,
         borderLeftColor: 'transparent',
         borderRightColor: 'transparent',
-        // borderTopColor is set inline to match the fillColor
         marginTop: -1,
     },
 })
