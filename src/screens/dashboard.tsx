@@ -59,7 +59,7 @@ const DashboardScreen: FC = () => {
   const dashboardData = useSelector((state: RootState) => state.dashBoard);
   const userDetails = useSelector((state: RootState) => state.user.items[0]);
 
-
+  console.log("dashboardData : ",dashboardData)
 
 
 
@@ -192,7 +192,7 @@ const DashboardScreen: FC = () => {
         </View>
 
         <View style={styles.section4}>
-          <Debtbalance data={donutData} />
+          <Debtbalance data={donutData} balance={dashboardData}  />
 
           <Debtpaid data={dashboardData.data || 0} />
         </View>

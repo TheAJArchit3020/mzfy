@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
-import Debtbalance from "@components/dashboard/debtbalance";
+
 import Debtpaid from "@components/dashboard/debtpaid";
 import {
   widthToDP as wp,
@@ -25,6 +25,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@redux/store";
 import { fetchAllDebts } from "@redux/debts/debtsSlice";
 import Aimodal from "@components/chatai/aimodal";
+import Debtbalance from "@components/debt/debtbalance";
+import { DebtChartDataItem, DonutDataItem } from "src/commonTypes";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParams>;
 
@@ -37,13 +39,21 @@ const DebtsScreen: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [searchKeyword, setSeacthKeyword] = useState("");
   const [selectedButton, setSelectedButton] = useState(0);
+  const [donutData, setDonutData] = useState<DonutDataItem[]>([]);
+
+  const dashboardData = useSelector((state: RootState) => state.dashBoard);
 
 
   useFocusEffect(
     useCallback(() => {
       getAllDebtDetails();
+
     }, [])
   );
+
+  useEffect(() => {
+    transformDebtData(dashboardData?.data?.balanceByDebt || []);
+  }, [dashboardData]);
 
   const getAllDebtDetails = async () => {
     try {
@@ -53,6 +63,14 @@ const DebtsScreen: FC = () => {
     }
 
   }
+
+  const transformDebtData = (debts: DebtChartDataItem[]) => {
+    const formatted = debts.map((debt) => ({
+      value: parseFloat(debt.balance),
+      color: debt.color,
+    }));
+    setDonutData(formatted);
+  };
 
 
   const FETCHALLDEBTS = (useSelector((state: RootState) => state.debts.alldebts[0])) ?? {
@@ -106,10 +124,12 @@ const DebtsScreen: FC = () => {
   }, [visibleList]);
 
 
+  console.log("FETCHALLDEBTS : ", FETCHALLDEBTS)
+
   return (
     <View style={styles.container}>
       <View style={styles.debtInfoContainer}>
-        <Debtbalance data={FETCHALLDEBTS} />
+        <Debtbalance data={donutData} balance={dashboardData} />
         <Debtpaid data={FETCHALLDEBTS} />
       </View>
 

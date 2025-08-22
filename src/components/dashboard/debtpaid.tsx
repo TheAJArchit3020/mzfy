@@ -3,6 +3,7 @@ import React, { FC, useEffect, useState } from 'react'
 import Card from '@components/reusable/card'
 import { useSelector } from 'react-redux'
 import { RootState } from '@redux/store'
+import Amounttext from '@components/reusable/amounttext'
 
 interface DebtItemProps {
   data: any
@@ -16,7 +17,7 @@ const Debtpaid: FC<DebtItemProps> = ({ data }) => {
 
   useEffect(() => {
     if (data) {
-     setShowContent(true);
+      setShowContent(true);
     }
   }, [data]);
 
@@ -28,9 +29,13 @@ const Debtpaid: FC<DebtItemProps> = ({ data }) => {
           <Text style={styles.section_card_text}>Debt paid</Text>
           {showContent ? (
             <Text style={styles.section_card_text2}>{userDetails?.selectedCurrency}&nbsp;
-              <Text style={styles.section_card_span}>
+              <Amounttext
+                style={styles.section_card_span}
+                text={Number(data?.totalPaid ?? data?.totalDebtPaid ?? 0).toLocaleString('en-IN')}
+              />
+              {/* <Text style={styles.section_card_span}>
                 {Number(data?.totalPaid ?? data?.totalDebtPaid ?? 0).toLocaleString('en-IN')}
-              </Text>
+              </Text> */}
             </Text>
 
           ) : <ActivityIndicator color={"#fff"} size={"large"} />}

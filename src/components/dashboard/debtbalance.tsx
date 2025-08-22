@@ -2,26 +2,24 @@ import { Image, StyleSheet, Text, View } from 'react-native'
 import React, { FC } from 'react'
 import Card from '@components/reusable/card'
 import Circularprogressbar from '@components/reusable/circularprogressbar'
+import Dashboarddonutgraph from './dashboarddonutgraph'
+import { useSelector } from 'react-redux'
+import { RootState } from '@redux/store'
 
 
 interface DebtItemProps {
-  data: any
+  data: any,
+  balance?: any
 }
 
-const Debtbalance: FC<DebtItemProps> = ({ data }) => {
-
-
+const Debtbalance: FC<DebtItemProps> = ({ data, balance }) => {
 
   return (
     <Card style={styles.section_card} cardStyle={styles.section_card_inner}>
-      <View style={styles.section_card_inner_content}>
-        <View style={styles.section_card_inner_content_item}>
-          <Circularprogressbar size={120} strokeWidth={12} data={data} />
-          <View style={styles.section_card_inner_content_item3} >
-            <Text style={styles.section_card_text}>Balance</Text>
-            <Image style={styles.image} source={require('@images/dashboard/balanceicon.png')} />
-          </View>
-        </View>
+      <Dashboarddonutgraph data={data} balanceamount={balance?.data?.totalBalance} />
+      <View style={styles.section_card_inner_content_item3} >
+        <Text style={styles.section_card_text}>Balance</Text>
+        <Image style={styles.image} source={require('@images/dashboard/balanceicon.png')} />
       </View>
     </Card>
   )
@@ -36,6 +34,9 @@ const styles = StyleSheet.create({
     width: "48%",
     height: 168,
     borderWidth: 0.5,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center"
   },
   section_card_text: {
     color: "#fff",
@@ -81,6 +82,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: "4%",
+    justifyContent: "center"
   },
   donut_chart_container: {},
 });
