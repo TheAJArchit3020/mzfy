@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@redux/store'
 import { fetchDebtsById, logTransaction } from '@redux/debts/debtsSlice'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import LineAreaChart from '@components/debt/lineareagraph'
 
 type routeProps = RouteProp<RootStackParams, 'particulardebtdetailscreen'>
 type navprops = NativeStackNavigationProp<RootStackParams>;
@@ -89,6 +90,8 @@ const Particulardebtdetail: FC = () => {
     }, [DEBTDATA]);
 
 
+
+    console.log("DEBTDATA : ", DEBTDATA)
 
 
 
@@ -171,7 +174,7 @@ const Particulardebtdetail: FC = () => {
 
                     <View style={styles.section4}>
                         <Text style={styles.section4_title}>Your Debt-Free Timeline</Text>
-                        {/* <GraphComponent rawData={DEBTDATA.debtFreeTimeline} /> */}
+                        <LineAreaChart rawData={DEBTDATA?.debtFreeTimeline} />
                     </View>
 
                 </View>
