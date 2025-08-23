@@ -9,6 +9,7 @@ import strategyReducer from "../redux/strategies/strategySlice"
 import customPlanReducer from "./customplan/customplanSlice"
 import chatReducer from "./chat/chatSlices";
 import transactionReducer from "../redux/Transacttion/Transaction";
+import feedbackReducer from "./feedbacks/feedbackSlices"
 
 export const store = configureStore({
   reducer: {
@@ -21,7 +22,8 @@ export const store = configureStore({
     strategy: strategyReducer,
     customplan: customPlanReducer,
     transaction: transactionReducer,
-    chats: chatReducer
+    chats: chatReducer,
+    feedbacks: feedbackReducer
   },
 });
 

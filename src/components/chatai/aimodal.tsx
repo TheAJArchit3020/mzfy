@@ -13,6 +13,7 @@ interface chatProps {
     style?: StyleProp<ViewStyle>;
     imagestyle?: any;
     children?: React.ReactNode;
+    text?: any
 }
 
 
@@ -20,7 +21,8 @@ const Aimodal: FC<chatProps> = ({
     onPress,
     style,
     imagestyle,
-    children
+    children,
+    text
 }) => {
 
     const navigation = useNavigation<navProps>();
@@ -65,7 +67,7 @@ const Aimodal: FC<chatProps> = ({
     return (
         <View style={[styles.container, style]}>
             <Animated.Text style={[styles.text, { opacity: fadeAnim }]}>
-                {textArray[index]}
+                {text ?? textArray[index]}
             </Animated.Text>
             <Button onPress={navigateHandler} >
                 <Image source={require("@images/pennieai/aiimage.png")} style={[styles.image, imagestyle]} />

@@ -17,7 +17,8 @@ import ExpensesOverView from "@screens/registration/expensesOverView";
 import AllExpenses from "@screens/allExpenses";
 import LogExpense from "@screens/LogExpense";
 import CategoryManagement from "@screens/catagoryManagement";
-import Transaction from "@screens/transaction";import Pennieaichat from "@screens/pennieaichat";
+import Transaction from "@screens/transaction"; import Pennieaichat from "@screens/pennieaichat";
+import Feedback from "@screens/Feedback";
 
 
 export type RootStackParams = {
@@ -37,7 +38,8 @@ export type RootStackParams = {
   LogExpense: undefined;
   CategoryManagement: undefined;
   Transaction: { id: string };
-    pennieaichatscreen: undefined;
+  pennieaichatscreen: undefined;
+  feedbackscreen: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParams>();
@@ -46,7 +48,7 @@ const Routing: FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="splashscreen"
+        initialRouteName="feedbackscreen"
         screenOptions={{
           headerShown: false,
         }}
@@ -84,10 +86,14 @@ const Routing: FC = () => {
           component={CategoryManagement}
         />
         <Stack.Screen name="Transaction" component={Transaction} />
-                <Stack.Screen
-                    name="pennieaichatscreen"
-                    component={Pennieaichat}
-                />
+        <Stack.Screen
+          name="pennieaichatscreen"
+          component={Pennieaichat}
+        />
+        <Stack.Screen
+          name="feedbackscreen"
+          component={Feedback}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

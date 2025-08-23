@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '@redux/store'
 import { addStrategy, fetchAllCustomStrategy, fetchStrategy } from '@redux/strategies/strategySlice'
 import { formatDuration } from '@components/reusable/formatdate'
+import Aimodal from '@components/chatai/aimodal'
 
 
 interface CustomOption {
@@ -120,14 +121,15 @@ const Selectstrategy: FC = () => {
 
 
     const STRATEGIES: Strategy[] = [
-        // {
-        //     key: 'Moneezify plan',
-        //     title: 'moneezify',
-        //     advantage: 'Fastest payoff and least interest',
-        //     payoffTime: '28 Days',
-        //     interestSaved: '1500',
-        //     hasCrown: true,
-        // },
+        {
+            key: 'Hybrid',
+            title: 'Hybrid',
+            advantage: 'Hybrid Plan',
+            payoffTime: formatDuration(plan?.hybrid?.estimatedDebtFreeDate),
+            interestSaved: `${currentCurrency ? currentCurrency : selectedCurrency} ${plan?.hybrid?.totalInterestPaid?.toLocaleString()}`,
+            subtitle: '(Hybrid Plan)'
+
+        },
         {
             key: 'Debt Avalanche',
             title: 'avalanche',
@@ -143,15 +145,6 @@ const Selectstrategy: FC = () => {
             payoffTime: formatDuration(plan?.snowball?.estimatedDebtFreeDate),
             interestSaved: `${currentCurrency ? currentCurrency : selectedCurrency} ${plan?.snowball?.totalInterestPaid?.toLocaleString()}`,
             subtitle: '(Prioritize lowest balance first)'
-        },
-        {
-            key: 'Hybrid',
-            title: 'Hybrid',
-            advantage: 'Hybrid Plan',
-            payoffTime: formatDuration(plan?.hybrid?.estimatedDebtFreeDate),
-            interestSaved: `${currentCurrency ? currentCurrency : selectedCurrency} ${plan?.hybrid?.totalInterestPaid?.toLocaleString()}`,
-            subtitle: '(Hybrid Plan)'
-
         },
         {
             key: 'Custom',
@@ -245,6 +238,8 @@ const Selectstrategy: FC = () => {
                         <Text style={styles.buttonText}>Select strategy</Text>
                     </Button>
                 </View>
+
+                <Aimodal style={styles.aiContainer} imagestyle={styles.aiimagestyle} text={"Need help choosing a plan? Tap Pennie - AI"} />
             </View>
 
         </LinearGradient>
@@ -365,5 +360,13 @@ const styles = StyleSheet.create({
     },
     scrollview: {
         flexGrow: 1,
-    }
+    },
+    aiContainer: {
+        zIndex: 1,
+        bottom: heightToDP(10)
+    },
+    aiimagestyle: {
+        width: 70,
+        height: 70,
+    },
 })

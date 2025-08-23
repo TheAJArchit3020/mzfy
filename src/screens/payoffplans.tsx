@@ -4,8 +4,6 @@ import Strategycard from '@components/payoffplan/strategycard';
 import Payoffcard from '@components/payoffplan/payoffcard';
 import TextCard from '@components/reusable/textcard';
 import UpcomingDebtsWithScrollbar from '@components/dashboard/upcommingdebts';
-import Button from '@components/reusable/button';
-import GraphComponent from '@components/reusable/graph';
 import TextCard2 from '@components/reusable/textcard2';
 import Popup from '@components/reusable/popup';
 import StrategyRadioCard from '@components/payoffplan/strategymodal';
@@ -18,7 +16,6 @@ import { formatDuration } from '@components/reusable/formatdate';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParams } from '@managers/routing';
 import Nodata from '@components/reusable/nodata';
-import LineAreaChart from '@components/debt/lineareagraph';
 import { heightToDP } from 'react-native-responsive-screens';
 
 type navprops = NativeStackNavigationProp<RootStackParams>;
