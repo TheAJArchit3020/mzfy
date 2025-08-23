@@ -122,7 +122,7 @@ const Transaction: FC<TransactionScreenProps> = ({ route }) => {
   }, [transaction]);
   const handleConfirm = async () => {
     console.log("Confirmed amount:", amount);
-    if(amount === "") return;
+    if (amount === "") return;
     try {
       await dispatch(
         logPayment({
@@ -355,6 +355,7 @@ const Transaction: FC<TransactionScreenProps> = ({ route }) => {
 
         {/* Popup for Paid Amount */}
         <Popup
+          onClose2={handleClosePopup}
           visible={showPopup}
           onClose={handleClosePopup}
           onConfirm={handleConfirm}

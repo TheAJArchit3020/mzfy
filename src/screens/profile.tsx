@@ -210,7 +210,7 @@ const Profile: FC = () => {
                                     end={{ x: 1, y: 0 }}
                                     style={styles.gradientbutton}
                                 >
-                                    <Button style={styles.upgradebutton}>
+                                    <Button style={styles.upgradebutton} onPress={() => navigation.navigate('paywallscreen')}>
                                         <Text style={styles.upgradetext}>Upgrade to Moneezify plan</Text>
                                     </Button>
 

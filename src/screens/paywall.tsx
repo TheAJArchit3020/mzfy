@@ -5,6 +5,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import DropShadow from 'react-native-drop-shadow'
 import { ArrowDownIcon, ChevronDownIcon, ChevronUpIcon } from 'react-native-heroicons/solid'
 import Button from '@components/reusable/button'
+import { heightToDP } from 'react-native-responsive-screens'
 
 const Paywall: FC = () => {
 
@@ -116,7 +117,7 @@ const Paywall: FC = () => {
                         </View>
                     </View>
                     <View style={styles.buttondiv}>
-
+                        <Text style={styles.buttondivtext} >No credit card required</Text>
                         <Button style={styles.button} >
                             <Text style={styles.buttontext} >Get our plan for free NOW!!</Text>
                         </Button>
@@ -216,7 +217,8 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontFamily: "PlusJakartaSans-Bold",
         fontSize: 13,
-        width: '85%'
+        width: '85%',
+        lineHeight: heightToDP(2.5)
     },
     subtext: {
         color: "#fff",
@@ -242,7 +244,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        padding: 12
+        paddingHorizontal: 12,
+        paddingVertical: 6
     },
     faqcontent_text: {
         color: "#fff",
@@ -261,7 +264,7 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: "#006FFF",
-        padding: 16,
+        padding: 14,
         borderRadius: 45,
         marginHorizontal: 20,
 
@@ -277,5 +280,12 @@ const styles = StyleSheet.create({
         justifyContent: "flex-end",
         marginBottom: 30
 
+    },
+    buttondivtext: {
+        color: "#fff",
+        fontFamily: "PlusJakartaSans-Bold",
+        fontSize: 12,
+        textAlign: "center",
+        marginBottom: 10
     }
 })

@@ -102,7 +102,7 @@ const Selectstrategy: FC = () => {
         }, [])
     )
 
-    const strategyPlanArray = useSelector((state: RootState) => state?.strategy?.items[0]) ?? [];
+    const strategyPlanArray = useSelector((state: RootState) => state?.strategy?.items[0]);
 
     const currentCurrency = useSelector((state: RootState) => state.user?.current?.selectedCurrency)
 
