@@ -82,9 +82,9 @@ const Selectstrategy: FC = () => {
     const [selectedStrategy, setSelectedStrategy] = useState('')
     const [customPlan, setCustomPlan] = useState('')
 
-    const handleSelect = async (value: string) => {
-        setSelectedStrategy(value)
-        await dispatch(addStrategy(value))
+    const handleSelect = async () => {
+        await dispatch(addStrategy(selectedStrategy))
+        navigation.navigate('layoutscreen')
     }
 
     useFocusEffect(
@@ -103,21 +103,31 @@ const Selectstrategy: FC = () => {
     )
 
     const strategyPlanArray = useSelector((state: RootState) => state?.strategy?.items[0]) ?? [];
-    const strategyAllCustomPlanArray = useSelector((state: RootState) => state?.strategy) ?? [];
+
     const currentCurrency = useSelector((state: RootState) => state.user?.current?.selectedCurrency)
+
     const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
+
+    const customPlansArray = useSelector((state: RootState) => state.strategy?.customitems?.plans ?? [])
+
+    interface CustomOption {
+        id: number;
+        label: string;
+        value: string;
+    }
+
+    const customOptions: CustomOption[] = (customPlansArray ?? []).map(
+        (plan: any, index: number) => ({
+            id: index + 1,
+            label: plan.name,
+            value: plan.id,
+        })
+    );
 
     console.log("strategyPlanArray : ", strategyPlanArray)
 
 
-    const plans = useSelector((state: RootState) => state.strategy.items);
 
-
-    const plan = plans?.[0];
-
-    console.log("plan : ", plan)
-
-    const raw = strategyPlanArray
 
 
     const STRATEGIES: Strategy[] = [
@@ -125,8 +135,8 @@ const Selectstrategy: FC = () => {
             key: 'Hybrid',
             title: 'Hybrid',
             advantage: 'Hybrid Plan',
-            payoffTime: formatDuration(plan?.hybrid?.estimatedDebtFreeDate),
-            interestSaved: `${currentCurrency ? currentCurrency : selectedCurrency} ${plan?.hybrid?.totalInterestPaid?.toLocaleString()}`,
+            payoffTime: formatDuration(strategyPlanArray?.hybrid?.estimatedDebtFreeDate),
+            interestSaved: `${currentCurrency ? currentCurrency : selectedCurrency} ${strategyPlanArray?.hybrid?.totalInterestPaid?.toLocaleString()}`,
             subtitle: '(Hybrid Plan)'
 
         },
@@ -134,24 +144,24 @@ const Selectstrategy: FC = () => {
             key: 'Debt Avalanche',
             title: 'avalanche',
             advantage: 'Fastest payoff and least interest ',
-            payoffTime: formatDuration(plan?.avalanche?.estimatedDebtFreeDate),
-            interestSaved: `${currentCurrency ? currentCurrency : selectedCurrency} ${plan?.avalanche?.totalInterestPaid?.toLocaleString()}`,
+            payoffTime: formatDuration(strategyPlanArray?.avalanche?.estimatedDebtFreeDate),
+            interestSaved: `${currentCurrency ? currentCurrency : selectedCurrency} ${strategyPlanArray?.avalanche?.totalInterestPaid?.toLocaleString()}`,
             subtitle: '(Prioritize highest interest rate)'
         },
         {
             key: 'Debt Snowball',
             title: 'snowball',
             advantage: 'The most quick wins',
-            payoffTime: formatDuration(plan?.snowball?.estimatedDebtFreeDate),
-            interestSaved: `${currentCurrency ? currentCurrency : selectedCurrency} ${plan?.snowball?.totalInterestPaid?.toLocaleString()}`,
+            payoffTime: formatDuration(strategyPlanArray?.snowball?.estimatedDebtFreeDate),
+            interestSaved: `${currentCurrency ? currentCurrency : selectedCurrency} ${strategyPlanArray?.snowball?.totalInterestPaid?.toLocaleString()}`,
             subtitle: '(Prioritize lowest balance first)'
         },
         {
             key: 'Custom',
             title: 'Custom',
             advantage: 'Customized Plan',
-            payoffTime: formatDuration(plan?.custom?.estimatedDebtFreeDate),
-            interestSaved: `${selectedCurrency} ${plan?.custom?.totalInterestPaid?.toLocaleString()}`,
+            payoffTime: formatDuration(strategyPlanArray?.custom?.estimatedDebtFreeDate),
+            interestSaved: `${selectedCurrency} ${strategyPlanArray?.custom?.totalInterestPaid?.toLocaleString()}`,
             subtitle: '(Customized Plan)'
 
         },
@@ -159,7 +169,7 @@ const Selectstrategy: FC = () => {
     ]
 
 
-
+    const isDisabled = !selectedStrategy?.trim();
 
 
     return (
@@ -183,7 +193,7 @@ const Selectstrategy: FC = () => {
                                     <TouchableOpacity
                                         style={styles.optionRow}
                                         activeOpacity={0.7}
-                                        onPress={() => handleSelect(strategy.title)}
+                                        onPress={() => setSelectedStrategy(strategy.title)}
                                     >
                                         <View style={styles.radioWrapper}>
                                             <View
@@ -205,7 +215,17 @@ const Selectstrategy: FC = () => {
                                     </TouchableOpacity>
 
                                     {strategy.key === 'Custom' && (
-                                        <CustomDropdown customPlan={customPlan} setCustomPlan={setCustomPlan} />
+                                        // <CustomDropdown customPlan={customPlan} setCustomPlan={setCustomPlan} />
+                                        <Customstrategydropdown
+
+                                            style={styles.dropdown}
+                                            options={customOptions}
+                                            value={customPlan}
+                                            onChange={(val: any) => setCustomPlan(val)}
+                                            placeholder="Custom plan"
+                                            maxheight={140}
+                                            onSelect={setSelectedStrategy}
+                                        />
                                     )}
 
                                     <View style={styles.radio_content}>
@@ -226,7 +246,6 @@ const Selectstrategy: FC = () => {
                                     </View>
                                 </View>
 
-                                {/* replicate your original divider placement */}
                                 {idx !== 3 ? <View style={styles.divider} /> : null}
                             </View>
                         )
@@ -234,7 +253,11 @@ const Selectstrategy: FC = () => {
                 </Card>
 
                 <View style={styles.buttonWrapper}>
-                    <Button style={styles.button} onPress={() => navigation.navigate('layoutscreen')} >
+                    <Button
+                        style={isDisabled ? styles.disableButton : styles.button}
+                        onPress={isDisabled ? undefined : handleSelect}  // extra safety
+                        disabled={isDisabled}
+                    >
                         <Text style={styles.buttonText}>Select strategy</Text>
                     </Button>
                 </View>
@@ -369,4 +392,13 @@ const styles = StyleSheet.create({
         width: 70,
         height: 70,
     },
+    disableButton: {
+        backgroundColor: "#9d9d9dff",
+        paddingHorizontal: 20,
+        width: "100%",
+        alignSelf: "center",
+        borderRadius: widthToDP(50),
+        padding: widthToDP(2.5),
+        marginBottom: heightToDP(1),
+    }
 })

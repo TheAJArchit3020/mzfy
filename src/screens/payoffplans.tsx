@@ -66,7 +66,11 @@ const PayoffplansScreen: FC = () => {
 
 
   const payoffplanArray = useSelector((state: RootState) => state?.payoffplan?.items[0]) ?? [];
+
+
   const strategyPlanArray = useSelector((state: RootState) => state?.strategy?.items[0]) ?? [];
+
+
   const customPlansArray = useSelector((state: RootState) => state.strategy?.customitems?.plans ?? [])
 
   const filteredCustomPlans = customPlansArray?.filter((plan: any) => plan.id === payoffplanArray?.strategy) || [];
@@ -129,11 +133,6 @@ const PayoffplansScreen: FC = () => {
 
 
 
-  console.log("payoffplanArray : ", payoffplanArray)
-
-
-
-
   return (
     <>
 
@@ -184,20 +183,6 @@ const PayoffplansScreen: FC = () => {
             </View>
           </View>
 
-
-          {/* section5 */}
-          {/* <View style={styles.cardcontainer4}>
-            <Text style={styles.cardcontainer4_title}>Debt Reduction Timeline</Text>
-            <View style={styles.cardcontainer4_inner}>
-              <LineAreaChart rawData={payoffplanArray?.debtFreeTimeline} />
-            </View>
-          </View> */}
-
-          {/* section6 */}
-          {/* <Button style={styles.button} >
-            <Image source={require('@images/payoffplan/pdf.png')} style={styles.buttonimage} />
-            <Text style={styles.buttontext}>Export pdf</Text>
-          </Button> */}
         </View>
       </ScrollView>
 

@@ -48,7 +48,7 @@ const Routing: FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="feedbackscreen"
+        initialRouteName="selectstrategyscreen"
         screenOptions={{
           headerShown: false,
         }}
