@@ -2,7 +2,7 @@ import { ActivityIndicator, Image, Platform, StyleSheet, Text, TouchableOpacity,
 import React, { FC, useEffect, useState } from 'react'
 import Card from '@components/reusable/card'
 import LinearGradient from 'react-native-linear-gradient'
-import { heightToDP } from 'react-native-responsive-screens'
+import { heightToDP, widthToDP } from 'react-native-responsive-screens'
 
 
 interface strategyProps {
@@ -77,7 +77,8 @@ const styles = StyleSheet.create({
     logbutton_text: {
         fontFamily: "PlusJakartaSans-Bold",
         color: "#2A2A2A",
-        fontSize: 14
+        fontSize: widthToDP(3.9),
+        marginTop: -5
     },
     logbutton: {
         padding: 10,

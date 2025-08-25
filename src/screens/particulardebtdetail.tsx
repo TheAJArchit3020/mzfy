@@ -18,6 +18,7 @@ import { AppDispatch, RootState } from '@redux/store'
 import { fetchDebtsById, logTransaction } from '@redux/debts/debtsSlice'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import LineAreaChart from '@components/debt/lineareagraph'
+import Amounttext from '@components/reusable/amounttext'
 
 type routeProps = RouteProp<RootStackParams, 'particulardebtdetailscreen'>
 type navprops = NativeStackNavigationProp<RootStackParams>;
@@ -91,7 +92,6 @@ const Particulardebtdetail: FC = () => {
 
 
 
-    console.log("DEBTDATA : ", DEBTDATA)
 
 
 
@@ -116,7 +116,10 @@ const Particulardebtdetail: FC = () => {
                                 <Text style={styles.text1}>Curent balance</Text>
                                 {
                                     showContent ? (
-                                        <Text style={styles.text2}>{selectedCurrency ?? ''} {DEBTDATA.currentBalance}</Text>
+                                        <Amounttext
+                                            style={styles.text2}
+                                            text={`${selectedCurrency ?? ''} ${DEBTDATA.currentBalance}`}
+                                        />
                                     ) : (
                                         <ActivityIndicator color={"#fff"} size={"small"} />
                                     )
@@ -168,8 +171,8 @@ const Particulardebtdetail: FC = () => {
 
                     <View style={styles.section4}>
                         <Text style={styles.section4_title}>Payoff Progress</Text>
-                        <Text style={styles.section4_title2}>{DEBTDATA.payoffProgress} %</Text>
-                        <ProgressBar progress={DEBTDATA.payoffProgress} showTooltip={true} tooltipLabel={`Balance: ${DEBTDATA.currentBalance} ${selectedCurrency}`} backgroundColor='rgba(187,187,187,0.4)' />
+                        <Text style={styles.section4_title2}>{DEBTDATA?.payoffProgress} %</Text>
+                        <ProgressBar progress={DEBTDATA?.payoffProgress} showTooltip={true} tooltipLabel={`Balance: ${DEBTDATA?.currentBalance} ${selectedCurrency}`} backgroundColor='rgba(187,187,187,0.4)' />
                     </View>
 
                     {/* <View style={styles.section4}>
