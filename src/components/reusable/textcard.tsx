@@ -1,6 +1,7 @@
 import { ActivityIndicator, Platform, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { heightToDP } from 'react-native-responsive-screens';
+import Amounttext from './amounttext';
 
 
 type CardProps = {
@@ -23,14 +24,17 @@ const TextCard = ({ children, style, cardStyle, text1, text2, text1style, text2s
         }
     }, [text1]);
 
-    
+
     return (
         <View style={[styles.shadowContainer, style]}>
             <View style={[styles.card, cardStyle]}>
                 <Text style={text1style}>{text1}</Text>
                 {showContent ? (
                     <>
-                        <Text style={text2style}>{text2}</Text>
+                        <Amounttext
+                            style={text2style}
+                            text={text2}
+                        />
                         {children}
                     </>
                 ) : (

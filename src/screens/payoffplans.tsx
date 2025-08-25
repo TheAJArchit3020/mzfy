@@ -1,4 +1,4 @@
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import React, { FC, useCallback, useState } from 'react';
 import Strategycard from '@components/payoffplan/strategycard';
 import Payoffcard from '@components/payoffplan/payoffcard';
@@ -16,7 +16,8 @@ import { formatDuration } from '@components/reusable/formatdate';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParams } from '@managers/routing';
 import Nodata from '@components/reusable/nodata';
-import { heightToDP } from 'react-native-responsive-screens';
+import { heightToDP, widthToDP } from 'react-native-responsive-screens';
+import Aimodal from '@components/chatai/aimodal';
 
 type navprops = NativeStackNavigationProp<RootStackParams>;
 
@@ -178,8 +179,8 @@ const PayoffplansScreen: FC = () => {
                 <Payoffcard data={payoffplanArray?.debtOrder} source={require('@images/payoffplan/rightarrowwhite.png')} />
               ) : (
                 <View style={{ marginTop: heightToDP(4) }}>
-                <Nodata />
-              </View>
+                  <Nodata />
+                </View>
               )
               }
             </View>
@@ -187,6 +188,8 @@ const PayoffplansScreen: FC = () => {
 
         </View>
       </ScrollView>
+
+      <Aimodal style={styles.aiContainer} imagestyle={styles.aiimagestyle} />
 
       {/* log payment popup */}
 
@@ -257,12 +260,12 @@ const styles = StyleSheet.create({
   },
   text1: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: widthToDP(3.2),
     fontFamily: 'PlusJakartaSans-Bold'
   },
   text2: {
     color: '#fff',
-    fontSize: 36,
+    fontSize: widthToDP(8.5),
     fontFamily: 'PlusJakartaSans-Bold',
     textAlign: "center"
 
@@ -280,7 +283,7 @@ const styles = StyleSheet.create({
   },
   text2_2: {
     color: '#fff',
-    fontSize: 36,
+    fontSize: widthToDP(8.5),
     fontFamily: 'PlusJakartaSans-Bold',
     textAlign: "center"
   },
@@ -409,6 +412,15 @@ const styles = StyleSheet.create({
   },
   payoffcard: {
     overflow: "hidden"
-  }
+  },
+  aiContainer: {
+    zIndex: 1,
+    backgroundColor: "transparent",
+    right: Platform.OS === "android" ? widthToDP(2) : widthToDP(2)
+  },
+  aiimagestyle: {
+    width: 70,
+    height: 70,
+  },
 
 });

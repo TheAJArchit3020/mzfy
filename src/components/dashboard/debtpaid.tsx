@@ -39,7 +39,7 @@ const Debtpaid: FC<DebtItemProps> = ({ data }) => {
               />
             </View>
 
-          ) : <ActivityIndicator color={"#fff"} size={"large"} />}
+          ) : <ActivityIndicator color={"#fff"} size={"small"} />}
         </View>
       </View>
     </Card>
