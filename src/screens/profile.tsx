@@ -275,6 +275,7 @@ const styles = StyleSheet.create({
         fontFamily: "PlusJakartaSans-Bold",
         fontSize: 14,
         color: "#000",
+        marginTop: -5
     },
     section1_2: {
         backgroundColor: "#D9D9D9",

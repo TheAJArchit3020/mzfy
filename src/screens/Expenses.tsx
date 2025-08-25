@@ -7,6 +7,7 @@ import PieChartComponent from "../components/reusable/pieChart";
 import {
   widthToDP as wp,
   heightToDP as hp,
+  heightToDP,
 } from "react-native-responsive-screens";
 import GraphComponent from "@components/reusable/graph";
 import Button from "@components/reusable/button";
@@ -23,6 +24,7 @@ import { RootStackParams } from "@managers/routing";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { expenseItem, Transaction } from "src/commonTypes";
 import Nodata from "@components/reusable/nodata";
+import Amounttext from "@components/reusable/amounttext";
 
 const monthNames = [
   "Jan",
@@ -226,10 +228,10 @@ const Expenses: FC = () => {
                 <View style={styles.card}>
                   <Text style={styles.cardLabel}>Monthly budget</Text>
                   {showContent ? (
-
-                    <Text style={styles.cardAmount}>
-                      {USERARRAY?.selectedCurrency}.{userExpensesData.totalBudget}
-                    </Text>
+                    <Amounttext
+                      style={styles.cardAmount}
+                      text={` ${USERARRAY?.selectedCurrency}.${userExpensesData.totalBudget}`}
+                    />
                   ) : (
                     <ActivityIndicator color={"#fff"} size={"small"} />
                   )}
@@ -240,9 +242,10 @@ const Expenses: FC = () => {
                   <Text style={styles.cardLabel}>Total spent</Text>
 
                   {showContent ? (
-                    <Text style={styles.cardAmount}>
-                      {USERARRAY?.selectedCurrency}.{userExpensesData.totalSpent}
-                    </Text>
+                    <Amounttext
+                      style={styles.cardAmount}
+                      text={` ${USERARRAY?.selectedCurrency}.${userExpensesData.totalSpent}`}
+                    />
                   ) : (
                     <ActivityIndicator color={"#fff"} size={"small"} />
                   )}
@@ -437,7 +440,7 @@ const styles = StyleSheet.create({
     borderRadius: wp(5),
     paddingHorizontal: wp(2),
     paddingVertical: hp(1),
-    height: hp(33),
+    height: "auto",
 
     elevation: 8,
     shadowColor: "#000",
@@ -466,6 +469,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: wp(3),
     fontFamily: "PlusJakartaSans-Regular",
+    marginTop: -2
   },
   activeSegmentText: {
     color: "#fff",
