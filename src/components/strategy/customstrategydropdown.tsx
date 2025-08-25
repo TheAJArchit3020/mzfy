@@ -292,6 +292,7 @@ const styles = StyleSheet.create({
         color: '#FFF',
         fontSize: 12,
         fontFamily: 'PlusJakartaSans-SemiBold',
+        marginTop: -2
     },
     scrollbarTrack: {
         position: 'absolute',

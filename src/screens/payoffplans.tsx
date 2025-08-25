@@ -115,7 +115,7 @@ const PayoffplansScreen: FC = () => {
       advantage: 'Hybrid Plan',
       timeToPayoff: formatDuration(strategyPlanArray?.hybrid?.estimatedDebtFreeDate),
       interestSaved: `${selectedCurrency} ${strategyPlanArray?.hybrid?.totalInterestPaid?.toLocaleString()}`,
-      subtitle: '(Hybrid Plan)',
+      subtitle: 'Hybrid Plan',
       value: 'Hybrid',
     },
     {

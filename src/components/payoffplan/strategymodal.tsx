@@ -129,7 +129,7 @@ const StrategyRadioCard: React.FC<Props> = ({
                     options={customOptions}
                     value={customPlan}
                     onChange={(val: any) => setCustomPlan(val)}
-                    placeholder="custom plan"
+                    placeholder="Custom plan"
                     maxheight={140}
                     onSelect={onSelect}
                 />
