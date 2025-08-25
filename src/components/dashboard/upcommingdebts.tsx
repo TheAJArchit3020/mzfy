@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.2,
     paddingTop: 25,
     paddingBottom: 12,
-    marginHorizontal: 30,
+    marginHorizontal: 20,
   },
   noBorder: {
     borderBottomWidth: 0,
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   text: {
     color: "#fff",
     fontFamily: "PlusJakartaSans-Regular",
-    fontSize: 14,
+    fontSize: widthToDP(3.2),
     width: "30.33%",
     textAlign: "center",
   },

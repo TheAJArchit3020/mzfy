@@ -1,5 +1,6 @@
 import {
   Alert,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -185,7 +186,7 @@ const DashboardScreen: FC = () => {
         </View>
 
         <View style={styles.section4}>
-          <Debtbalance data={donutData} balance={dashboardData}  />
+          <Debtbalance data={donutData} balance={dashboardData} />
 
           <Debtpaid data={dashboardData.data || 0} />
         </View>
@@ -274,6 +275,7 @@ const styles = StyleSheet.create({
     fontFamily: "PlusJakartaSans-Bold",
     fontSize: 14,
     color: "#000",
+    marginTop: -5
   },
   section1_2: {
     backgroundColor: "#D9D9D9",
@@ -361,6 +363,7 @@ const styles = StyleSheet.create({
   aiContainer: {
     zIndex: 1,
     backgroundColor: "transparent",
+    right:Platform.OS ==="android" ?  widthToDP(2) : widthToDP(2)
   },
   aiimagestyle: {
     width: 70,
