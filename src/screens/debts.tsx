@@ -125,7 +125,7 @@ const DebtsScreen: FC = () => {
 
 
   return (
-    <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} >
+    <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} nestedScrollEnabled contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled" >
       <View style={styles.container}>
         <View style={styles.debtInfoContainer}>
           <Debtbalance data={donutData} balance={dashboardData} />
@@ -159,6 +159,10 @@ const DebtsScreen: FC = () => {
           <ScrollView
             showsVerticalScrollIndicator={false}
             style={{ marginHorizontal: 10 }}
+            keyboardShouldPersistTaps="handled"
+            nestedScrollEnabled
+            overScrollMode="always"
+            scrollEventThrottle={16}
           >
             {showContent ?
               <Payoffcard

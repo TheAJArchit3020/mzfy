@@ -99,8 +99,8 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   section_card_inner_content_item2: {},
-  grouptext: {
-    flexDirection: "row",
-    alignItems: "baseline"
+  grouptext:{
+    flexDirection:"row",
+    alignItems:"baseline"
   }
 });
