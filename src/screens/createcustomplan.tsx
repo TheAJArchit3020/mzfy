@@ -1,4 +1,4 @@
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Image, Platform, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { FC, useCallback, useEffect, useReducer, useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import Header from '@components/reusable/header'
@@ -91,7 +91,6 @@ const Createcustomplan: FC = () => {
 
     const previewCustomplanArray = useSelector((state: RootState) => state?.customplan?.previewCustomData) ?? [];
 
-    console.log("previewCustomplanArray : ", previewCustomplanArray)
 
 
 
@@ -338,9 +337,7 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         gap: 25,
         marginTop: 20,
-        // backgroundColor:"red",
         flex: 1,
-        // overflow:"hidden"
     },
 
     cardcontainer3_inner: {
@@ -348,7 +345,7 @@ const styles = StyleSheet.create({
     },
     cardcontainer3_title: {
         color: '#fff',
-        fontSize: 18,
+        fontSize: Platform.OS === "android" ? widthToDP(4) : widthToDP(4),
         fontFamily: 'PlusJakartaSans-Bold',
     },
     infoimage: {
@@ -378,18 +375,19 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         flexDirection: "row",
         alignItems: "center",
-        padding: 10,
-        paddingHorizontal: 12,
+        padding: widthToDP(2),
         gap: 5,
     },
     button_text: {
         color: "#fff",
         fontFamily: "PlusJakartaSans-Bold",
-        fontSize: 12
+        fontSize: widthToDP(3.33),
+        marginTop: -2
     },
     plusimage: {
         width: 15,
-        height: 15
+        height: 15,
+        resizeMode: "contain"
     },
     cardcontainer: {
         flexDirection: "column",
@@ -417,19 +415,19 @@ const styles = StyleSheet.create({
     },
     text1: {
         color: '#fff',
-        fontSize: 14,
+        fontSize: widthToDP(3.2),
         fontFamily: 'PlusJakartaSans-Bold'
     },
     text2: {
         color: '#fff',
-        fontSize: 36,
+        fontSize: widthToDP(8.5),
         fontFamily: 'PlusJakartaSans-Bold',
         textAlign: "center"
 
     },
     text3: {
         color: '#fff',
-        fontSize: 22,
+        fontSize: widthToDP(6.5),
         fontFamily: 'PlusJakartaSans-Bold',
     },
     text2_1: {
@@ -440,7 +438,7 @@ const styles = StyleSheet.create({
     },
     text2_2: {
         color: '#fff',
-        fontSize: 36,
+        fontSize: widthToDP(8.5),
         fontFamily: 'PlusJakartaSans-Bold',
         textAlign: "center"
     },
