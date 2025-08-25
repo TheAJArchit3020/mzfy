@@ -147,7 +147,9 @@ const UpcomingDebtsWithScrollbar: React.FC<UpcomingDebtsWithScrollbarProps> = ({
                   </View>
                 )
               })
-              : <Nodata />
+              : <View style={{ marginTop: heightToDP(4) }}>
+                <Nodata />
+              </View>
             }
           </ScrollView>
 

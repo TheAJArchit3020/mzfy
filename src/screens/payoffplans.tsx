@@ -177,7 +177,9 @@ const PayoffplansScreen: FC = () => {
 
                 <Payoffcard data={payoffplanArray?.debtOrder} source={require('@images/payoffplan/rightarrowwhite.png')} />
               ) : (
+                <View style={{ marginTop: heightToDP(4) }}>
                 <Nodata />
+              </View>
               )
               }
             </View>

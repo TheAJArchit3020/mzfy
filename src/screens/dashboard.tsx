@@ -59,9 +59,6 @@ const DashboardScreen: FC = () => {
   const dashboardData = useSelector((state: RootState) => state.dashBoard);
   const userDetails = useSelector((state: RootState) => state.user.items[0]);
 
-  console.log("dashboardData : ",dashboardData)
-
-
 
   useEffect(() => {
     adjustedDate();
@@ -169,10 +166,6 @@ const DashboardScreen: FC = () => {
               navigation.navigate("profilescreen");
             }}
           >
-            {/* <Image
-              source={require("@images/dashboard/rightarrow.png")}
-              style={{ width: 20, height: 20 }}
-            /> */}
             <Text style={styles.section1_2_text}>{userDetails?.name?.charAt(0).toUpperCase()}</Text>
           </TouchableOpacity>
         </View>
@@ -312,7 +305,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontFamily: "PlusJakartaSans-Bold",
     fontSize: 16,
-    marginBottom: 10,
+    marginBottom: 24,
   },
   section6: {
     backgroundColor: "#006FFF",

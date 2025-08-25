@@ -28,7 +28,6 @@ const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainersty
 
     const currency = useSelector((state: RootState) => state.user?.current?.currency)
     const selectedCurrency = useSelector((state: RootState) => state.user?.items[0]?.selectedCurrency)
-    const selectedCurrency_ = useSelector((state: RootState) => state.user?.items)
 
 
     const navigateHandler = (_id: any, name: any) => {
@@ -49,13 +48,14 @@ const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainersty
         return Number(pct.toFixed(digits)); // e.g. digits=1 -> 20.0
     }
 
+    console.log("data : ", data)
+
 
     return (
         <>
             <View style={styles.cardcontainer}>
                 {data?.length > 0 ? (
                     data?.map((item: any, idx: any) => {
-                        const percentagePaid = percentPaid(item?.principal, item?.balance, 2);
                         return (
                             <Card style={[styles.section_card, cardstyle, { backgroundColor: `${item.tagColor}` }]} cardStyle={[styles.section_card_inner]} key={idx}>
                                 <View style={styles.groupsection}>
@@ -72,8 +72,8 @@ const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainersty
                                 </View>
                                 <View style={styles.groupsection3}>
                                     <Text style={styles.groupsection_text1}>Payoff Progress</Text>
-                                    <ProgressBar progress={percentagePaid || item.payoffPct || item.payoffProgress} tooltipLabel={`Balance : ${item.balance} ${currency ? currency : selectedCurrency}`} showTooltip={true} style={styles.progressbar} />
-                                    <Text style={styles.groupsection_text1}>{percentagePaid || item?.payoffPct || item.payoffProgress.toFixed(2)} %</Text>
+                                    <ProgressBar progress={item.payoffPct ?? item.payoffProgress} tooltipLabel={`Balance : ${item.balance} ${currency ? currency : selectedCurrency}`} showTooltip={true} style={styles.progressbar} />
+                                    <Text style={styles.groupsection_text1}>{item?.payoffPct ?? item?.payoffProgress} %</Text>
 
                                 </View>
 

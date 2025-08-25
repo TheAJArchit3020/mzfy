@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { FC, useCallback, useState } from 'react'
 import Header from '@components/reusable/header';
 import LinearGradient from 'react-native-linear-gradient';
@@ -127,61 +127,62 @@ const Profile: FC = () => {
             <View style={styles.container}>
                 <Header title='Profile' />
 
-                <View style={styles.profilecontainer}>
+                <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} >
+                    <View style={styles.profilecontainer}>
 
-                    <View style={styles.section1}>
-                        <View>
-                            <Text style={styles.section1_1_text}>
-                                Hey <Text style={styles.section1_1_span}>{USERARRAY?.name} ,</Text>
-                            </Text>
-                            <Text style={styles.section1_1_text}>{getGreeting()}</Text>
-                        </View>
-                        <View style={styles.section1_2}>
-                            <Text style={styles.section1_2_text}>{USERARRAY?.name?.charAt(0).toUpperCase()}</Text>
-                        </View>
-                    </View>
-
-                    <View style={styles.section2}>
-                        <View style={styles.section2_content}>
-                            <Text style={styles.label} >Sign in method</Text>
-                            <View style={styles.section2_content_item}>
-                                <Text style={styles.section2_content_item_title}>Email</Text>
-                                <Text style={styles.section2_content_item_value}>{USERARRAY?.email}</Text>
+                        <View style={styles.section1}>
+                            <View>
+                                <Text style={styles.section1_1_text}>
+                                    Hey <Text style={styles.section1_1_span}>{USERARRAY?.name} ,</Text>
+                                </Text>
+                                <Text style={styles.section1_1_text}>{getGreeting()}</Text>
+                            </View>
+                            <View style={styles.section1_2}>
+                                <Text style={styles.section1_2_text}>{USERARRAY?.name?.charAt(0).toUpperCase()}</Text>
                             </View>
                         </View>
-                        <View style={styles.section2_content}>
-                            <Text style={styles.label} >Personal Income</Text>
-                            <Input value={currentData?.personalIncome != 0 ? currentData?.personalIncome : USERARRAY?.personalIncome} textHeader={USERARRAY?.selectedCurrency} editable={!!editMode[1]}
-                                children={
-                                    <TouchableOpacity onPress={() => handleEditProfile(1, "personalIncome", currentData?.personalIncome ?? USERARRAY?.personalIncome)}>
-                                        <PencilIcon color={"#fff"} size={24} />
-                                    </TouchableOpacity>
-                                }
-                                containerStyle={styles.containerStyle}
-                                style={styles.inputStyle}
-                                onChangeContent={(text) => {
-                                    dispatch(setField({ field: 'personalIncome', value: text }));
-                                }}
-                            />
-                        </View>
-                        <View style={styles.section2_content}>
-                            <Text style={styles.label} >Household Income</Text>
-                            <Input value={currentData?.totalHouseholdIncome !== 0 ? currentData?.totalHouseholdIncome : USERARRAY?.totalHouseholdIncome} textHeader={USERARRAY?.selectedCurrency} editable={!!editMode[2]}
-                                children={
-                                    <TouchableOpacity onPress={() => handleEditProfile(2, "totalHouseholdIncome", currentData?.totalHouseholdIncome ?? USERARRAY?.totalHouseholdIncome)}>
-                                        <PencilIcon color={"#fff"} size={24} />
-                                    </TouchableOpacity>
-                                }
-                                containerStyle={styles.containerStyle}
-                                style={styles.inputStyle}
-                                onChangeContent={(text) => {
-                                    dispatch(setField({ field: 'totalHouseholdIncome', value: text }));
-                                }}
 
-                            />
-                        </View>
+                        <View style={styles.section2}>
+                            <View style={styles.section2_content}>
+                                <Text style={styles.label} >Sign in method</Text>
+                                <View style={styles.section2_content_item}>
+                                    <Text style={styles.section2_content_item_title}>Email</Text>
+                                    <Text style={styles.section2_content_item_value}>{USERARRAY?.email}</Text>
+                                </View>
+                            </View>
+                            <View style={styles.section2_content}>
+                                <Text style={styles.label} >Personal Income</Text>
+                                <Input value={currentData?.personalIncome != 0 ? currentData?.personalIncome : USERARRAY?.personalIncome} textHeader={USERARRAY?.selectedCurrency} editable={!!editMode[1]}
+                                    children={
+                                        <TouchableOpacity onPress={() => handleEditProfile(1, "personalIncome", currentData?.personalIncome ?? USERARRAY?.personalIncome)}>
+                                            <PencilIcon color={"#fff"} size={24} />
+                                        </TouchableOpacity>
+                                    }
+                                    containerStyle={styles.containerStyle}
+                                    style={styles.inputStyle}
+                                    onChangeContent={(text) => {
+                                        dispatch(setField({ field: 'personalIncome', value: text }));
+                                    }}
+                                />
+                            </View>
+                            <View style={styles.section2_content}>
+                                <Text style={styles.label} >Household Income</Text>
+                                <Input value={currentData?.totalHouseholdIncome !== 0 ? currentData?.totalHouseholdIncome : USERARRAY?.totalHouseholdIncome} textHeader={USERARRAY?.selectedCurrency} editable={!!editMode[2]}
+                                    children={
+                                        <TouchableOpacity onPress={() => handleEditProfile(2, "totalHouseholdIncome", currentData?.totalHouseholdIncome ?? USERARRAY?.totalHouseholdIncome)}>
+                                            <PencilIcon color={"#fff"} size={24} />
+                                        </TouchableOpacity>
+                                    }
+                                    containerStyle={styles.containerStyle}
+                                    style={styles.inputStyle}
+                                    onChangeContent={(text) => {
+                                        dispatch(setField({ field: 'totalHouseholdIncome', value: text }));
+                                    }}
 
-                        {/* <View style={styles.section2_content}>
+                                />
+                            </View>
+
+                            {/* <View style={styles.section2_content}>
                             <Text style={styles.label} >Plan</Text>
                             <View style={styles.section2_content_item}>
                                 <Text style={styles.section2_content_item_title}>Moneezify plan</Text>
@@ -189,48 +190,50 @@ const Profile: FC = () => {
                             </View>
                         </View> */}
 
-                        <View style={styles.section2_content}>
-                            <Text style={styles.label} >Plan</Text>
-                            <View style={styles.section2_content_item}>
-                                <Text style={styles.section2_content_item_title}>
-                                    {
-                                        filteredCustomPlans?.length > 0 ? filteredCustomPlans[0].name
-                                            : USERARRAY?.currentStrategy
-                                    }
-                                </Text>
-                                {USERARRAY?.currentStrategy === 'moneezify' && <Image source={require('@images/registration/crown.png')} style={styles.image} />}
+                            <View style={styles.section2_content}>
+                                <Text style={styles.label} >Plan</Text>
+                                <View style={styles.section2_content_item}>
+                                    <Text style={styles.section2_content_item_title}>
+                                        {
+                                            filteredCustomPlans?.length > 0 ? filteredCustomPlans[0].name
+                                                : USERARRAY?.currentStrategy
+                                        }
+                                    </Text>
+                                    {USERARRAY?.currentStrategy === 'moneezify' && <Image source={require('@images/registration/crown.png')} style={styles.image} />}
+                                </View>
                             </View>
+                            {USERARRAY?.currentStrategy !== 'moneezify' && (
+                                <View>
+                                    <LinearGradient
+                                        colors={['#00C853', '#B2FF59']}
+                                        locations={[0, 1]}
+                                        start={{ x: 0, y: 1 }}
+                                        end={{ x: 1, y: 0 }}
+                                        style={styles.gradientbutton}
+                                    >
+                                        <Button style={styles.upgradebutton} onPress={() => navigation.navigate('paywallscreen')}>
+                                            <Text style={styles.upgradetext}>Upgrade to Moneezify plan</Text>
+                                        </Button>
+
+                                    </LinearGradient>
+                                </View>
+                            )}
+
                         </View>
-                        {USERARRAY?.currentStrategy !== 'moneezify' && (
-                            <View>
-                                <LinearGradient
-                                    colors={['#00C853', '#B2FF59']}
-                                    locations={[0, 1]}
-                                    start={{ x: 0, y: 1 }}
-                                    end={{ x: 1, y: 0 }}
-                                    style={styles.gradientbutton}
-                                >
-                                    <Button style={styles.upgradebutton} onPress={() => navigation.navigate('paywallscreen')}>
-                                        <Text style={styles.upgradetext}>Upgrade to Moneezify plan</Text>
-                                    </Button>
 
-                                </LinearGradient>
-                            </View>
-                        )}
-
+                        <View style={styles.buttonsection}>
+                            <Button style={styles.logoutbutton} onPress={LogoutHandler}>
+                                <Image source={require('@images/profile/logout.png')} style={styles.buttonimage} />
+                                <Text style={styles.buttontext}>Log out</Text>
+                            </Button>
+                            <Button style={styles.deletebutton} onPress={handleDeleteAccount} >
+                                <Image source={require('@images/profile/bin.png')} style={styles.buttonimage} />
+                                <Text style={styles.buttontext}>Delete account</Text>
+                            </Button>
+                        </View>
                     </View>
+                </ScrollView>
 
-                    <View style={styles.buttonsection}>
-                        <Button style={styles.logoutbutton} onPress={LogoutHandler}>
-                            <Image source={require('@images/profile/logout.png')} style={styles.buttonimage} />
-                            <Text style={styles.buttontext}>Log out</Text>
-                        </Button>
-                        <Button style={styles.deletebutton} onPress={handleDeleteAccount} >
-                            <Image source={require('@images/profile/bin.png')} style={styles.buttonimage} />
-                            <Text style={styles.buttontext}>Delete account</Text>
-                        </Button>
-                    </View>
-                </View>
             </View >
         </LinearGradient >
     )

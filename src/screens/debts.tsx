@@ -127,64 +127,66 @@ const DebtsScreen: FC = () => {
   console.log("FETCHALLDEBTS : ", FETCHALLDEBTS)
 
   return (
-    <View style={styles.container}>
-      <View style={styles.debtInfoContainer}>
-        <Debtbalance data={donutData} balance={dashboardData} />
-        <Debtpaid data={FETCHALLDEBTS} />
-      </View>
+    <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} >
+      <View style={styles.container}>
+        <View style={styles.debtInfoContainer}>
+          <Debtbalance data={donutData} balance={dashboardData} />
+          <Debtpaid data={FETCHALLDEBTS} />
+        </View>
 
-      <View style={styles.debtsListContainer}>
-        <SegmentButton
-          items={buttonLabels}
-          onChange={(idx) => {
-            setSelectedButton(idx);
+        <View style={styles.debtsListContainer}>
+          <SegmentButton
+            items={buttonLabels}
+            onChange={(idx) => {
+              setSelectedButton(idx);
+            }}
+            selectedIndex={selectedButton}
+            containerStyle={styles.toggleButtonContainer}
+          />
+          <Input
+            iconAbove={
+              <MagnifyingGlassIcon
+                size={wp(4)}
+                color={"#747474"}
+                style={{ marginTop: hp(0.8) }}
+              />
+            }
+            onChangeContent={(val) => setSeacthKeyword(val)}
+            value={searchKeyword}
+            placeholder="Search"
+            inputWrapperStyle={styles.searchBar}
+            style={styles.searchInput}
+            placeholderTextColor={"#747474"}
+          />
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={{ marginHorizontal: 10 }}
+          >
+            {showContent ?
+              <Payoffcard
+                data={visibleList}
+                source={require("@assets/images/dashboard/rightarrow.png")}
+              // onPress={() => navigation.navigate("particulardebtdetailscreen")}
+              />
+              : <ActivityIndicator color={"#fff"} size={"large"} style={{ marginVertical: heightToDP(15) }} />
+            }
+          </ScrollView>
+        </View>
+
+        <Aimodal style={styles.aiContainer} imagestyle={styles.aiimagestyle} />
+
+        <TouchableOpacity
+          style={styles.section6}
+          onPress={() => {
+            navigation.navigate("adddebtscreen", {
+              screen: 2
+            });
           }}
-          selectedIndex={selectedButton}
-          containerStyle={styles.toggleButtonContainer}
-        />
-        <Input
-          iconAbove={
-            <MagnifyingGlassIcon
-              size={wp(4)}
-              color={"#747474"}
-              style={{ marginTop: hp(0.8) }}
-            />
-          }
-          onChangeContent={(val) => setSeacthKeyword(val)}
-          value={searchKeyword}
-          placeholder="Search"
-          inputWrapperStyle={styles.searchBar}
-          style={styles.searchInput}
-          placeholderTextColor={"#747474"}
-        />
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={{ marginHorizontal: 10 }}
         >
-          {showContent ?
-            <Payoffcard
-              data={visibleList}
-              source={require("@assets/images/dashboard/rightarrow.png")}
-            // onPress={() => navigation.navigate("particulardebtdetailscreen")}
-            />
-            : <ActivityIndicator color={"#fff"} size={"large"} style={{ marginVertical: heightToDP(15) }} />
-          }
-        </ScrollView>
+          <Text style={styles.section6_text}>+</Text>
+        </TouchableOpacity>
       </View>
-
-      <Aimodal style={styles.aiContainer} imagestyle={styles.aiimagestyle} />
-
-      <TouchableOpacity
-        style={styles.section6}
-        onPress={() => {
-          navigation.navigate("adddebtscreen", {
-            screen: 2
-          });
-        }}
-      >
-        <Text style={styles.section6_text}>+</Text>
-      </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 

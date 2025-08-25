@@ -48,7 +48,7 @@ const Routing: FC = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="paywallscreen"
+        initialRouteName="splashscreen"
         screenOptions={{
           headerShown: false,
         }}
@@ -71,10 +71,10 @@ const Routing: FC = () => {
           name="particulardebtdetailscreen"
           component={Particulardebtdetail}
         />
-        {/* <Stack.Screen
+        <Stack.Screen
           name="createcustomplanscreen"
           component={Createcustomplan}
-        /> */}
+        />
         <Stack.Screen name="selectstrategyscreen" component={Selectstrategy} />
         <Stack.Screen name="profilescreen" component={Profile} />
         <Stack.Screen name="loginscreen" component={Login} />

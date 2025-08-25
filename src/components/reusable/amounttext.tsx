@@ -1,36 +1,44 @@
-import { Dimensions, StyleProp, StyleSheet, Text, View } from 'react-native'
-import React, { FC } from 'react'
+import React, { FC } from 'react';
+import { StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native';
 
-type textProps = {
-    style?: any
-    text?: any
+type Props = {
+    text?: string;
+    style?: StyleProp<TextStyle>;
     minFontSize?: number;
     maxFontSize?: number;
+    containerStyle?: StyleProp<ViewStyle>;
 };
-const { width: windowWidth } = Dimensions.get("window");
 
-const Amounttext: FC<textProps> = ({
-    text,
+const Amounttext: FC<Props> = ({
+    text = '-',
     style,
     minFontSize = 12,
     maxFontSize = 30,
+    containerStyle,
 }) => {
-
-    const fontSize = Math.max(
-        minFontSize,
-        Math.min(maxFontSize, windowWidth * 0.1) // adjust multiplier if needed
-    );
-
-
     return (
-        <Text style={[styles.text, { fontSize }, style]}>{text ?? '-'}</Text>
-    )
-}
+        <View style={[styles.wrap, containerStyle]}>
+            <Text
+                style={[styles.text, { fontSize: maxFontSize }, style]}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={minFontSize / maxFontSize}
+                ellipsizeMode="clip"
+            >
+                {text}
+            </Text>
+        </View>
+    );
+};
 
-export default Amounttext
+export default Amounttext;
 
 const styles = StyleSheet.create({
+    wrap: {
+        maxWidth: '100%',
+        flexShrink: 1, // important when used inside rows so it can shrink
+    },
     text: {
-        fontFamily: "PlusJakartaSans-Bold"
-    }
-})
+        fontFamily: 'PlusJakartaSans-Bold',
+    },
+});

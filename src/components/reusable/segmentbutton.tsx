@@ -7,7 +7,9 @@ import {
     StyleSheet,
     ViewStyle,
     TextStyle,
+    Platform,
 } from 'react-native'
+import { heightToDP, widthToDP } from 'react-native-responsive-screens'
 
 export interface SegmentButtonProps {
     items: string[]
@@ -72,8 +74,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#2A2A2A',
         borderRadius: 100,
         padding: 10,
-        width: '90%',
-        marginTop: '16%',
+        width: Platform.OS === 'android' ? widthToDP(90) : widthToDP(90),
+        marginTop: Platform.OS === 'android' ? heightToDP(5.5) : heightToDP(5),
         alignSelf: "center",
         marginBottom: '4%'
 
@@ -81,7 +83,7 @@ const styles = StyleSheet.create({
     segment: {
         paddingVertical: 8,
         paddingHorizontal: 10,
-        borderRadius: 20,     
+        borderRadius: 20,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -93,7 +95,7 @@ const styles = StyleSheet.create({
     },
     text: {
         color: '#FFF',
-        fontSize: 14,
+        fontSize: widthToDP(3.2),
     },
     activeText: {
         fontWeight: '600',
