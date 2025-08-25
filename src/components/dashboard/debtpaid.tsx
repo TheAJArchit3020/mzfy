@@ -4,6 +4,7 @@ import Card from '@components/reusable/card'
 import { useSelector } from 'react-redux'
 import { RootState } from '@redux/store'
 import Amounttext from '@components/reusable/amounttext'
+import { heightToDP } from 'react-native-responsive-screens'
 
 interface DebtItemProps {
   data: any
@@ -28,15 +29,15 @@ const Debtpaid: FC<DebtItemProps> = ({ data }) => {
         <View style={styles.section_card_inner_content_item}>
           <Text style={styles.section_card_text}>Debt paid</Text>
           {showContent ? (
-            <Text style={styles.section_card_text2}>{userDetails?.selectedCurrency}&nbsp;
+            <View style={styles.grouptext} >
+
+              <Text style={styles.section_card_text2}>{userDetails?.selectedCurrency}&nbsp;
+              </Text>
               <Amounttext
                 style={styles.section_card_span}
                 text={Number(data?.totalPaid ?? data?.totalDebtPaid ?? 0).toLocaleString('en-IN')}
               />
-              {/* <Text style={styles.section_card_span}>
-                {Number(data?.totalPaid ?? data?.totalDebtPaid ?? 0).toLocaleString('en-IN')}
-              </Text> */}
-            </Text>
+            </View>
 
           ) : <ActivityIndicator color={"#fff"} size={"large"} />}
         </View>
@@ -98,4 +99,8 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   section_card_inner_content_item2: {},
+  grouptext: {
+    flexDirection: "row",
+    alignItems: "baseline"
+  }
 });

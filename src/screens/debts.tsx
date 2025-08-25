@@ -124,8 +124,6 @@ const DebtsScreen: FC = () => {
   }, [visibleList]);
 
 
-  console.log("FETCHALLDEBTS : ", FETCHALLDEBTS)
-
   return (
     <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} >
       <View style={styles.container}>
