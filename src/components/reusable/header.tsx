@@ -30,14 +30,6 @@ const Header: FC<headerProps> = ({ title, showBackButton = true }) => {
           source={require("../../assets/images/backButton/arrow.png")}
         />
       </TouchableOpacity>}
-      {/* <Button onPress={backHandler}>
-        <View style={styles.backButton}>
-          <Image
-            style={{ width: "100%", height: "100%" }}
-            source={require("../../assets/images/backButton/arrow.png")}
-          />
-        </View>
-      </Button> */}
       <Text style={styles.title}>{title}</Text>
     </View>
   );
@@ -49,7 +41,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: wp(4),
     paddingLeft: wp(5),
-    paddingTop: wp(12),
+    paddingTop: Platform.OS === "android" ? wp(5) : wp(8),
     paddingBottom: wp(2),
   },
   backButton: {
