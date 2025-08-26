@@ -3,23 +3,23 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>300899465301-q4gh41im4l4r8irbn2gr0pumnk0g78jq.apps.googleusercontent.com</string>
+	<string>223306759572-ijkcjskv0gvif243sbj647mg5i6bhaub.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.300899465301-q4gh41im4l4r8irbn2gr0pumnk0g78jq</string>
+	<string>com.googleusercontent.apps.223306759572-ijkcjskv0gvif243sbj647mg5i6bhaub</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>300899465301-2hmifh308rjdmmdr808rsndclj1qv277.apps.googleusercontent.com</string>
+	<string>223306759572-k8ig1ecg09jicvkrt6umu0o9tg1kmco7.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCD3lolD2jlxFqaWln2uY1cb4QsdbH4RwQ</string>
+	<string>AIzaSyCIelFEssawQvKGMHrm6fmGziiFbmr2YeI</string>
 	<key>GCM_SENDER_ID</key>
-	<string>300899465301</string>
+	<string>223306759572</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.kineticscapestudios.moneezify</string>
 	<key>PROJECT_ID</key>
-	<string>moneezify-41ae5</string>
+	<string>moneezify</string>
 	<key>STORAGE_BUCKET</key>
-	<string>moneezify-41ae5.firebasestorage.app</string>
+	<string>moneezify.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:300899465301:ios:e3393359c6dfeff8d67cdc</string>
+	<string>1:223306759572:ios:2d149862093f58cdbce381</string>
 </dict>
 </plist>
