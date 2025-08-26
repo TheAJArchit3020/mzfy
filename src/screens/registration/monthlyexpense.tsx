@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { FC, useMemo, useState } from 'react'
 import { widthToDP } from 'react-native-responsive-screens';
 import Input from '@components/reusable/Input';
@@ -41,30 +41,32 @@ const Monthlyexpense: FC = () => {
   );
 
   return (
-    <View style={styles.container}>
-      {CATEGORIES.map(cat => (
-        <View style={styles.form} key={cat}>
-          <Text style={styles.formlabel}>
-            {cat.charAt(0).toUpperCase() + cat.slice(1)}
-          </Text>
-          <Input
-            placeholder={`e.g. 30000`}
-            placeholderTextColor="#C6C6C6"
-            keyboardType="decimal-pad"
-            value={
-              expenseByCategory[cat] != null
-                ? expenseByCategory[cat].toString()
-                : ''
-            }
-            onChangeContent={val => handleChange(cat, val)}
-            style={styles.input}
-          />
-        </View>
-      ))}
-      {touched && !hasAnyAmount && (
-        <Text style={styles.error}>Please enter at least one amount.</Text>
-      )}
-    </View>
+    <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
+      <View style={styles.container}>
+        {CATEGORIES.map(cat => (
+          <View style={styles.form} key={cat}>
+            <Text style={styles.formlabel}>
+              {cat.charAt(0).toUpperCase() + cat.slice(1)}
+            </Text>
+            <Input
+              placeholder={`e.g. 30000`}
+              placeholderTextColor="#C6C6C6"
+              keyboardType="decimal-pad"
+              value={
+                expenseByCategory[cat] != null
+                  ? expenseByCategory[cat].toString()
+                  : ''
+              }
+              onChangeContent={val => handleChange(cat, val)}
+              style={styles.input}
+            />
+          </View>
+        ))}
+        {touched && !hasAnyAmount && (
+          <Text style={styles.error}>Please enter at least one amount.</Text>
+        )}
+      </View>
+    </ScrollView>
   )
 }
 

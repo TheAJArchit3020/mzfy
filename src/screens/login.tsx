@@ -57,6 +57,8 @@ const Login: FC = () => {
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
 
+            console.log("userInfo : ", userInfo)
+
             dispatch(setField({ field: 'email', value: userInfo?.data?.user?.email }))
             dispatch(setField({ field: 'googleId', value: userInfo?.data?.user?.id }))
 

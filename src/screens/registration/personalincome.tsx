@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import {
   widthToDP as wp,
   heightToDP as hp,
@@ -25,64 +25,66 @@ const IncomeDetails: FC = () => {
 
 
   return (
-    <View style={styles.container}>
-      <Input
-        value={income}
-        onChangeContent={(val: any) => {
-          if (!touched) setTouched(true);
-          dispatch(setField({ field: 'personalIncome', value: val }))
-        }}
-        placeholder={`Eg. ${currency} 30,000`}
-        placeholderTextColor={'#C6C6C6'}
-        label="Personal income"
-        type="number"
-        style={styles.input}
-        containerStyle={styles.inputContainer}
-      />
-      {touched && empty && <Text style={styles.error}>This field is required.</Text>}
-
-      <Text style={styles.questionText}>
-        Do you want to consider only your personal income?
-      </Text>
-
-      <View style={styles.optionsContainer}>
-        {OPTIONS.map((option) => (
-          <TouchableOpacity
-            key={option}
-            style={styles.optionWrapper}
-            activeOpacity={0.8}
-            onPress={() => setSelectedOption(option)}
-          >
-            <View
-              style={[
-                styles.radioCircle,
-                selectedOption === option && styles.selectedBorder,
-              ]}
-            >
-              {selectedOption === option && <View style={styles.innerDot} />}
-            </View>
-            <Text style={styles.optionLabel}>{option}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {selectedOption === "No" && (
+    <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
+      <View style={styles.container}>
         <Input
-          value={totalincome}
-          onChangeContent={(val: any) =>
-            dispatch(
-              setField({ field: "totalHouseholdIncome", value: val ?? 0 })
-            )
-          }
-          placeholder="Eg. ₹ 30,000"
-          placeholderTextColor={"#C6C6C6"}
-          label="Total income"
+          value={income}
+          onChangeContent={(val: any) => {
+            if (!touched) setTouched(true);
+            dispatch(setField({ field: 'personalIncome', value: val }))
+          }}
+          placeholder={`Eg. ${currency} 30,000`}
+          placeholderTextColor={'#C6C6C6'}
+          label="Personal income"
           type="number"
-          containerStyle={styles.inputContainer}
           style={styles.input}
+          containerStyle={styles.inputContainer}
         />
-      )}
-    </View>
+        {touched && empty && <Text style={styles.error}>This field is required.</Text>}
+
+        <Text style={styles.questionText}>
+          Do you want to consider only your personal income?
+        </Text>
+
+        <View style={styles.optionsContainer}>
+          {OPTIONS.map((option) => (
+            <TouchableOpacity
+              key={option}
+              style={styles.optionWrapper}
+              activeOpacity={0.8}
+              onPress={() => setSelectedOption(option)}
+            >
+              <View
+                style={[
+                  styles.radioCircle,
+                  selectedOption === option && styles.selectedBorder,
+                ]}
+              >
+                {selectedOption === option && <View style={styles.innerDot} />}
+              </View>
+              <Text style={styles.optionLabel}>{option}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {selectedOption === "No" && (
+          <Input
+            value={totalincome}
+            onChangeContent={(val: any) =>
+              dispatch(
+                setField({ field: "totalHouseholdIncome", value: val ?? 0 })
+              )
+            }
+            placeholder="Eg. ₹ 30,000"
+            placeholderTextColor={"#C6C6C6"}
+            label="Total income"
+            type="number"
+            containerStyle={styles.inputContainer}
+            style={styles.input}
+          />
+        )}
+      </View>
+    </ScrollView>
   );
 };
 

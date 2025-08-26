@@ -72,8 +72,16 @@ const Payoffcard: FC<payoffProps> = ({ data, source, cardstyle, cardcontainersty
                                 </View>
                                 <View style={styles.groupsection3}>
                                     <Text style={styles.groupsection_text1}>Payoff Progress</Text>
-                                    <ProgressBar progress={item.payoffPct ?? item.payoffProgress} tooltipLabel={`Balance : ${item.balance} ${currency ? currency : selectedCurrency}`} showTooltip={true} style={styles.progressbar} />
-                                    <Text style={styles.groupsection_text1}>{item?.payoffPct ?? item?.payoffProgress} %</Text>
+                                    <ProgressBar 
+                                    progress={item?.payoffPct 
+                                    ?? item?.payoffProgress 
+                                    ?? percentPaid(item?.principal, item?.balance)} 
+                                    
+                                    tooltipLabel={`Balance : ${item.balance} ${currency 
+                                    ? currency 
+                                    : selectedCurrency}`} showTooltip={true} style={styles.progressbar} />
+
+                                    <Text style={styles.groupsection_text1}>{item?.payoffPct ?? item?.payoffProgress ?? percentPaid(item.principal, item.balance)} %</Text>
 
                                 </View>
 
