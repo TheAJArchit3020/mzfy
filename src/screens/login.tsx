@@ -18,6 +18,8 @@ import { checkUser } from '@redux/login/loginSlice'
 import { unwrapResult } from '@reduxjs/toolkit'
 import { fetchUser, setField } from '@redux/user/userSlice'
 import { widthToDP } from 'react-native-responsive-screens'
+import { getApp } from '@react-native-firebase/app';
+import { getCrashlytics, log } from '@react-native-firebase/crashlytics';
 
 type navProps = NativeStackNavigationProp<RootStackParams>
 
@@ -51,7 +53,7 @@ const Login: FC = () => {
 
     // google sign in
     const handleGoogleSignIn = async () => {
-        console.log('handleGoogleSignIn clicked !!');
+
         try {
             await GoogleSignin.signOut();
             await GoogleSignin.hasPlayServices();
