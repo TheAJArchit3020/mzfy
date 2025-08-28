@@ -9,24 +9,28 @@ import {
     GoogleSignin,
     statusCodes,
 } from '@react-native-google-signin/google-signin';
-import { AppleAuthProvider, getAuth, signInWithCredential } from '@react-native-firebase/auth';
+import { AppleAuthProvider } from '@react-native-firebase/auth';
 
 import { appleAuth } from '@invertase/react-native-apple-authentication';
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState, AppDispatch } from '@redux/store'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '@redux/store'
 import { checkUser } from '@redux/login/loginSlice'
-import { unwrapResult } from '@reduxjs/toolkit'
 import { fetchUser, setField } from '@redux/user/userSlice'
 import { widthToDP } from 'react-native-responsive-screens'
-import { getApp } from '@react-native-firebase/app';
-import { getCrashlytics, log } from '@react-native-firebase/crashlytics';
+import { usePostHog } from 'posthog-react-native'
+import { appEvents } from '@components/events/appEvents'
+
+
+
 
 type navProps = NativeStackNavigationProp<RootStackParams>
 
 const Login: FC = () => {
 
+    const posthog = usePostHog()
     const navigation = useNavigation<navProps>();
     const dispatch = useDispatch<AppDispatch>();
+    const { captureEvent } = appEvents();
 
     //    const signindata = useSelector((state: RootState) => state.loginuser.items)
 
@@ -53,46 +57,52 @@ const Login: FC = () => {
 
     // google sign in
     const handleGoogleSignIn = async () => {
+        captureEvent({
+            eventName: 'login_event',
+            payload: {
+                name: "Test"
+            },
+        });
 
-        try {
-            await GoogleSignin.signOut();
-            await GoogleSignin.hasPlayServices();
-            const userInfo = await GoogleSignin.signIn();
+        // try {
+        //     await GoogleSignin.signOut();
+        //     await GoogleSignin.hasPlayServices();
+        //     const userInfo = await GoogleSignin.signIn();
 
-            console.log("userInfo : ", userInfo)
+        //     console.log("userInfo : ", userInfo)
 
-            dispatch(setField({ field: 'email', value: userInfo?.data?.user?.email }))
-            dispatch(setField({ field: 'googleId', value: userInfo?.data?.user?.id }))
+        //     dispatch(setField({ field: 'email', value: userInfo?.data?.user?.email }))
+        //     dispatch(setField({ field: 'googleId', value: userInfo?.data?.user?.id }))
 
-            const payload = {
-                idToken: userInfo?.data?.idToken,
-            };
+        //     const payload = {
+        //         idToken: userInfo?.data?.idToken,
+        //     };
 
-            // dispatch the thunk:
-            const resultAction = await dispatch(checkUser(payload));
+        //     // dispatch the thunk:
+        //     const resultAction = await dispatch(checkUser(payload));
 
-            console.log("first resultAction : ", resultAction.payload)
-            const payloadData = resultAction?.payload as { detailsExists?: boolean; token?: string; userId?: string };
-            const { detailsExists, token, userId } = payloadData;
+        //     console.log("first resultAction : ", resultAction.payload)
+        //     const payloadData = resultAction?.payload as { detailsExists?: boolean; token?: string; userId?: string };
+        //     const { detailsExists, token, userId } = payloadData;
 
 
-            if (detailsExists) {
-                await dispatch(fetchUser()).unwrap()
-                navigation.navigate('layoutscreen');
-            } else {
-                navigation.navigate('registrationlayoutscreen', {
-                    index: 0,
-                });
-            }
-        } catch (err: any) {
-            if (err?.status === 401) {
-                navigation.navigate('registrationlayoutscreen', {
-                    index: 0
-                })
-            } else if (err?.status === 500) {
-                navigation.navigate('loginscreen')
-            }
-        }
+        //     if (detailsExists) {
+        //         await dispatch(fetchUser()).unwrap()
+        //         navigation.navigate('layoutscreen');
+        //     } else {
+        //         navigation.navigate('registrationlayoutscreen', {
+        //             index: 0,
+        //         });
+        //     }
+        // } catch (err: any) {
+        //     if (err?.status === 401) {
+        //         navigation.navigate('registrationlayoutscreen', {
+        //             index: 0
+        //         })
+        //     } else if (err?.status === 500) {
+        //         navigation.navigate('loginscreen')
+        //     }
+        // }
 
 
     };
