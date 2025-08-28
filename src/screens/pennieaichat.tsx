@@ -18,210 +18,17 @@ import { PaperAirplaneIcon } from "react-native-heroicons/solid";
 import { heightToDP, widthToDP } from "react-native-responsive-screens";
 import EventSource from "react-native-sse";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { appEvents } from "@components/events/appEvents";
 
 const Pennieaichat: FC = () => {
 
-
+    const { captureEvent } = appEvents();
     const [inputValue, setInputValue] = useState("");
     const [selectedButton, setSelectedButton] = useState("");
     const [messages, setMessages] = useState<
         { text?: string; sender: "user" | "bot"; typing?: boolean }[]
     >([]);
     const flatListRef = useRef<FlatList>(null);
-
-
-    // useEffect(() => {
-    //     const appStateSubscription = AppState.addEventListener('change', (nextAppState) => {
-    //         if (nextAppState === 'active') {
-    //             // App became active, reconnect SSE
-    //             es.open();
-    //         } else if (nextAppState === 'background' || nextAppState === 'inactive') {
-    //             // App went to background, close SSE connection
-    //             es.close();
-    //         }
-    //     });
-
-    //     return () => {
-    //         appStateSubscription.remove();
-    //     };
-    // }, []);
-
-    // 🔹 Setup SSE connection once
-    // useEffect(() => {
-    //     let es: EventSource | null = null;
-
-    //     const initSSE = async () => {
-    //         const token = await AsyncStorage.getItem("token");
-    //         if (!token) {
-    //             console.warn("⚠️ No token found in AsyncStorage");
-    //             return;
-    //         }
-
-    //         es = new EventSource(
-    //             "https://api.moneezify.com/api/moneezifyAgent/chat/stream",
-    //             {
-    //                 headers: {
-    //                     Authorization: `Bearer ${token}`,
-    //                     Accept: "text/event-stream",
-    //                 },
-    //             }
-    //         );
-
-    //         es.addEventListener("open", () => {
-    //             console.log("✅ SSE connection opened");
-    //         });
-
-    //         // es.addEventListener("message", (event) => {
-    //         //     console.log("📩 Bot reply:", event.data);
-
-    //         //     setMessages((prev) => {
-    //         //         const newMessages = [...prev];
-    //         //         if (
-    //         //             newMessages.length &&
-    //         //             newMessages[newMessages.length - 1].typing
-    //         //         ) {
-    //         //             newMessages.pop(); // remove typing bubble
-    //         //         }
-    //         //         newMessages.push({ text: event.data ?? undefined, sender: "bot" });
-    //         //         return newMessages;
-    //         //     });
-    //         // });
-
-    //         es.addEventListener("message", (event) => {
-    //             console.log("📩 SSE chunk:", event.data);
-
-    //             setMessages((prev) => {
-    //                 const newMessages = [...prev];
-
-    //                 // 1. If last message is typing → replace it with first chunk
-    //                 if (newMessages.length && newMessages[newMessages.length - 1].typing) {
-    //                     newMessages.pop();
-    //                     newMessages.push({ text: event.data ?? undefined, sender: "bot" });
-    //                     return newMessages;
-    //                 }
-
-    //                 // 2. If last message is bot → append chunk to it
-    //                 if (newMessages.length && newMessages[newMessages.length - 1].sender === "bot") {
-    //                     newMessages[newMessages.length - 1].text = (newMessages[newMessages.length - 1].text ?? "") + event.data;
-    //                     return [...newMessages];
-    //                 }
-
-    //                 // 3. Otherwise push new bot message
-    //                 newMessages.push({ text: event.data ?? undefined, sender: "bot" });
-    //                 return newMessages;
-    //             });
-    //         });
-
-
-    //         es.addEventListener("error", (event) => {
-    //             console.error("❌ SSE error:", event);
-    //         });
-    //     };
-
-    //     initSSE();
-
-    //     return () => {
-    //         if (es) {
-    //             console.log("🔌 Closing SSE connection");
-    //             es.close();
-    //         }
-    //     };
-    // }, []);
-
-    // 🔹 Setup SSE connection once
-    // useEffect(() => {
-    //     const initSSE = async () => {
-    //         const token = await AsyncStorage.getItem("token");
-    //         if (!token) {
-    //             console.error("❌ No token found in storage");
-    //             return;
-    //         }
-
-    //         const es = new EventSource("https://api.moneezify.com/api/moneezifyAgent/chat/stream", {
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`,
-    //                 Accept: "text/event-stream",
-    //             },
-    //         });
-
-    //         // 🔹 Job queued
-    //         es.addEventListener("queued" as any, (event: any) => {
-    //             console.log("📌 Job queued:", event.data);
-    //         });
-
-    //         // 🔹 Streaming token chunks
-    //         es.addEventListener("token" as any, (event: any) => {
-    //             try {
-    //                 const parsed = JSON.parse(event.data);
-    //                 console.log("🔹 Token chunk:", parsed);
-
-    //                 setMessages((prev) => {
-    //                     const newMessages = [...prev];
-
-    //                     // If last is typing → replace with first token
-    //                     if (newMessages.length && newMessages[newMessages.length - 1].typing) {
-    //                         newMessages.pop();
-    //                         newMessages.push({ text: parsed.token, sender: "bot" });
-    //                         return newMessages;
-    //                     }
-
-    //                     // If last is bot → append token
-    //                     if (newMessages.length && newMessages[newMessages.length - 1].sender === "bot") {
-    //                         newMessages[newMessages.length - 1].text =
-    //                             (newMessages[newMessages.length - 1].text ?? "") + parsed.token;
-    //                         return [...newMessages];
-    //                     }
-
-    //                     // Otherwise → new bot message
-    //                     newMessages.push({ text: parsed.token, sender: "bot" });
-    //                     return newMessages;
-    //                 });
-    //             } catch (err) {
-    //                 console.error("⚠️ Failed to parse token event:", err, event.data);
-    //             }
-    //         });
-
-    //         // 🔹 Final answer (server assembled)
-    //         es.addEventListener("final" as any, (event: any) => {
-    //             try {
-    //                 const parsed = JSON.parse(event.data);
-    //                 console.log("✅ Final answer:", parsed.answer);
-
-    //                 setMessages((prev) => {
-    //                     const newMessages = [...prev];
-    //                     // Replace last bot message with the final one
-    //                     if (newMessages.length && newMessages[newMessages.length - 1].sender === "bot") {
-    //                         newMessages[newMessages.length - 1].text = parsed.answer;
-    //                         return [...newMessages];
-    //                     }
-    //                     // Or push if none exists
-    //                     newMessages.push({ text: parsed.answer, sender: "bot" });
-    //                     return newMessages;
-    //                 });
-    //             } catch (err) {
-    //                 console.error("⚠️ Failed to parse final event:", err, event.data);
-    //             }
-    //         });
-
-    //         // 🔹 Done marker
-    //         es.addEventListener("done" as any, () => {
-    //             console.log("🏁 Stream complete.");
-    //         });
-
-    //         // 🔹 Error handler
-    //         es.addEventListener("error", (event: any) => {
-    //             console.error("❌ SSE error:", event);
-    //         });
-
-    //         // Cleanup on unmount
-    //         return () => {
-    //             es.close();
-    //         };
-    //     };
-
-    //     initSSE();
-    // }, []);
-
 
     const handleInputChange = (value: string) => setInputValue(value);
 
@@ -353,6 +160,10 @@ const Pennieaichat: FC = () => {
         if (!inputValue.trim()) return;
         chathandler();
         setInputValue("");
+        captureEvent({
+            eventName: 'send_chat',
+            payload: {},
+        });
     };
 
     // 🔹 Typing dots animation

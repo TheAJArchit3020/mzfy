@@ -41,6 +41,7 @@ const Aimodal: FC<chatProps> = ({
 
     const [index, setIndex] = useState(0);
     const fadeAnim = useRef(new Animated.Value(0)).current;
+    const floatAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
         // function to handle fade sequence
@@ -62,6 +63,24 @@ const Aimodal: FC<chatProps> = ({
         return () => clearInterval(interval);
     }, [fadeAnim]);
 
+    useEffect(() => {
+        // floating animation for button
+        Animated.loop(
+            Animated.sequence([
+                Animated.timing(floatAnim, {
+                    toValue: -8, // move up
+                    duration: 1500,
+                    useNativeDriver: true
+                }),
+                Animated.timing(floatAnim, {
+                    toValue: 0, // back down
+                    duration: 1500,
+                    useNativeDriver: true
+                })
+            ])
+        ).start();
+    }, [floatAnim]);
+
 
 
     return (
@@ -69,9 +88,15 @@ const Aimodal: FC<chatProps> = ({
             <Animated.Text style={[styles.text, { opacity: fadeAnim }]}>
                 {text ?? textArray[index]}
             </Animated.Text>
-            <Button onPress={navigateHandler} >
-                <Image source={require("@images/pennieai/aiimage.png")} style={[styles.image, imagestyle]} />
-            </Button>
+            <Animated.View style={{ transform: [{ translateY: floatAnim }] }}>
+                <Button onPress={navigateHandler}>
+                    <Image
+                        source={require("@images/pennieai/aiimage.png")}
+                        style={[styles.image, imagestyle]}
+                    />
+                </Button>
+            </Animated.View>
+
         </View>
     )
 }
