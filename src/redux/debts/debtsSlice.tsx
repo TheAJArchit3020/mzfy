@@ -145,6 +145,8 @@ export const fetchAllDebts = createAsyncThunk<AllDebts, void, { state: RootState
                     }
                 }
             )
+
+            console.log("FETCHALLDEBTS2 : ",resp)
             return resp.data
         } catch (err: any) {
             if (axios.isAxiosError(err)) {

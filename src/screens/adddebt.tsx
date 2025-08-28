@@ -31,6 +31,7 @@ import { setField } from "@redux/user/userSlice";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { addDebts } from "@redux/debts/debtsSlice";
 import { RootStackParams } from "@managers/routing";
+import { appEvents } from "@components/events/appEvents";
 
 type DebtForm = {
   name: string;
@@ -82,6 +83,7 @@ const DebtAdd: FC = () => {
 
   const navigation = useNavigation();
   const route = useRoute<routeProps>();
+  const { captureEvent } = appEvents();
 
 
   const dispatch = useDispatch<AppDispatch>();
@@ -199,6 +201,10 @@ const DebtAdd: FC = () => {
 
       try {
         await dispatch(addDebts(form)).unwrap();
+        captureEvent({
+          eventName: 'add_debts',
+          payload: {},
+        });
         navigation.goBack();
       } catch (err) {
         console.log("Error adding user:", err);

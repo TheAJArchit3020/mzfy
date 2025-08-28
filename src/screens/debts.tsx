@@ -73,6 +73,7 @@ const DebtsScreen: FC = () => {
   };
 
 
+
   const FETCHALLDEBTS = (useSelector((state: RootState) => state.debts.alldebts[0])) ?? {
     inProgressDebts: [],
     completedDebts: []

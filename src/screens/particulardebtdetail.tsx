@@ -19,6 +19,7 @@ import { fetchDebtsById, logTransaction } from '@redux/debts/debtsSlice'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import LineAreaChart from '@components/debt/lineareagraph'
 import Amounttext from '@components/reusable/amounttext'
+import { appEvents } from '@components/events/appEvents'
 
 type routeProps = RouteProp<RootStackParams, 'particulardebtdetailscreen'>
 type navprops = NativeStackNavigationProp<RootStackParams>;
@@ -29,6 +30,7 @@ const Particulardebtdetail: FC = () => {
     const route = useRoute<routeProps>();
     const dispatch = useDispatch<AppDispatch>();
     const navigation = useNavigation<navprops>();
+    const { captureEvent } = appEvents();
 
     const [selectedButton, setSelectedButton] = useState(0);
     const [show, setShow] = useState(false);
@@ -68,10 +70,13 @@ const Particulardebtdetail: FC = () => {
     const LogTransactionHandler = async () => {
 
         await dispatch(logTransaction({ selectedDueTransaction, logAmount })).then((payload) => {
-            console.log("Transaction logged successfully:", payload.meta.requestStatus);
             if (payload.meta.requestStatus === 'fulfilled') {
                 setShow(false);
                 navigation.goBack();
+                captureEvent({
+                    eventName: 'log_payment',
+                    payload: {},
+                });
             }
         }).catch((err) => {
             console.error("Error logging transaction:", err);

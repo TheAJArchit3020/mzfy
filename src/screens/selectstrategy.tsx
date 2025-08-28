@@ -15,6 +15,7 @@ import { AppDispatch, RootState } from '@redux/store'
 import { addStrategy, fetchAllCustomStrategy, fetchStrategy } from '@redux/strategies/strategySlice'
 import { formatDuration } from '@components/reusable/formatdate'
 import Aimodal from '@components/chatai/aimodal'
+import { appEvents } from '@components/events/appEvents'
 
 
 interface CustomOption {
@@ -78,14 +79,12 @@ const Selectstrategy: FC = () => {
 
     const navigation = useNavigation<navProps>();
     const dispatch = useDispatch<AppDispatch>();
+    const { captureEvent } = appEvents();
 
     const [selectedStrategy, setSelectedStrategy] = useState('')
     const [customPlan, setCustomPlan] = useState('')
 
-    const handleSelect = async () => {
-        await dispatch(addStrategy(selectedStrategy))
-        navigation.navigate('layoutscreen')
-    }
+
 
     useFocusEffect(
         React.useCallback(() => {
@@ -170,6 +169,18 @@ const Selectstrategy: FC = () => {
 
 
     const isDisabled = !selectedStrategy?.trim();
+
+
+    const handleSelect = async () => {
+        await dispatch(addStrategy(selectedStrategy))
+        captureEvent({
+            eventName: 'select_strategy',
+            payload: {
+                strategy_name: selectedStrategy
+            },
+        });
+        navigation.navigate('layoutscreen')
+    }
 
 
     return (

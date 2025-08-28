@@ -29,12 +29,17 @@ import CategoryManagement from "./catagoryManagement";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParams } from "@managers/routing";
+import { appEvents } from "@components/events/appEvents";
 
 type ExpensesScreenNavigationProp = StackNavigationProp<RootStackParams>;
 
 const LogExpense = () => {
+
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<ExpensesScreenNavigationProp>();
+  const { captureEvent } = appEvents();
+
+
   const catagories = useSelector(
     (state: RootState) => state.expenses.getCatogories
   );
@@ -68,7 +73,6 @@ const LogExpense = () => {
       result = catagories;
       setCategories(result || []);
     }
-    console.log("result", result);
   };
 
   const handleLogExpense = async () => {
@@ -79,10 +83,14 @@ const LogExpense = () => {
       description: note,
     };
     // Handle expense logging logic here
-    console.log("Logging expense:", { data });
     const result = await dispatch(logExpense(data)).unwrap();
     if (result) {
       navigation.goBack();
+      captureEvent({
+        eventName: 'log_expense',
+        payload: {},
+      });
+
     }
   };
 
@@ -183,7 +191,7 @@ const LogExpense = () => {
         <TouchableOpacity
           style={[
             styles.logButton,
-            { backgroundColor: isValid ? "#006FFF" : "#888" }, 
+            { backgroundColor: isValid ? "#006FFF" : "#888" },
           ]}
           onPress={handleLogExpense}
           activeOpacity={0.8}

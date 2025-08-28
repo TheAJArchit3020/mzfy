@@ -16,9 +16,11 @@ function App() {
 
       <Provider store={store} >
         <NavigationContainer>
-          <PostHogProvider apiKey="phc_Pqr7lQXnSJZe91LFSTJjbVhTyZXV90Ky3n00MeNzuAl" options={{
-            host: "https://eu.i.posthog.com",
-          }}>
+          <PostHogProvider
+            apiKey="phc_Pqr7lQXnSJZe91LFSTJjbVhTyZXV90Ky3n00MeNzuAl"
+            options={{
+              host: "https://eu.i.posthog.com",
+            }}>
             <Routing />
           </PostHogProvider>
         </NavigationContainer>

@@ -28,6 +28,7 @@ import { DebtCountDownType } from "src/commonTypes";
 import { DebtChartDataItem, DonutDataItem } from "src/commonTypes";
 import Aimodal from "@components/chatai/aimodal";
 import { logTransaction } from "@redux/debts/debtsSlice";
+import { appEvents } from "@components/events/appEvents";
 
 type navprops = NativeStackNavigationProp<RootStackParams>;
 
@@ -39,6 +40,7 @@ const DashboardScreen: FC = () => {
   const [show, setShow] = useState(false);
   const [logAmount, setLogAmount] = useState('')
   const [selectedDueTransaction, setSelectedDueTransaction] = useState('');
+  const { captureEvent } = appEvents();
 
 
 
@@ -59,6 +61,9 @@ const DashboardScreen: FC = () => {
 
   const dashboardData = useSelector((state: RootState) => state.dashBoard);
   const userDetails = useSelector((state: RootState) => state.user.items[0]);
+
+
+  console.log("dashboardData : ",dashboardData)
 
 
   useEffect(() => {
@@ -140,6 +145,11 @@ const DashboardScreen: FC = () => {
       if (payload.meta.requestStatus === 'fulfilled') {
         setShow(false);
         await dispatch(fetchDashboardSummary())
+        captureEvent({
+          eventName: 'log_payment',
+          payload: {},
+        });
+
       }
     }).catch((err) => {
       console.error("Error logging transaction:", err);
@@ -363,7 +373,7 @@ const styles = StyleSheet.create({
   aiContainer: {
     zIndex: 1,
     backgroundColor: "transparent",
-    right:Platform.OS ==="android" ?  widthToDP(2) : widthToDP(2)
+    right: Platform.OS === "android" ? widthToDP(2) : widthToDP(2)
   },
   aiimagestyle: {
     width: 70,
