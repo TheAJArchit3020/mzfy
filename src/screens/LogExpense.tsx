@@ -84,6 +84,8 @@ const LogExpense = () => {
     };
     // Handle expense logging logic here
     const result = await dispatch(logExpense(data)).unwrap();
+
+    console.log("{result", result)
     if (result) {
       navigation.goBack();
       captureEvent({

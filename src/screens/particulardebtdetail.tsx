@@ -71,13 +71,15 @@ const Particulardebtdetail: FC = () => {
 
         await dispatch(logTransaction({ selectedDueTransaction, logAmount })).then((payload) => {
             if (payload.meta.requestStatus === 'fulfilled') {
-                setShow(false);
                 navigation.goBack();
                 captureEvent({
                     eventName: 'log_payment',
                     payload: {},
                 });
             }
+            if (payload.payload?.status === 402) navigation.navigate('feedbackscreen');
+            setShow(false);
+
         }).catch((err) => {
             console.error("Error logging transaction:", err);
         });

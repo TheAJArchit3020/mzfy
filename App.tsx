@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import { store } from './src/redux/store';
 import { NavigationContainer } from '@react-navigation/native';
 import { PostHogProvider } from 'posthog-react-native';
+import { navigationRef } from './src/navigationservices';
 
 
 function App() {
@@ -15,7 +16,7 @@ function App() {
     <>
 
       <Provider store={store} >
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
           <PostHogProvider
             apiKey="phc_Pqr7lQXnSJZe91LFSTJjbVhTyZXV90Ky3n00MeNzuAl"
             options={{

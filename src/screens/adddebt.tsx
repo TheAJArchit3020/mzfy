@@ -32,6 +32,7 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { addDebts } from "@redux/debts/debtsSlice";
 import { RootStackParams } from "@managers/routing";
 import { appEvents } from "@components/events/appEvents";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 type DebtForm = {
   name: string;
@@ -77,11 +78,12 @@ function reducer(state: DebtForm, action: Action): DebtForm {
   }
 }
 
+type navprops = NativeStackNavigationProp<RootStackParams>;
 type routeProps = RouteProp<RootStackParams, 'adddebtscreen'>;
 
 const DebtAdd: FC = () => {
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<navprops>();
   const route = useRoute<routeProps>();
   const { captureEvent } = appEvents();
 
@@ -200,14 +202,18 @@ const DebtAdd: FC = () => {
     } else {
 
       try {
-        await dispatch(addDebts(form)).unwrap();
+        await dispatch(addDebts(form)).unwrap().then((result) => {
+          console.log("result,", result)
+        });
         captureEvent({
           eventName: 'add_debts',
           payload: {},
-        });
+        })
         navigation.goBack();
-      } catch (err) {
-        console.log("Error adding user:", err);
+      } catch (err: any) {
+        console.log("Error adding 22 user:", err);
+        if (err?.status === 402) navigation.navigate("feedbackscreen")
+
       }
     }
   }

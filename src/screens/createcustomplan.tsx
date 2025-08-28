@@ -15,13 +15,15 @@ import { AppDispatch, RootState } from '@redux/store'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { fetchPayoffPlan } from '@redux/payoffplans/payoffplanSlice'
 import { addCustomPlan, fetchCustomPlan, previewCustomPlan } from '@redux/customplan/customplanSlice'
+import { RootStackParams } from '@managers/routing'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 
-
+type navprops = NativeStackNavigationProp<RootStackParams>;
 
 
 const Createcustomplan: FC = () => {
 
-    const navigation = useNavigation();
+    const navigation = useNavigation<navprops>();
 
     const dispatch = useDispatch<AppDispatch>();
     const { current } = useSelector((state: RootState) => state.customplan)
@@ -163,15 +165,25 @@ const Createcustomplan: FC = () => {
             name: planName,
             debtOrder: debtArray?.length > 0 ? debtArray : _debtorder,
             extraPayments: debtExtraPaymentArray,
-        })).then(() => {
-            setPlanName('');
-            setDebtExtraPaymentArray([]);
-            setDebtArray([]);
+        })).then((res) => {
+
+            console.log("res.payload?.status", res.payload?.status)
+
+            if (res.payload?.status === 402) {
+                navigation.navigate("feedbackscreen")
+            } else {
+                setPlanName('');
+                setDebtExtraPaymentArray([]);
+                setDebtArray([]);
+                navigation.goBack();
+            }
             setShow2(false);
-            navigation.goBack();
+
 
         }).catch((error) => {
             console.error('Error adding custom plan:', error);
+            setShow2(false);
+
         });
 
     }

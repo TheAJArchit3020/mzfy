@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction, SerializedError } from "@reduxjs/toolkit";
 import {
   expensesDashboard,
   getLogExpenseCatogories,
@@ -11,6 +11,9 @@ import axios from "axios";
 import { LogExpenseCategoryItem } from "src/commonTypes";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootState } from "@reduxjs/toolkit/query";
+import { navigate } from "../../../src/navigationservices";
+
+
 
 // Define the interface for the dashboard data
 interface ExpensesDashboardData {
@@ -117,7 +120,7 @@ export const logExpense = createAsyncThunk<
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response) {
-        return rejectWithValue(error.response.data.message);
+        return rejectWithValue(error.response.data);
       }
       console.log("log expense error", error);
       return rejectWithValue("Something went wrong");
@@ -280,7 +283,7 @@ const expenseSlice = createSlice({
         state.spendingTrend = action.payload.spendingTrend || [];
       })
       .addCase(fetchExpensesDashboard.rejected, (state, action) => {
-        console.error("Failed to fetch expenses dashboard:", action.error);
+        console.log("Failed to fetch expenses dashboard:", action.error);
       })
       .addCase(logExpense.pending, (state) => {
         // Handle loading state for logging expense
@@ -289,7 +292,10 @@ const expenseSlice = createSlice({
         console.log("Expense logged successfully:", action.payload);
       })
       .addCase(logExpense.rejected, (state, action) => {
-        console.error("Failed to log expense:", action.error);
+        if (action.payload?.error === 'Subscription required.' || action.payload?.status === 402) navigate('feedbackscreen');
+        else console.log("fail to log expense : ", action)
+
+
       })
       .addCase(fetchExpenseCategories.pending, (state) => {
         // Handle loading state for fetching categories
@@ -300,7 +306,7 @@ const expenseSlice = createSlice({
       })
       .addCase(fetchExpenseCategories.rejected, (state, action) => {
         // Handle error state for fetching categories
-        console.error("Failed to fetch expense categories:", action.error);
+        console.log("Failed to fetch expense categories:", action.error);
       })
       .addCase(addCategoryAsync.pending, (state) => {
         // Handle loading state for adding category
@@ -313,7 +319,7 @@ const expenseSlice = createSlice({
       })
       .addCase(addCategoryAsync.rejected, (state, action) => {
         // Handle error state for adding category
-        console.error("Failed to add category:", action.error);
+        console.log("Failed to add category:", action.error);
       })
       .addCase(updateCategoriesAsync.pending, (state) => {
         // Handle loading state for updating categories
@@ -338,7 +344,7 @@ const expenseSlice = createSlice({
       })
       .addCase(updateCategoriesAsync.rejected, (state, action) => {
         // Handle error state for updating categories
-        console.error("Failed to update categories:", action.error);
+        console.log("Failed to update categories:", action.error);
       })
       .addCase(fetchAllExpenses.pending, (state) => {
         // optional: loading state
@@ -347,10 +353,12 @@ const expenseSlice = createSlice({
         state.allExpenses = action.payload || [];
       })
       .addCase(fetchAllExpenses.rejected, (state, action) => {
-        console.error("Failed to fetch all expenses:", action.error);
+        console.log("Failed to fetch all expenses:", action.error);
       });
   },
 });
 
 export const { clearExpensesDashboard } = expenseSlice.actions;
 export default expenseSlice.reducer;
+
+

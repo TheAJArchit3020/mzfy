@@ -63,7 +63,7 @@ const DashboardScreen: FC = () => {
   const userDetails = useSelector((state: RootState) => state.user.items[0]);
 
 
-  console.log("dashboardData : ",dashboardData)
+  console.log("dashboardData : ", dashboardData)
 
 
   useEffect(() => {
@@ -141,9 +141,7 @@ const DashboardScreen: FC = () => {
   const LogTransactionHandler = async () => {
 
     await dispatch(logTransaction({ selectedDueTransaction, logAmount })).then(async (payload) => {
-      console.log("Transaction logged successfully:", payload);
       if (payload.meta.requestStatus === 'fulfilled') {
-        setShow(false);
         await dispatch(fetchDashboardSummary())
         captureEvent({
           eventName: 'log_payment',
@@ -151,6 +149,10 @@ const DashboardScreen: FC = () => {
         });
 
       }
+      if (payload.payload?.status === 402) navigation.navigate('feedbackscreen');
+
+      setShow(false);
+
     }).catch((err) => {
       console.error("Error logging transaction:", err);
     });
