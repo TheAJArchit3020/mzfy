@@ -1,0 +1,241 @@
+import { Image, Platform, StyleSheet, Text, View } from 'react-native'
+import React, { FC, useEffect } from 'react'
+import LinearGradient from 'react-native-linear-gradient'
+import Button from '@components/reusable/button'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RootStackParams } from '@managers/routing'
+import { useNavigation } from '@react-navigation/native'
+import {
+    GoogleSignin,
+    statusCodes,
+} from '@react-native-google-signin/google-signin';
+import { AppleAuthProvider } from '@react-native-firebase/auth';
+
+import { appleAuth } from '@invertase/react-native-apple-authentication';
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '@redux/store'
+import { checkUser } from '@redux/login/loginSlice'
+import { fetchUser, setField } from '@redux/user/userSlice'
+import { widthToDP } from 'react-native-responsive-screens'
+import { usePostHog } from 'posthog-react-native'
+import { appEvents } from '@components/events/appEvents'
+
+
+
+
+type navProps = NativeStackNavigationProp<RootStackParams>
+
+const Login: FC = () => {
+
+    const posthog = usePostHog()
+    const navigation = useNavigation<navProps>();
+    const dispatch = useDispatch<AppDispatch>();
+    
+
+    //    const signindata = useSelector((state: RootState) => state.loginuser.items)
+
+    //         console.log("items : ",signindata[0].token)
+
+    const navigationHandler = () => {
+        handleGoogleSignIn();
+        // navigation.navigate('registrationlayoutscreen', {
+        //     index: 0
+        // })
+    }
+
+
+    useEffect(() => {
+        GoogleSignin.configure({
+            webClientId:
+                '223306759572-fp0534lirc9tqm0btoho0ojsncs69jtc.apps.googleusercontent.com',
+            iosClientId:
+                '300899465301-q4gh41im4l4r8irbn2gr0pumnk0g78jq.apps.googleusercontent.com',
+            offlineAccess: true,
+        });
+    }, []);
+
+
+    // google sign in
+    const handleGoogleSignIn = async () => {
+       
+
+        try {
+            await GoogleSignin.signOut();
+            await GoogleSignin.hasPlayServices();
+            const userInfo = await GoogleSignin.signIn();
+
+            console.log("userInfo : ", userInfo)
+
+            dispatch(setField({ field: 'email', value: userInfo?.data?.user?.email }))
+            dispatch(setField({ field: 'googleId', value: userInfo?.data?.user?.id }))
+
+            const payload = {
+                idToken: userInfo?.data?.idToken,
+            };
+
+            // dispatch the thunk:
+            const resultAction = await dispatch(checkUser(payload));
+
+            console.log("first resultAction : ", resultAction.payload)
+            const payloadData = resultAction?.payload as { detailsExists?: boolean; token?: string; userId?: string };
+            const { detailsExists, token, userId } = payloadData;
+
+
+            if (detailsExists) {
+                await dispatch(fetchUser()).unwrap()
+                navigation.navigate('layoutscreen');
+            } else {
+                navigation.navigate('registrationlayoutscreen', {
+                    index: 0,
+                });
+            }
+        } catch (err: any) {
+            if (err?.status === 401) {
+                navigation.navigate('registrationlayoutscreen', {
+                    index: 0
+                })
+            } else if (err?.status === 500) {
+                navigation.navigate('loginscreen')
+            }
+        }
+
+
+    };
+
+    // google sign in
+    const handleAppleSignIn = async () => {
+        console.log('handleGoogleSignIn clicked !!');
+        try {
+            // Start the sign-in request
+            const appleAuthRequestResponse = await appleAuth.performRequest({
+                requestedOperation: appleAuth.Operation.LOGIN,
+
+                requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
+            });
+
+            // Ensure Apple returned a user identityToken
+            if (!appleAuthRequestResponse.identityToken) {
+                throw new Error('Apple Sign-In failed - no identify token returned');
+            }
+            console.log('appleAuthRequestResponse', appleAuthRequestResponse);
+
+            // Create a Firebase credential from the response
+            const { identityToken, nonce } = appleAuthRequestResponse;
+            const appleCredential = AppleAuthProvider.credential(identityToken, nonce);
+
+            console.log('appleCredential', appleCredential);
+
+        } catch (err) {
+            console.log(err)
+        }
+
+
+    };
+
+    return (
+
+        <LinearGradient
+            colors={['#5145BC', '#2F2C4A', '#2B293E', '#272631', '#232323']}
+            locations={[0, 0.64, 0.76, 0.87, 1]}
+            start={{ x: 1, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.gradient}>
+
+
+            <View style={styles.container}>
+                <View style={styles.section1} >
+                    <View style={styles.imagecontainer}>
+                        <Image source={require('@images/AppIntro/moneezifylogo.png')} style={styles.logoimage} />
+                    </View>
+                    <Text style={styles.section1_text}>Moneezify</Text>
+                </View>
+                <View style={styles.section2} >
+                    <Button style={styles.button} onPress={navigationHandler} >
+                        <Image source={require('@images/login/google.png')} style={styles.loginimage} />
+                        <Text style={styles.buttontext} >Signup with google</Text>
+                    </Button>
+
+                    {
+                        Platform.OS === "ios" && (
+                            <>
+                                <Text style={styles.buttontext}>Or</Text>
+
+                                <Button style={styles.button} onPress={handleAppleSignIn}>
+                                    <Image source={require('@images/login/apple.png')} style={styles.loginimage} />
+                                    <Text style={styles.buttontext}>Signup with apple</Text>
+                                </Button>
+                            </>
+                        )
+
+                    }
+                </View>
+            </View>
+        </LinearGradient>
+    )
+}
+
+export default Login
+
+const styles = StyleSheet.create({
+    gradient: {
+        flex: 1
+    },
+    container: {
+        flex: 1,
+        justifyContent: "center",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: '35%'
+    },
+    section1: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 8,
+    },
+    imagecontainer: {
+        backgroundColor: "#ffffffff",
+        borderRadius: 100,
+        padding: 2,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    logoimage: {
+        width: widthToDP(10),
+        height: widthToDP(10),
+        resizeMode: "contain"
+    },
+    section1_text: {
+        color: "#fff",
+        fontFamily: "PlusJakartaSans-Bold",
+        fontSize: 20,
+        marginTop: Platform.OS === 'android' ? -5 : 0
+    },
+    section2: {
+        flexDirection: "column",
+        gap: 32,
+        alignItems: "center",
+        width: '100%'
+    },
+    button: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 10,
+        borderWidth: 0.5,
+        borderColor: "#C0C0C0",
+        padding: 10,
+        borderRadius: 12,
+        width: '80%'
+    },
+    buttontext: {
+        color: "#fff",
+        fontFamily: "PlusJakartaSans-Regular",
+        fontSize: 16,
+        marginTop: Platform.OS === 'android' ? -5 : 0
+    },
+    loginimage: {
+        width: 20,
+        height: 20,
+        resizeMode: "contain"
+    }
+})

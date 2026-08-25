@@ -1,14 +1,31 @@
 
 
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import Routing from './src/managers/routing';
+import 'react-native-gesture-handler';
+import Routing from '@managers/routing';
+import { Provider } from 'react-redux';
+import { store } from './src/redux/store';
+import { NavigationContainer } from '@react-navigation/native';
+import { PostHogProvider } from 'posthog-react-native';
+import { navigationRef } from './src/navigationservices';
+
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
+
 
   return (
     <>
-      <Routing />
+
+      <Provider store={store} >
+        <NavigationContainer ref={navigationRef}>
+          <PostHogProvider
+            apiKey="phc_Pqr7lQXnSJZe91LFSTJjbVhTyZXV90Ky3n00MeNzuAl"
+            options={{
+              host: "https://eu.i.posthog.com",
+            }}>
+            <Routing />
+          </PostHogProvider>
+        </NavigationContainer>
+      </Provider>
     </>
   );
 }
